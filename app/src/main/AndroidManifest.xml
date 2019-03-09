@@ -11,7 +11,7 @@
 
         <service
             android:name="LBoardService"
-            android:label="@string/service_label"
+            android:label="@string/service_name"
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:id="@+id/lboard">
 

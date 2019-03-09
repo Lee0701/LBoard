@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LBoard</string>
+    <string name="service_name">LBoard</string>
 </resources>
