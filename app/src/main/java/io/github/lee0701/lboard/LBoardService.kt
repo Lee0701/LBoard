@@ -6,24 +6,33 @@ import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.hardkeyboard.EmptyHardKeyboard
+import io.github.lee0701.lboard.preconverter.SimpleLayoutConverter
+import io.github.lee0701.lboard.preconverter.hangul.HangulConverter
+import io.github.lee0701.lboard.preconverter.hangul.HangulLayout
 import io.github.lee0701.lboard.softkeyboard.DefaultSoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class LBoardService: InputMethodService() {
 
-    val inputMethods: MutableList<LBoardInputMethod> = mutableListOf()
+    val inputMethods: MutableList<InputMethod> = mutableListOf()
     var currentMethodId: Int = 0
-    val currentMethod: LBoardInputMethod get() = inputMethods[currentMethodId]
+    val currentMethod: InputMethod get() = inputMethods[currentMethodId]
 
     override fun onCreate() {
         super.onCreate()
         EventBus.getDefault().register(this)
-        inputMethods += LBoardInputMethod(
+        val layout = HangulLayout(
+                mapOf(39 to 0x1100.toChar(), 34 to 0x1161.toChar(), 52 to 0x11a8.toChar()),
+                mapOf(0x1100.toChar() to 0x1100.toChar() to 0x1101.toChar())
+        )
+        inputMethods += InputMethod(
                 DefaultSoftKeyboard("Default Soft Keyboard", Keyboard(this, R.xml.keyboard_10cols_mobile)),
-                EmptyHardKeyboard("Empty Hard Keyboard")
+                listOf(SimpleLayoutConverter("Simple Layout Converter", layout),
+                        HangulConverter("Hangul Converter", layout))
         )
     }
 
@@ -35,12 +44,15 @@ class LBoardService: InputMethodService() {
         super.onStartInputView(info, restarting)
     }
 
-    @Subscribe
-    fun onSoftKeyClick(event: SoftKeyClickEvent) {
+    @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
         if(!currentMethod.onKey(event.keyCode)) when(event.keyCode) {
             KeyEvent.KEYCODE_DEL -> currentInputConnection.deleteSurroundingText(1, 0)
             else -> sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.FULL).get(event.keyCode, if(event.shift) KeyEvent.META_SHIFT_ON else 0).toChar())
         }
+    }
+
+    @Subscribe fun onCompose(event: ComposeEvent) {
+        currentInputConnection.setComposingText(event.composing.layers.last().tokens.map { it.best.toString() }.joinToString(""), 1)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

@@ -1,8 +1,8 @@
 package io.github.lee0701.lboard
 
-import io.github.lee0701.lboard.converter.ComposingText
-import io.github.lee0701.lboard.converter.hangul.HangulConverter
-import io.github.lee0701.lboard.converter.hangul.HangulLayout
+import io.github.lee0701.lboard.preconverter.ComposingText
+import io.github.lee0701.lboard.preconverter.hangul.HangulConverter
+import io.github.lee0701.lboard.preconverter.hangul.HangulLayout
 import org.junit.Test
 
 class ConverterTest {
@@ -20,7 +20,7 @@ class ConverterTest {
                         0x11a8.toChar() to 0x11a8.toChar() to 0x11a9.toChar()
                 )
         )
-        val converter = HangulConverter("Hangul Converter", layout)
+        val converter = HangulConverter("Hangul PreConverter", layout)
 
         val rat = ComposingText(listOf(ComposingText.Layer(listOf(
                 ComposingText.TokenList(listOf(ComposingText.KeyInputToken(0x10))),

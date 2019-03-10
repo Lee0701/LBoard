@@ -1,15 +1,15 @@
-package io.github.lee0701.lboard.converter.hangul
+package io.github.lee0701.lboard.preconverter.hangul
 
-import io.github.lee0701.lboard.converter.ComposingText
-import io.github.lee0701.lboard.converter.Converter
+import io.github.lee0701.lboard.preconverter.ComposingText
+import io.github.lee0701.lboard.preconverter.PreConverter
 import java.text.Normalizer
 
-class HangulConverter(override val name: String, val layout: HangulLayout): Converter {
+class HangulConverter(override val name: String, val layout: HangulLayout): PreConverter {
 
     override fun convert(text: ComposingText): ComposingText {
-        val newToken = ComposingText.StringToken(text.layers[0].tokens
-                .map { (it.best as ComposingText.KeyInputToken) }
-                .map { HangulToken(layout.layout[it.keyCode] ?: it.representingChar) }
+        val newToken = ComposingText.StringToken(text.layers.last().tokens
+                .map { (it.best as ComposingText.CharToken) }
+                .map { HangulToken(it.char) }
                 .reduce { acc, token -> compose(acc, token) }.let { (it.other ?: "") + it.display })
         return text.copy(layers = text.layers + ComposingText.Layer(listOf(ComposingText.TokenList(listOf(newToken)))))
     }
