@@ -9,7 +9,7 @@ data class ComposingText(val layers: List<Layer>) {
         override fun toString(): String
     }
 
-    data class KeyInputToken(val keyCode: Int, val representingChar: Char = keyCode.toChar(), override val score: Double = 1.0): Token {
+    data class KeyInputToken(val keyCode: Int, val shift: Boolean, val alt: Boolean, val representingChar: Char = keyCode.toChar(), override val score: Double = 1.0): Token {
         override fun toString(): String = keyCode.toString()
     }
 

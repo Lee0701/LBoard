@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.hardkeyboard.EmptyHardKeyboard
+import io.github.lee0701.lboard.preconverter.KeyboardLayout
 import io.github.lee0701.lboard.preconverter.SimpleLayoutConverter
 import io.github.lee0701.lboard.preconverter.hangul.HangulConverter
 import io.github.lee0701.lboard.preconverter.hangul.HangulLayout
@@ -26,7 +27,12 @@ class LBoardService: InputMethodService() {
         super.onCreate()
         EventBus.getDefault().register(this)
         val layout = HangulLayout(
-                mapOf(39 to 0x1100.toChar(), 34 to 0x1161.toChar(), 52 to 0x11a8.toChar()),
+                mapOf(
+                        38 to KeyboardLayout.LayoutItem(listOf(0x110b.toChar(), 0x1112.toChar())),
+                        39 to KeyboardLayout.LayoutItem(0x1100.toChar()),
+                        34 to KeyboardLayout.LayoutItem(0x1161.toChar()),
+                        52 to KeyboardLayout.LayoutItem(0x11a8.toChar())
+                ),
                 mapOf(0x1100.toChar() to 0x1100.toChar() to 0x1101.toChar())
         )
         inputMethods += InputMethod(
