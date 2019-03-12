@@ -8,10 +8,10 @@ class HangulConverter(override val name: String, val layout: HangulLayout): PreC
 
     override fun convert(text: ComposingText): ComposingText {
         val newToken = ComposingText.StringToken(text.layers.last().tokens
-                .map { (it.best as ComposingText.CharToken) }
+                .map { (it as ComposingText.CharToken) }
                 .map { HangulToken(it.char) }
                 .reduce { acc, token -> compose(acc, token) }.let { (it.other ?: "") + it.display })
-        return text.copy(layers = text.layers + ComposingText.Layer(listOf(ComposingText.TokenList(listOf(newToken)))))
+        return text.copy(layers = text.layers + ComposingText.Layer(listOf(newToken)))
     }
 
     private fun compose(composing: HangulToken, input: HangulToken): HangulToken =

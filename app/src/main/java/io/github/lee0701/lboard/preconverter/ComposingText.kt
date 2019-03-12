@@ -2,7 +2,7 @@ package io.github.lee0701.lboard.preconverter
 
 data class ComposingText(val layers: List<Layer>) {
 
-    data class Layer(val tokens: List<TokenList>)
+    data class Layer(val tokens: List<Token>)
 
     interface Token {
         val score: Double
@@ -19,10 +19,6 @@ data class ComposingText(val layers: List<Layer>) {
 
     data class StringToken(val string: String, override val score: Double = 1.0): Token {
         override fun toString(): String = string
-    }
-
-    data class TokenList(val tokens: List<Token>) {
-        val best: Token = tokens.sortedByDescending { it.score }.first()
     }
 
 }

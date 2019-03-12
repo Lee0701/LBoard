@@ -4,13 +4,11 @@ class SimpleLayoutConverter(override val name: String, val layout: KeyboardLayou
 
     override fun convert(text: ComposingText): ComposingText {
 
-        return text.copy(layers = text.layers + ComposingText.Layer(text.layers.last().tokens.map { list ->
-            list.copy(tokens = list.tokens.map { token ->
-                if(token is ComposingText.KeyInputToken) {
-                    val codes = getCodes(token.keyCode, token.shift, token.alt)
-                    ComposingText.CharToken(if(codes == null) token.representingChar else codes[0])
-                } else token
-            })
+        return text.copy(layers = text.layers + ComposingText.Layer(text.layers.last().tokens.map { token ->
+            if(token is ComposingText.KeyInputToken) {
+                val codes = getCodes(token.keyCode, token.shift, token.alt)
+                ComposingText.CharToken(if(codes == null) token.representingChar else codes[0])
+            } else token
         }))
     }
 

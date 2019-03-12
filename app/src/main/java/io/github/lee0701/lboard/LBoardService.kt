@@ -8,7 +8,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
-import io.github.lee0701.lboard.hardkeyboard.EmptyHardKeyboard
 import io.github.lee0701.lboard.preconverter.KeyboardLayout
 import io.github.lee0701.lboard.preconverter.SimpleLayoutConverter
 import io.github.lee0701.lboard.preconverter.hangul.HangulConverter
@@ -58,7 +57,7 @@ class LBoardService: InputMethodService() {
     }
 
     @Subscribe fun onCompose(event: ComposeEvent) {
-        currentInputConnection.setComposingText(event.composing.layers.last().tokens.map { it.best.toString() }.joinToString(""), 1)
+        currentInputConnection.setComposingText(event.composing.layers.last().tokens.map { it.toString() }.joinToString(""), 1)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

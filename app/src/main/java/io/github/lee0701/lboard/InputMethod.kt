@@ -25,7 +25,7 @@ class InputMethod(
             KeyEvent.KEYCODE_DEL -> if(composingText.size > 0) composingText.remove(composingText.last()) else return false
             else -> {
                 val previousState = if(composingText.size > 0) composingText.last() else DEFAULT_COMPOSING_TEXT
-                composingText += previousState.copy(listOf(ComposingText.Layer(previousState.layers[0].tokens + ComposingText.TokenList(listOf(ComposingText.KeyInputToken(keyCode, false, false))))))
+                composingText += previousState.copy(listOf(ComposingText.Layer(previousState.layers[0].tokens + ComposingText.KeyInputToken(keyCode, false, false))))
             }
         }
         EventBus.getDefault().post(ComposeEvent(preConvert()))
