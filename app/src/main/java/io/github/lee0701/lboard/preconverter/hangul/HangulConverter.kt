@@ -24,7 +24,7 @@ class HangulConverter(override val name: String, val layout: HangulLayout): PreC
     private fun jong(composing: HangulToken, input: HangulToken): HangulToken =
             if(composing.jong != null) layout.combinations[composing.jong to input.jong]?.let { composing.copy(jong = it) } ?: input.copy(other = (composing.other ?: "") + composing.display) else composing.copy(jong = input.jong)
 
-    data class HangulToken(val cho: Char? = null, val jung: Char? = null, val jong: Char? = null, val other: String? = null, override val score: Double = 1.0): ComposingText.Token {
+    data class HangulToken(val cho: Char? = null, val jung: Char? = null, val jong: Char? = null, val other: String? = null): ComposingText.Token {
 
         val display = when {
             cho != null && jung != null -> Normalizer.normalize(cho.toString() + jung + (jong ?: ""), Normalizer.Form.NFC)

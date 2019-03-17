@@ -10,6 +10,7 @@ import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.preconverter.KeyboardLayout
 import io.github.lee0701.lboard.preconverter.SimpleLayoutConverter
+import io.github.lee0701.lboard.preconverter.hangul.DubeolHangulConverter
 import io.github.lee0701.lboard.preconverter.hangul.HangulConverter
 import io.github.lee0701.lboard.preconverter.hangul.HangulLayout
 import io.github.lee0701.lboard.softkeyboard.DefaultSoftKeyboard
@@ -27,17 +28,19 @@ class LBoardService: InputMethodService() {
         EventBus.getDefault().register(this)
         val layout = HangulLayout(
                 mapOf(
-                        38 to KeyboardLayout.LayoutItem(listOf(0x110b.toChar(), 0x1112.toChar())),
-                        39 to KeyboardLayout.LayoutItem(0x1100.toChar()),
-                        34 to KeyboardLayout.LayoutItem(0x1161.toChar()),
-                        52 to KeyboardLayout.LayoutItem(0x11a8.toChar())
+                        46 to KeyboardLayout.LayoutItem(0x3131.toChar()),
+                        48 to KeyboardLayout.LayoutItem(0x3145.toChar()),
+                        39 to KeyboardLayout.LayoutItem(0x314f.toChar())
                 ),
-                mapOf(0x1100.toChar() to 0x1100.toChar() to 0x1101.toChar())
+                mapOf(
+                        0x1100.toChar() to 0x1100.toChar() to 0x1101.toChar(),
+                        0x11a8.toChar() to 0x11ba.toChar() to 0x11aa.toChar()
+                )
         )
         inputMethods += InputMethod(
                 DefaultSoftKeyboard("Default Soft Keyboard", Keyboard(this, R.xml.keyboard_10cols_mobile)),
                 listOf(SimpleLayoutConverter("Simple Layout Converter", layout),
-                        HangulConverter("Hangul Converter", layout))
+                        DubeolHangulConverter("Hangul Converter", layout))
         )
     }
 
