@@ -34,6 +34,7 @@ class LBoardService: InputMethodService() {
                 ),
                 mapOf(
                         0x1100.toChar() to 0x1100.toChar() to 0x1101.toChar(),
+                        0x11a8.toChar() to 0x11a8.toChar() to 0x11a9.toChar(),
                         0x11a8.toChar() to 0x11ba.toChar() to 0x11aa.toChar()
                 )
         )

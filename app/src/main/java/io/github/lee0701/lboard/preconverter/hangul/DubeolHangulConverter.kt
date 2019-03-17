@@ -6,6 +6,8 @@ import java.text.Normalizer
 
 class DubeolHangulConverter(override val name: String, val layout: HangulLayout): PreConverter {
 
+    val reversedCombinations = layout.combinations.map { it.value to it.key }.toMap()
+
     override fun convert(text: ComposingText): ComposingText {
         val newToken = ComposingText.StringToken(text.layers.last().tokens
                 .map { (it as ComposingText.CharToken) }
@@ -14,11 +16,8 @@ class DubeolHangulConverter(override val name: String, val layout: HangulLayout)
         return text.copy(layers = text.layers + ComposingText.Layer(listOf(newToken)))
     }
 
-    private fun compose(composing: HangulToken, input: HangulToken): HangulToken {
-        println(composing)
-        println(input)
-        return if(input.cho != null) consonant(correct(composing), input) else if(input.jung != null) vowel(correct(composing), input) else HangulToken(other = (composing.other ?: "") + composing.display + input.display)
-    }
+    private fun compose(composing: HangulToken, input: HangulToken): HangulToken =
+            if(input.cho != null) consonant(correct(composing), input) else if(input.jung != null) vowel(correct(composing), input) else HangulToken(other = (composing.other ?: "") + composing.display + input.display)
 
     private fun correct(composing: HangulToken): HangulToken =
             if(composing.cho != null && isConsonant(composing.cho)) composing.copy(cho = toCho(composing.cho)) else composing
@@ -28,8 +27,12 @@ class DubeolHangulConverter(override val name: String, val layout: HangulLayout)
             else if(composing.cho != null && composing.jung != null) composing.copy(jong = toJong(input.cho!!))
             else if(composing.cho != null) layout.combinations[composing.cho to toCho(input.cho!!)]?.let { composing.copy(cho = it) } ?: input.copy(other = (composing.other ?: "") + composing.display)
             else composing.copy(cho = toCho(input.cho!!))
+
     private fun vowel(composing: HangulToken, input: HangulToken): HangulToken =
-            if(composing.jong != null) HangulToken(other = (composing.other ?: "") + composing.copy(jong = null).display, cho = ghostLight(composing.jong), jung = toJung(input.jung!!)) else if(composing.jung != null) layout.combinations[composing.jung to toJung(input.jung!!)]?.let { composing.copy(jung = it) } ?: input.copy(other = (composing.other ?: "") + composing.display) else composing.copy(jung = toJung(input.jung!!))
+            if(composing.jong != null) reversedCombinations[composing.jong]?.let { HangulToken(other = (composing.other ?: "") + composing.copy(jong = it.first).display, cho = ghostLight(it.second), jung = toJung(input.jung!!)) }
+                    ?: HangulToken(other = (composing.other ?: "") + composing.copy(jong = null).display, cho = ghostLight(composing.jong), jung = toJung(input.jung!!))
+            else if(composing.jung != null) layout.combinations[composing.jung to toJung(input.jung!!)]?.let { composing.copy(jung = it) } ?: input.copy(other = (composing.other ?: "") + composing.display)
+            else composing.copy(jung = toJung(input.jung!!))
 
     data class HangulToken(val cho: Char? = null, val jung: Char? = null, val jong: Char? = null, val other: String? = null): ComposingText.Token {
         val display = when {
