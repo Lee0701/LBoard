@@ -2,9 +2,10 @@ package io.github.lee0701.lboard.preconverter.hangul
 
 import io.github.lee0701.lboard.preconverter.ComposingText
 import io.github.lee0701.lboard.preconverter.PreConverter
+import org.json.JSONObject
 import java.text.Normalizer
 
-class HangulConverter(override val name: String, val layout: HangulLayout): PreConverter {
+class HangulConverter(override val name: String, val combinationTable: CombinationTable): PreConverter {
 
     override fun convert(text: ComposingText): ComposingText {
         val newToken = ComposingText.StringToken(text.layers.last().tokens
@@ -18,11 +19,11 @@ class HangulConverter(override val name: String, val layout: HangulLayout): PreC
         if(input.cho != null) cho(composing, input) else if(input.jung != null) jung(composing, input) else if(input.jong != null) jong(composing, input) else HangulToken(other = (composing.other ?: "") + composing.display + input.display)
 
     private fun cho(composing: HangulToken, input: HangulToken): HangulToken =
-            if(composing.cho != null) (if(composing.jung == null) layout.combinations[composing.cho to input.cho]?.let { composing.copy(cho = it) } else null) ?: input.copy(other = (composing.other ?: "") + composing.display) else composing.copy(cho = input.cho)
+            if(composing.cho != null) (if(composing.jung == null) combinationTable.combinations[composing.cho to input.cho]?.let { composing.copy(cho = it) } else null) ?: input.copy(other = (composing.other ?: "") + composing.display) else composing.copy(cho = input.cho)
     private fun jung(composing: HangulToken, input: HangulToken): HangulToken =
-            if(composing.jung != null) layout.combinations[composing.jung to input.jung]?.let { composing.copy(jung = it) } ?: input.copy(other = (composing.other ?: "") + composing.display) else composing.copy(jung = input.jung)
+            if(composing.jung != null) combinationTable.combinations[composing.jung to input.jung]?.let { composing.copy(jung = it) } ?: input.copy(other = (composing.other ?: "") + composing.display) else composing.copy(jung = input.jung)
     private fun jong(composing: HangulToken, input: HangulToken): HangulToken =
-            if(composing.jong != null) layout.combinations[composing.jong to input.jong]?.let { composing.copy(jong = it) } ?: input.copy(other = (composing.other ?: "") + composing.display) else composing.copy(jong = input.jong)
+            if(composing.jong != null) combinationTable.combinations[composing.jong to input.jong]?.let { composing.copy(jong = it) } ?: input.copy(other = (composing.other ?: "") + composing.display) else composing.copy(jong = input.jong)
 
     data class HangulToken(val cho: Char? = null, val jung: Char? = null, val jong: Char? = null, val other: String? = null): ComposingText.Token {
 
@@ -46,6 +47,12 @@ class HangulConverter(override val name: String, val layout: HangulLayout): PreC
 
     }
 
+    override fun serialize(): JSONObject {
+        return super.serialize().apply {
+            put("combinationTable", combinationTable.serialize())
+        }
+    }
+
     companion object {
         fun isCho(char: Char) = char.toInt() in 0x1100 .. 0x115f
         fun isJung(char: Char) = char.toInt() in 0x1160 .. 0x11a7
@@ -57,6 +64,10 @@ class HangulConverter(override val name: String, val layout: HangulLayout): PreC
         const val CONVERT_CHO = "ᄀᄁ ᄂ  ᄃᄄᄅ       ᄆᄇᄈ ᄉᄊᄋᄌᄍᄎᄏᄐᄑᄒ"
         const val CONVERT_JONG = "ᆨᆩᆪᆫᆬᆭᆮ ᆯᆰᆱᆲᆳᆴᆵᆶᆷᆸ ᆹᆺᆻᆼᆽ ᆾᆿᇀᇁᇂ"
         const val STD_JUNG = "ᅡᅢᅣᅤᅥᅦᅧᅨᅩᅪᅫᅬᅭᅮᅯᅰᅱᅲᅳᅴᅵ"
+
+        @JvmStatic fun deserialize(json: JSONObject): HangulConverter {
+            return HangulConverter(json.getString("name"), CombinationTable.deserialize(json.getJSONObject("combinationTable")))
+        }
 
     }
 

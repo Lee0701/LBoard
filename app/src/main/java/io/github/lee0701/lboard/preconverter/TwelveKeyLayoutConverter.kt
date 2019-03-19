@@ -1,5 +1,7 @@
 package io.github.lee0701.lboard.preconverter
 
+import org.json.JSONObject
+
 class TwelveKeyLayoutConverter(override val name: String, val layout: KeyboardLayout, val cycle: Boolean = true): PreConverter {
 
     override fun convert(text: ComposingText): ComposingText {
@@ -28,7 +30,19 @@ class TwelveKeyLayoutConverter(override val name: String, val layout: KeyboardLa
         return text.copy(layers = text.layers + ComposingText.Layer(result))
     }
 
+    override fun serialize(): JSONObject {
+        return super.serialize().apply {
+            put("layout", layout.serialize())
+        }
+    }
+
     private fun getCodes(keyCode: Int, shift: Boolean, alt: Boolean): List<Char>? =
             layout.layout[keyCode]?.let { if(alt && shift) it.altShift else if(alt) it.alt else if(shift) it.shift else it.normal }
+
+    companion object {
+        @JvmStatic fun deserialize(json: JSONObject): SimpleLayoutConverter {
+            return SimpleLayoutConverter(json.getString("name"), KeyboardLayout.deserialize(json.getJSONObject("layout")))
+        }
+    }
 
 }

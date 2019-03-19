@@ -2,12 +2,12 @@ package io.github.lee0701.lboard
 
 import io.github.lee0701.lboard.preconverter.ComposingText
 import io.github.lee0701.lboard.preconverter.hangul.HangulConverter
-import io.github.lee0701.lboard.preconverter.hangul.HangulLayout
+import io.github.lee0701.lboard.preconverter.hangul.CombinationTable
 import org.junit.Test
 
 class ConverterTest {
     @Test fun test() {
-        val layout = HangulLayout(
+        val layout = CombinationTable(
                 mapOf(
                         0x00 to 0x0041.toChar(),
                         0x10 to 0x1100.toChar(),

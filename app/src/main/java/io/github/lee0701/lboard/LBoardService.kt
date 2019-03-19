@@ -9,11 +9,9 @@ import android.view.inputmethod.EditorInfo
 import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.preconverter.KeyboardLayout
-import io.github.lee0701.lboard.preconverter.SimpleLayoutConverter
 import io.github.lee0701.lboard.preconverter.TwelveKeyLayoutConverter
 import io.github.lee0701.lboard.preconverter.hangul.DubeolHangulConverter
-import io.github.lee0701.lboard.preconverter.hangul.HangulConverter
-import io.github.lee0701.lboard.preconverter.hangul.HangulLayout
+import io.github.lee0701.lboard.preconverter.hangul.CombinationTable
 import io.github.lee0701.lboard.softkeyboard.DefaultSoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -27,13 +25,15 @@ class LBoardService: InputMethodService() {
     override fun onCreate() {
         super.onCreate()
         EventBus.getDefault().register(this)
-        val layout = HangulLayout(
+        val layout = KeyboardLayout(
                 mapOf(
                         32 to KeyboardLayout.LayoutItem(listOf(0x3147.toChar(), 0x314e.toChar()), listOf(), listOf(), listOf()),
                         46 to KeyboardLayout.LayoutItem(0x3131.toChar()),
                         48 to KeyboardLayout.LayoutItem(0x3145.toChar()),
                         39 to KeyboardLayout.LayoutItem(0x314f.toChar())
-                ),
+                )
+        )
+        val combinationTable = CombinationTable(
                 mapOf(
                         0x1100.toChar() to 0x1100.toChar() to 0x1101.toChar(),
                         0x11a8.toChar() to 0x11a8.toChar() to 0x11a9.toChar(),
@@ -41,9 +41,9 @@ class LBoardService: InputMethodService() {
                 )
         )
         inputMethods += InputMethod(
-                DefaultSoftKeyboard("Default Soft Keyboard", Keyboard(this, R.xml.keyboard_10cols_mobile)),
+                DefaultSoftKeyboard("Default Soft Keyboard", "keyboard_10cols_mobile"),
                 listOf(TwelveKeyLayoutConverter("Layout Converter", layout),
-                        DubeolHangulConverter("Hangul Converter", layout))
+                        DubeolHangulConverter("Hangul Converter", combinationTable))
         )
     }
 

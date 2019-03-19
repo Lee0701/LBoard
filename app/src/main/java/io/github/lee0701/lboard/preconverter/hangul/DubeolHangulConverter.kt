@@ -2,11 +2,12 @@ package io.github.lee0701.lboard.preconverter.hangul
 
 import io.github.lee0701.lboard.preconverter.ComposingText
 import io.github.lee0701.lboard.preconverter.PreConverter
+import org.json.JSONObject
 import java.text.Normalizer
 
-class DubeolHangulConverter(override val name: String, val layout: HangulLayout): PreConverter {
+class DubeolHangulConverter(override val name: String, val combinationTable: CombinationTable): PreConverter {
 
-    val reversedCombinations = layout.combinations.map { it.value to it.key }.toMap()
+    val reversedCombinations = combinationTable.combinations.map { it.value to it.key }.toMap()
 
     override fun convert(text: ComposingText): ComposingText {
         val newToken = ComposingText.StringToken(text.layers.last().tokens
@@ -23,15 +24,15 @@ class DubeolHangulConverter(override val name: String, val layout: HangulLayout)
             if(composing.cho != null && isConsonant(composing.cho)) composing.copy(cho = toCho(composing.cho)) else composing
 
     private fun consonant(composing: HangulToken, input: HangulToken): HangulToken =
-            if(composing.jong != null) layout.combinations[composing.jong to toJong(input.cho!!)]?.let { composing.copy(jong = it) } ?: input.copy(other = (composing.other ?: "") + composing.display)
+            if(composing.jong != null) combinationTable.combinations[composing.jong to toJong(input.cho!!)]?.let { composing.copy(jong = it) } ?: input.copy(other = (composing.other ?: "") + composing.display)
             else if(composing.cho != null && composing.jung != null) composing.copy(jong = toJong(input.cho!!))
-            else if(composing.cho != null) layout.combinations[composing.cho to toCho(input.cho!!)]?.let { composing.copy(cho = it) } ?: input.copy(other = (composing.other ?: "") + composing.display)
+            else if(composing.cho != null) combinationTable.combinations[composing.cho to toCho(input.cho!!)]?.let { composing.copy(cho = it) } ?: input.copy(other = (composing.other ?: "") + composing.display)
             else composing.copy(cho = toCho(input.cho!!))
 
     private fun vowel(composing: HangulToken, input: HangulToken): HangulToken =
             if(composing.jong != null) reversedCombinations[composing.jong]?.let { HangulToken(other = (composing.other ?: "") + composing.copy(jong = it.first).display, cho = ghostLight(it.second), jung = toJung(input.jung!!)) }
                     ?: HangulToken(other = (composing.other ?: "") + composing.copy(jong = null).display, cho = ghostLight(composing.jong), jung = toJung(input.jung!!))
-            else if(composing.jung != null) layout.combinations[composing.jung to toJung(input.jung!!)]?.let { composing.copy(jung = it) } ?: input.copy(other = (composing.other ?: "") + composing.display)
+            else if(composing.jung != null) combinationTable.combinations[composing.jung to toJung(input.jung!!)]?.let { composing.copy(jung = it) } ?: input.copy(other = (composing.other ?: "") + composing.display)
             else composing.copy(jung = toJung(input.jung!!))
 
     data class HangulToken(val cho: Char? = null, val jung: Char? = null, val jong: Char? = null, val other: String? = null): ComposingText.Token {
@@ -48,6 +49,12 @@ class DubeolHangulConverter(override val name: String, val layout: HangulLayout)
                 if(isJong(char)) char else null,
                 if(!isCho(char) && !isConsonant(char) && !isJung(char) && !isVowel(char) && !isJong(char)) char.toString() else null
         )
+    }
+
+    override fun serialize(): JSONObject {
+        return super.serialize().apply {
+            put("combinationTable", combinationTable.serialize())
+        }
     }
 
     companion object {
@@ -70,6 +77,10 @@ class DubeolHangulConverter(override val name: String, val layout: HangulLayout)
         const val CONVERT_CHO = "ᄀᄁ ᄂ  ᄃᄄᄅ       ᄆᄇᄈ ᄉᄊᄋᄌᄍᄎᄏᄐᄑᄒ"
         const val CONVERT_JONG = "ᆨᆩᆪᆫᆬᆭᆮ ᆯᆰᆱᆲᆳᆴᆵᆶᆷᆸ ᆹᆺᆻᆼᆽ ᆾᆿᇀᇁᇂ"
         const val STD_JUNG = "ᅡᅢᅣᅤᅥᅦᅧᅨᅩᅪᅫᅬᅭᅮᅯᅰᅱᅲᅳᅴᅵ"
+
+        @JvmStatic fun deserialize(json: JSONObject): HangulConverter {
+            return HangulConverter(json.getString("name"), CombinationTable.deserialize(json.getJSONObject("combinationTable")))
+        }
 
     }
 

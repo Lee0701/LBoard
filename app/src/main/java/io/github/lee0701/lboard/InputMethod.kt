@@ -8,6 +8,8 @@ import io.github.lee0701.lboard.preconverter.ComposingText
 import io.github.lee0701.lboard.preconverter.PreConverter
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
+import org.json.JSONArray
+import org.json.JSONObject
 
 class InputMethod(
         val softKeyboard: SoftKeyboard,
@@ -39,8 +41,35 @@ class InputMethod(
         return current
     }
 
+    fun serialize(): JSONObject {
+        return JSONObject().apply {
+            put("softKeyboard", softKeyboard.serialize())
+            put("preConverters", JSONArray().apply {
+                preConverters.forEach { preConverter ->
+                    put(preConverter.serialize())
+                }
+            })
+        }
+    }
+
     companion object {
         val DEFAULT_COMPOSING_TEXT = ComposingText(listOf(ComposingText.Layer(listOf())))
+
+        fun deserialize(json: JSONObject): InputMethod {
+            val softKeyboard = json.getJSONObject("softKeyboard").let { softKeyboard ->
+                Class.forName(softKeyboard.getString("class")).getDeclaredMethod("deserialize", JSONObject::class.java)
+                        .invoke(null, softKeyboard) as SoftKeyboard
+            }
+            val preConverters = json.getJSONArray("preConverters").let { preConverters ->
+                (0 until preConverters.length()).map { i ->
+                    val preConverter = preConverters.getJSONObject(i)
+                    Class.forName(preConverter.getString("class")).getDeclaredMethod("deserialize", JSONObject::class.java)
+                            .invoke(null, preConverter) as PreConverter
+                }
+            }
+            return InputMethod(softKeyboard, preConverters)
+        }
+
     }
 
 }
