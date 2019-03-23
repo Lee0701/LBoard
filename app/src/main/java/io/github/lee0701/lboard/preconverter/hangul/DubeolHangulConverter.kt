@@ -17,11 +17,16 @@ class DubeolHangulConverter(override val name: String, val combinationTable: Com
         return text.copy(layers = text.layers + ComposingText.Layer(listOf(newToken)))
     }
 
-    private fun compose(composing: HangulToken, input: HangulToken): HangulToken =
-            if(input.cho != null) consonant(correct(composing), input) else if(input.jung != null) vowel(correct(composing), input) else HangulToken(other = (composing.other ?: "") + composing.display + input.display)
+    private fun compose(composing: HangulToken, input: HangulToken): HangulToken {
+        println(composing)
+        println(input)
+        return if(input.cho != null) consonant(correct(composing), input) else if(input.jung != null) vowel(correct(composing), input) else HangulToken(other = (composing.other ?: "") + composing.display + input.display)
+    }
 
     private fun correct(composing: HangulToken): HangulToken =
-            if(composing.cho != null && isConsonant(composing.cho)) composing.copy(cho = toCho(composing.cho)) else composing
+            if(composing.cho != null && isConsonant(composing.cho)) composing.copy(cho = toCho(composing.cho))
+            else if(composing.jung != null && isVowel(composing.jung)) composing.copy(jung = toJung(composing.jung))
+            else composing
 
     private fun consonant(composing: HangulToken, input: HangulToken): HangulToken =
             if(composing.jong != null) combinationTable.combinations[composing.jong to toJong(input.cho!!)]?.let { composing.copy(jong = it) } ?: input.copy(other = (composing.other ?: "") + composing.display)
