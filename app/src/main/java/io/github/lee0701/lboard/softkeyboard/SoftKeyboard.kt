@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.View
 import io.github.lee0701.lboard.InputMethodModule
 
-abstract class SoftKeyboard(override val name: String): InputMethodModule {
+interface SoftKeyboard {
 
-    abstract fun initView(context: Context): View?
+    fun initView(context: Context): View?
 
 }

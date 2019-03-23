@@ -3,22 +3,20 @@ package io.github.lee0701.lboard
 import android.content.Context
 import android.view.KeyEvent
 import android.view.View
-import io.github.lee0701.lboard.event.CommitComposingEvent
 import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.ComposeEvent
-import io.github.lee0701.lboard.preconverter.ComposingText
-import io.github.lee0701.lboard.preconverter.PreConverter
+import io.github.lee0701.lboard.hangul.HangulConverter
+import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
-import org.json.JSONArray
-import org.json.JSONObject
 
 class InputMethod(
         val softKeyboard: SoftKeyboard,
-        val preConverters: List<PreConverter>
+        val hardKeyboard: HardKeyboard,
+        val hangulConverter: HangulConverter
 ) {
 
-    val composingText: MutableList<ComposingText> = mutableListOf()
+    val states: MutableList<HangulConverter.State> = mutableListOf()
 
     fun initView(context: Context): View? {
         return softKeyboard.initView(context)
@@ -26,55 +24,26 @@ class InputMethod(
 
     fun onKey(keyCode: Int, shift: Boolean): Boolean {
         when(keyCode) {
-            KeyEvent.KEYCODE_DEL -> if(composingText.size > 0) composingText.remove(composingText.last()) else return false
+            KeyEvent.KEYCODE_DEL -> if(states.size > 0) states.remove(states.last()) else return false
             KeyEvent.KEYCODE_SPACE -> {
-                composingText.clear()
+                hardKeyboard.reset()
+                states.clear()
                 EventBus.getDefault().post(CommitStringEvent(" "))
             }
             else -> {
-                val previousState = if(composingText.size > 0) composingText.last() else DEFAULT_COMPOSING_TEXT
-                composingText += previousState.copy(listOf(ComposingText.Layer(previousState.layers[0].tokens + ComposingText.KeyInputToken(keyCode, shift))))
+                val converted = hardKeyboard.convert(keyCode, shift)
+                if(converted.backspace && states.size > 0) states.remove(states.last())
+                if(converted.resultChar != null) {
+                    val composed = hangulConverter.compose(if(states.isEmpty()) HangulConverter.State() else states.last(), converted.resultChar)
+                    states += composed
+                } else return false
             }
         }
-        EventBus.getDefault().post(ComposeEvent(preConvert()))
+        EventBus.getDefault().post(ComposeEvent(states.last().other + states.last().display))
         return true
     }
 
-    private fun preConvert(): ComposingText {
-        if(composingText.isEmpty()) return DEFAULT_COMPOSING_TEXT
-        var current = composingText.last()
-        preConverters.forEach { current = it.convert(current) }
-        return current
-    }
-
-    fun serialize(): JSONObject {
-        return JSONObject().apply {
-            put("softKeyboard", softKeyboard.serialize())
-            put("preConverters", JSONArray().apply {
-                preConverters.forEach { preConverter ->
-                    put(preConverter.serialize())
-                }
-            })
-        }
-    }
-
-    companion object {
-        val DEFAULT_COMPOSING_TEXT = ComposingText(listOf(ComposingText.Layer(listOf())))
-
-        fun deserialize(json: JSONObject): InputMethod {
-            val softKeyboard = json.getJSONObject("softKeyboard").let { softKeyboard ->
-                Class.forName(softKeyboard.getString("class")).getDeclaredMethod("deserialize", JSONObject::class.java)
-                        .invoke(null, softKeyboard) as SoftKeyboard
-            }
-            val preConverters = json.getJSONArray("preConverters").let { preConverters ->
-                (0 until preConverters.length()).map { i ->
-                    val preConverter = preConverters.getJSONObject(i)
-                    Class.forName(preConverter.getString("class")).getDeclaredMethod("deserialize", JSONObject::class.java)
-                            .invoke(null, preConverter) as PreConverter
-                }
-            }
-            return InputMethod(softKeyboard, preConverters)
-        }
+    fun reset() {
 
     }
 

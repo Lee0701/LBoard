@@ -9,7 +9,7 @@ import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
-class DefaultSoftKeyboard(name: String, val layoutResId: String): SoftKeyboard(name), KeyboardView.OnKeyboardActionListener {
+class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.OnKeyboardActionListener {
 
     var keyboardView: KeyboardView? = null
 
@@ -52,15 +52,4 @@ class DefaultSoftKeyboard(name: String, val layoutResId: String): SoftKeyboard(n
     override fun onText(text: CharSequence?) {
     }
 
-    override fun serialize(): JSONObject {
-        return super.serialize().apply {
-            put("layoutResId", layoutResId)
-        }
-    }
-
-    companion object {
-        @JvmStatic fun deserialize(json: JSONObject): DefaultSoftKeyboard {
-            return DefaultSoftKeyboard(json.getString("name"), json.getString("layoutResId"))
-        }
-    }
 }

@@ -1,8 +1,7 @@
 package io.github.lee0701.lboard
 
-import io.github.lee0701.lboard.preconverter.ComposingText
-import io.github.lee0701.lboard.preconverter.hangul.HangulConverter
-import io.github.lee0701.lboard.preconverter.hangul.CombinationTable
+import io.github.lee0701.lboard.hangul.HangulConverter
+import io.github.lee0701.lboard.hangul.CombinationTable
 import org.junit.Test
 
 class ConverterTest {

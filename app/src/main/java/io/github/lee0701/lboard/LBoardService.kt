@@ -1,7 +1,6 @@
 package io.github.lee0701.lboard
 
 import android.inputmethodservice.InputMethodService
-import android.inputmethodservice.Keyboard
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
@@ -10,11 +9,10 @@ import io.github.lee0701.lboard.event.CommitComposingEvent
 import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
-import io.github.lee0701.lboard.preconverter.KeyboardLayout
-import io.github.lee0701.lboard.preconverter.SimpleLayoutConverter
-import io.github.lee0701.lboard.preconverter.TwelveKeyLayoutConverter
-import io.github.lee0701.lboard.preconverter.hangul.DubeolHangulConverter
-import io.github.lee0701.lboard.preconverter.hangul.CombinationTable
+import io.github.lee0701.lboard.hardkeyboard.KeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.SimpleHardKeyboard
+import io.github.lee0701.lboard.hangul.DubeolHangulConverter
+import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.softkeyboard.DefaultSoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -84,9 +82,9 @@ class LBoardService: InputMethodService() {
                 )
         )
         inputMethods += InputMethod(
-                DefaultSoftKeyboard("Default Soft Keyboard", "keyboard_10cols_mobile"),
-                listOf(SimpleLayoutConverter("Layout Converter", layout),
-                        DubeolHangulConverter("Hangul Converter", combinationTable))
+                DefaultSoftKeyboard("keyboard_10cols_mobile"),
+                SimpleHardKeyboard(layout),
+                DubeolHangulConverter(combinationTable)
         )
     }
 
@@ -106,7 +104,7 @@ class LBoardService: InputMethodService() {
     }
 
     @Subscribe fun onCompose(event: ComposeEvent) {
-        currentInputConnection.setComposingText(event.composing.layers.last().tokens.map { it.toString() }.joinToString(""), 1)
+        currentInputConnection.setComposingText(event.composing, 1)
     }
 
     @Subscribe fun onCommitComposing(event: CommitComposingEvent) {
