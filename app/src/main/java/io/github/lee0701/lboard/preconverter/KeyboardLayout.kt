@@ -29,21 +29,15 @@ data class KeyboardLayout(val layout: Map<Int, LayoutItem>) {
 
     data class LayoutItem(
             val normal: List<Char> = listOf(),
-            val shift: List<Char> = listOf(),
-            val alt: List<Char> = listOf(),
-            val altShift: List<Char> = listOf()
+            val shift: List<Char> = listOf()
     ) {
-        constructor(normal: Char, shift: Char, alt: Char, altShift: Char): this(listOf(normal), listOf(shift), listOf(alt), listOf(altShift))
-        constructor(normal: Char, shift: Char, alt: Char): this(listOf(normal), listOf(shift), listOf(alt))
-        constructor(normal: Char, shift: Char): this(listOf(normal), listOf(shift), listOf())
-        constructor(normal: Char): this(listOf(normal), listOf(), listOf())
+        constructor(normal: Char, shift: Char): this(listOf(normal), listOf(shift))
+        constructor(normal: Char): this(listOf(normal), listOf())
 
         fun serialize(): JSONObject {
             return JSONObject().apply {
                 put("normal", JSONArray().apply { normal.forEach { put(it.toInt()) } })
                 put("shift", JSONArray().apply { shift.forEach { put(it.toInt()) } })
-                put("alt", JSONArray().apply { alt.forEach { put(it.toInt()) } })
-                put("altShift", JSONArray().apply { altShift.forEach { put(it.toInt()) } })
             }
         }
 
@@ -51,9 +45,7 @@ data class KeyboardLayout(val layout: Map<Int, LayoutItem>) {
             fun deserialize(json: JSONObject): LayoutItem {
                 return LayoutItem(
                         getKeycodeList(json.getJSONArray("normal")),
-                        getKeycodeList(json.getJSONArray("shift")),
-                        getKeycodeList(json.getJSONArray("alt")),
-                        getKeycodeList(json.getJSONArray("altShift"))
+                        getKeycodeList(json.getJSONArray("shift"))
                 )
             }
 

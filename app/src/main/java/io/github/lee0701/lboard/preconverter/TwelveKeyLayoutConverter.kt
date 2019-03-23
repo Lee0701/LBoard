@@ -37,7 +37,7 @@ class TwelveKeyLayoutConverter(override val name: String, val layout: KeyboardLa
     }
 
     private fun getCodes(keyCode: Int, shift: Boolean, alt: Boolean): List<Char>? =
-            layout.layout[keyCode]?.let { if(alt && shift) it.altShift else if(alt) it.alt else if(shift) it.shift else it.normal }
+            layout.layout[keyCode]?.let { if(shift) it.shift else it.normal }
 
     companion object {
         @JvmStatic fun deserialize(json: JSONObject): SimpleLayoutConverter {
