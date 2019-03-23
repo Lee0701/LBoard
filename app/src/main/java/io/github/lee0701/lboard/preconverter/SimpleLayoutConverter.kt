@@ -7,7 +7,7 @@ class SimpleLayoutConverter(override val name: String, val layout: KeyboardLayou
     override fun convert(text: ComposingText): ComposingText {
         return text.copy(layers = text.layers + ComposingText.Layer(text.layers.last().tokens.map { token ->
             if(token is ComposingText.KeyInputToken) {
-                val codes = getCodes(token.keyCode, token.shift, token.alt)
+                val codes = getCodes(token.keyCode, token.shift)
                 ComposingText.CharToken(codes?.get(0) ?: token.representingChar)
             } else token
         }))
@@ -19,7 +19,7 @@ class SimpleLayoutConverter(override val name: String, val layout: KeyboardLayou
         }
     }
 
-    private fun getCodes(keyCode: Int, shift: Boolean, alt: Boolean): List<Char>? =
+    private fun getCodes(keyCode: Int, shift: Boolean): List<Char>? =
             layout.layout[keyCode]?.let { if(shift) it.shift else it.normal }
 
     companion object {

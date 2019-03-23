@@ -9,11 +9,10 @@ class TwelveKeyLayoutConverter(override val name: String, val layout: KeyboardLa
         var lastCode = 0
         var lastIndex = 0
         var shift = false
-        var alt = false
         text.layers.last().tokens.forEach { token ->
             if(token is ComposingText.KeyInputToken) {
-                val codes = getCodes(token.keyCode, token.shift, token.alt) ?: return@forEach
-                if(lastCode == token.keyCode && shift == token.shift && alt == token.alt) {
+                val codes = getCodes(token.keyCode, token.shift) ?: return@forEach
+                if(lastCode == token.keyCode && shift == token.shift) {
                     if(++lastIndex >= codes.size) lastIndex = 0
                     if(codes.size > 1 && (cycle || lastIndex != 0)) result.remove(result.last())
                 } else {
@@ -24,7 +23,6 @@ class TwelveKeyLayoutConverter(override val name: String, val layout: KeyboardLa
 
                 lastCode = token.keyCode
                 shift = token.shift
-                alt = token.alt
             }
         }
         return text.copy(layers = text.layers + ComposingText.Layer(result))
@@ -36,7 +34,7 @@ class TwelveKeyLayoutConverter(override val name: String, val layout: KeyboardLa
         }
     }
 
-    private fun getCodes(keyCode: Int, shift: Boolean, alt: Boolean): List<Char>? =
+    private fun getCodes(keyCode: Int, shift: Boolean): List<Char>? =
             layout.layout[keyCode]?.let { if(shift) it.shift else it.normal }
 
     companion object {

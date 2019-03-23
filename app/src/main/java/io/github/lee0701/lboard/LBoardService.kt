@@ -62,9 +62,25 @@ class LBoardService: InputMethodService() {
         )
         val combinationTable = CombinationTable(
                 mapOf(
-                        0x1100.toChar() to 0x1100.toChar() to 0x1101.toChar(),
-                        0x11a8.toChar() to 0x11a8.toChar() to 0x11a9.toChar(),
-                        0x11a8.toChar() to 0x11ba.toChar() to 0x11aa.toChar()
+                        0x1169.toChar() to 0x1161.toChar() to 0x116a.toChar(),
+                        0x1169.toChar() to 0x1162.toChar() to 0x116b.toChar(),
+                        0x1169.toChar() to 0x1175.toChar() to 0x116c.toChar(),
+                        0x116e.toChar() to 0x1165.toChar() to 0x116f.toChar(),
+                        0x116e.toChar() to 0x1166.toChar() to 0x1170.toChar(),
+                        0x116e.toChar() to 0x1175.toChar() to 0x1171.toChar(),
+                        0x1173.toChar() to 0x1175.toChar() to 0x1174.toChar(),
+
+                        0x11a8.toChar() to 0x11ba.toChar() to 0x11aa.toChar(),
+                        0x11ab.toChar() to 0x11bd.toChar() to 0x11ac.toChar(),
+                        0x11ab.toChar() to 0x11c2.toChar() to 0x11ad.toChar(),
+                        0x11af.toChar() to 0x11a8.toChar() to 0x11b0.toChar(),
+                        0x11af.toChar() to 0x11b7.toChar() to 0x11b1.toChar(),
+                        0x11af.toChar() to 0x11b8.toChar() to 0x11b2.toChar(),
+                        0x11af.toChar() to 0x11ba.toChar() to 0x11b3.toChar(),
+                        0x11af.toChar() to 0x11c0.toChar() to 0x11b4.toChar(),
+                        0x11af.toChar() to 0x11c1.toChar() to 0x11b5.toChar(),
+                        0x11af.toChar() to 0x11c2.toChar() to 0x11b6.toChar(),
+                        0x11b8.toChar() to 0x11ba.toChar() to 0x11b9.toChar()
                 )
         )
         inputMethods += InputMethod(
@@ -83,7 +99,7 @@ class LBoardService: InputMethodService() {
     }
 
     @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
-        if(!currentMethod.onKey(event.keyCode)) when(event.keyCode) {
+        if(!currentMethod.onKey(event.keyCode, event.shift)) when(event.keyCode) {
             KeyEvent.KEYCODE_DEL -> currentInputConnection.deleteSurroundingText(1, 0)
             else -> sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.FULL).get(event.keyCode, if(event.shift) KeyEvent.META_SHIFT_ON else 0).toChar())
         }

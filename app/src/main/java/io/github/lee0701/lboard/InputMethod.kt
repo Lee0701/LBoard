@@ -24,7 +24,7 @@ class InputMethod(
         return softKeyboard.initView(context)
     }
 
-    fun onKey(keyCode: Int): Boolean {
+    fun onKey(keyCode: Int, shift: Boolean): Boolean {
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> if(composingText.size > 0) composingText.remove(composingText.last()) else return false
             KeyEvent.KEYCODE_SPACE -> {
@@ -33,7 +33,7 @@ class InputMethod(
             }
             else -> {
                 val previousState = if(composingText.size > 0) composingText.last() else DEFAULT_COMPOSING_TEXT
-                composingText += previousState.copy(listOf(ComposingText.Layer(previousState.layers[0].tokens + ComposingText.KeyInputToken(keyCode, false, false))))
+                composingText += previousState.copy(listOf(ComposingText.Layer(previousState.layers[0].tokens + ComposingText.KeyInputToken(keyCode, shift))))
             }
         }
         EventBus.getDefault().post(ComposeEvent(preConvert()))
