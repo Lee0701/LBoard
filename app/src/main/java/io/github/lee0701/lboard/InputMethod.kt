@@ -3,6 +3,8 @@ package io.github.lee0701.lboard
 import android.content.Context
 import android.view.KeyEvent
 import android.view.View
+import io.github.lee0701.lboard.event.CommitComposingEvent
+import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.preconverter.ComposingText
 import io.github.lee0701.lboard.preconverter.PreConverter
@@ -25,6 +27,10 @@ class InputMethod(
     fun onKey(keyCode: Int): Boolean {
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> if(composingText.size > 0) composingText.remove(composingText.last()) else return false
+            KeyEvent.KEYCODE_SPACE -> {
+                composingText.clear()
+                EventBus.getDefault().post(CommitStringEvent(" "))
+            }
             else -> {
                 val previousState = if(composingText.size > 0) composingText.last() else DEFAULT_COMPOSING_TEXT
                 composingText += previousState.copy(listOf(ComposingText.Layer(previousState.layers[0].tokens + ComposingText.KeyInputToken(keyCode, false, false))))
