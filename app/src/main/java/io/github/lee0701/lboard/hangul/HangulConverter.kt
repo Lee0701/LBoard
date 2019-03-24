@@ -8,7 +8,7 @@ open class HangulConverter(val combinationTable: CombinationTable) {
         if(isCho(input)) cho(composing, input)
         else if(isJung(input)) jung(composing, input)
         else if(isJong(input)) jong(composing, input)
-        else State(other = (composing.other) + composing.display + input)
+        else State(other = composing.other + composing.display + input)
 
     private fun cho(composing: State, input: Char): State =
             if(composing.cho != null) (if(composing.jung == null) combinationTable.combinations[composing.cho to input]?.let { composing.copy(cho = it) } else null) ?: State(other = composing.other + composing.display, cho = input) else composing.copy(cho = input)
@@ -25,7 +25,7 @@ open class HangulConverter(val combinationTable: CombinationTable) {
             cho == null && jung != null && jong == null -> if(STD_JUNG.contains(jung)) COMPAT_JUNG[STD_JUNG.indexOf(jung)].toString() else jung.toString()
             cho == null && jung == null && jong != null -> if(CONVERT_JONG.contains(jong)) COMPAT_CHO[CONVERT_JONG.indexOf(jong)].toString() else jong.toString()
             cho != null || jung != null || jong != null -> (cho ?: 0x115f.toChar()).toString() + (jung ?: 0x1160.toChar()) + (jong ?: "")
-            else -> other
+            else -> ""
         }
 
         constructor(char: Char): this(

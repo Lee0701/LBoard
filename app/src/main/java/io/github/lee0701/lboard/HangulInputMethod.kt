@@ -70,6 +70,7 @@ class HangulInputMethod(
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar != null) {
                     val composed = hangulConverter.compose(lastState, converted.resultChar)
+                    println(composed)
                     states += composed
                 } else {
                     reset()
