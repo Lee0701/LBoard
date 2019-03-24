@@ -10,7 +10,8 @@ import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout
 import io.github.lee0701.lboard.hardkeyboard.SimpleHardKeyboard
 import io.github.lee0701.lboard.hangul.DubeolHangulConverter
 import io.github.lee0701.lboard.hangul.CombinationTable
-import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
+import io.github.lee0701.lboard.hangul.HangulConverter
+import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.softkeyboard.DefaultSoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -25,15 +26,15 @@ class LBoardService: InputMethodService() {
         super.onCreate()
         EventBus.getDefault().register(this)
         val layout = SimpleKeyboardLayout(
-                DubeolHangul.LAYOUT_DUBEOL_STANDARD
+                SebeolHangul.LAYOUT_SEBEOL_391
         )
         val combinationTable = CombinationTable(
-                DubeolHangul.COMBINATION_DUBEOL_STANDARD
+                SebeolHangul.COMBINATION_SEBEOL_391
         )
         inputMethods += HangulInputMethod(
                 DefaultSoftKeyboard("keyboard_10cols_mobile"),
                 SimpleHardKeyboard(layout),
-                DubeolHangulConverter(combinationTable)
+                HangulConverter(combinationTable)
         )
     }
 
