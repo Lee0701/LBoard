@@ -3,76 +3,78 @@ package io.github.lee0701.lboard.layouts.hangul
 import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout
 
+import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout.LayoutItem
+
 object ShinSebeolHangul {
 
     private val LAYOUT_SHIN_ORIGINAL_0_2_3 = SimpleKeyboardLayout(mapOf(
-            45 to SimpleKeyboardLayout.LayoutItem(0x11ba, 0x1174),
-            51 to SimpleKeyboardLayout.LayoutItem(0x11af, 0x1163),
-            33 to SimpleKeyboardLayout.LayoutItem(0x11b8, 0x1167),
-            46 to SimpleKeyboardLayout.LayoutItem(0x11ae, 0x1162),
-            48 to SimpleKeyboardLayout.LayoutItem(0x11c0, 0x1165),
-            53 to SimpleKeyboardLayout.LayoutItem(0x1105, 0x1105),
-            49 to SimpleKeyboardLayout.LayoutItem(0x1103, 0x1103),
-            37 to SimpleKeyboardLayout.LayoutItem(0x1106, 0x100116e),
-            43 to SimpleKeyboardLayout.LayoutItem(0x110e, 0x100116e),
-            44 to SimpleKeyboardLayout.LayoutItem(0x1111, 0x1001169),
+            45 to LayoutItem(0x11ba, 0x1174),
+            51 to LayoutItem(0x11af, 0x1163),
+            33 to LayoutItem(0x11b8, 0x1167),
+            46 to LayoutItem(0x11ae, 0x1162),
+            48 to LayoutItem(0x11c0, 0x1165),
+            53 to LayoutItem(0x1105, 0x1105),
+            49 to LayoutItem(0x1103, 0x1103),
+            37 to LayoutItem(0x1106, 0x100116e),
+            43 to LayoutItem(0x110e, 0x100116e),
+            44 to LayoutItem(0x1111, 0x1001169),
 
-            29 to SimpleKeyboardLayout.LayoutItem(0x11bc, 0x1164),
-            47 to SimpleKeyboardLayout.LayoutItem(0x11ab, 0x1168),
-            32 to SimpleKeyboardLayout.LayoutItem(0x11c2, 0x1175),
-            34 to SimpleKeyboardLayout.LayoutItem(0x11bd, 0x1161),
-            35 to SimpleKeyboardLayout.LayoutItem(0x11c1, 0x1173),
-            36 to SimpleKeyboardLayout.LayoutItem(0x1102, 0x1102),
-            38 to SimpleKeyboardLayout.LayoutItem(0x110b, 0x003b),
-            39 to SimpleKeyboardLayout.LayoutItem(0x1100, 0x0027),
-            40 to SimpleKeyboardLayout.LayoutItem(0x110c, 0x110c),
-            74 to SimpleKeyboardLayout.LayoutItem(0x1107, 0x003a),
-            75 to SimpleKeyboardLayout.LayoutItem(0x1110, 0x0022),
+            29 to LayoutItem(0x11bc, 0x1164),
+            47 to LayoutItem(0x11ab, 0x1168),
+            32 to LayoutItem(0x11c2, 0x1175),
+            34 to LayoutItem(0x11bd, 0x1161),
+            35 to LayoutItem(0x11c1, 0x1173),
+            36 to LayoutItem(0x1102, 0x1102),
+            38 to LayoutItem(0x110b, 0x003b),
+            39 to LayoutItem(0x1100, 0x0027),
+            40 to LayoutItem(0x110c, 0x110c),
+            74 to LayoutItem(0x1107, 0x003a),
+            75 to LayoutItem(0x1110, 0x0022),
 
-            54 to SimpleKeyboardLayout.LayoutItem(0x11b7, 0x1172),
-            52 to SimpleKeyboardLayout.LayoutItem(0x11a8, 0x116d),
-            31 to SimpleKeyboardLayout.LayoutItem(0x11be, 0x1166),
-            50 to SimpleKeyboardLayout.LayoutItem(0x11bf, 0x1169),
-            30 to SimpleKeyboardLayout.LayoutItem(0x11bb, 0x116e),
-            42 to SimpleKeyboardLayout.LayoutItem(0x1109, 0x1109),
-            41 to SimpleKeyboardLayout.LayoutItem(0x1112, 0x002f),
+            54 to LayoutItem(0x11b7, 0x1172),
+            52 to LayoutItem(0x11a8, 0x116d),
+            31 to LayoutItem(0x11be, 0x1166),
+            50 to LayoutItem(0x11bf, 0x1169),
+            30 to LayoutItem(0x11bb, 0x116e),
+            42 to LayoutItem(0x1109, 0x1109),
+            41 to LayoutItem(0x1112, 0x002f),
 
-            76 to SimpleKeyboardLayout.LayoutItem(0x110f, 0x003f)
+            76 to LayoutItem(0x110f, 0x003f)
     ))
 
     private val LAYOUT_SHIN_ORIGINAL_1 = SimpleKeyboardLayout(mapOf(
-            45 to SimpleKeyboardLayout.LayoutItem(0x1174, 0x11ba),
-            51 to SimpleKeyboardLayout.LayoutItem(0x1163, 0x11af),
-            33 to SimpleKeyboardLayout.LayoutItem(0x1167, 0x11b8),
-            46 to SimpleKeyboardLayout.LayoutItem(0x1162, 0x11ae),
-            48 to SimpleKeyboardLayout.LayoutItem(0x1165, 0x11c0),
-            53 to SimpleKeyboardLayout.LayoutItem(0x1105, 0x1105),
-            49 to SimpleKeyboardLayout.LayoutItem(0x1103, 0x1103),
-            37 to SimpleKeyboardLayout.LayoutItem(0x100116e, 0x1106),
-            43 to SimpleKeyboardLayout.LayoutItem(0x100116e, 0x110e),
-            44 to SimpleKeyboardLayout.LayoutItem(0x1001169, 0x1111),
+            45 to LayoutItem(0x1174, 0x11ba),
+            51 to LayoutItem(0x1163, 0x11af),
+            33 to LayoutItem(0x1167, 0x11b8),
+            46 to LayoutItem(0x1162, 0x11ae),
+            48 to LayoutItem(0x1165, 0x11c0),
+            53 to LayoutItem(0x1105, 0x1105),
+            49 to LayoutItem(0x1103, 0x1103),
+            37 to LayoutItem(0x100116e, 0x1106),
+            43 to LayoutItem(0x100116e, 0x110e),
+            44 to LayoutItem(0x1001169, 0x1111),
 
-            29 to SimpleKeyboardLayout.LayoutItem(0x1164, 0x11bc),
-            47 to SimpleKeyboardLayout.LayoutItem(0x1168, 0x11ab),
-            32 to SimpleKeyboardLayout.LayoutItem(0x1175, 0x11c2),
-            34 to SimpleKeyboardLayout.LayoutItem(0x1161, 0x11bd),
-            35 to SimpleKeyboardLayout.LayoutItem(0x1173, 0x11c1),
-            36 to SimpleKeyboardLayout.LayoutItem(0x1102, 0x1102),
-            38 to SimpleKeyboardLayout.LayoutItem(0x110b, 0x003b),
-            39 to SimpleKeyboardLayout.LayoutItem(0x1100, 0x0027),
-            40 to SimpleKeyboardLayout.LayoutItem(0x110c, 0x110c),
-            74 to SimpleKeyboardLayout.LayoutItem(0x1107, 0x003a),
-            75 to SimpleKeyboardLayout.LayoutItem(0x1110, 0x0022),
+            29 to LayoutItem(0x1164, 0x11bc),
+            47 to LayoutItem(0x1168, 0x11ab),
+            32 to LayoutItem(0x1175, 0x11c2),
+            34 to LayoutItem(0x1161, 0x11bd),
+            35 to LayoutItem(0x1173, 0x11c1),
+            36 to LayoutItem(0x1102, 0x1102),
+            38 to LayoutItem(0x110b, 0x003b),
+            39 to LayoutItem(0x1100, 0x0027),
+            40 to LayoutItem(0x110c, 0x110c),
+            74 to LayoutItem(0x1107, 0x003a),
+            75 to LayoutItem(0x1110, 0x0022),
 
-            54 to SimpleKeyboardLayout.LayoutItem(0x1172, 0x11b7),
-            52 to SimpleKeyboardLayout.LayoutItem(0x116d, 0x11a8),
-            31 to SimpleKeyboardLayout.LayoutItem(0x1166, 0x11be),
-            50 to SimpleKeyboardLayout.LayoutItem(0x1169, 0x11bf),
-            30 to SimpleKeyboardLayout.LayoutItem(0x116e, 0x11bb),
-            42 to SimpleKeyboardLayout.LayoutItem(0x1109, 0x1109),
-            41 to SimpleKeyboardLayout.LayoutItem(0x1112, 0x002f),
+            54 to LayoutItem(0x1172, 0x11b7),
+            52 to LayoutItem(0x116d, 0x11a8),
+            31 to LayoutItem(0x1166, 0x11be),
+            50 to LayoutItem(0x1169, 0x11bf),
+            30 to LayoutItem(0x116e, 0x11bb),
+            42 to LayoutItem(0x1109, 0x1109),
+            41 to LayoutItem(0x1112, 0x002f),
 
-            76 to SimpleKeyboardLayout.LayoutItem(0x1001169, 0x003f)
+            76 to LayoutItem(0x1001169, 0x003f)
     ))
 
     val LAYOUT_SHIN_ORIGINAL = listOf(
@@ -110,5 +112,82 @@ object ShinSebeolHangul {
             0x11b8 to 0x11ba to 0x11b9,	// ㅄ
             0x11ba to 0x11ba to 0x11bb	// ㅆ
     ))
+
+    private val LAYOUT_SHIN_EDIT_0_2_3 = SimpleKeyboardLayout(mapOf(
+            45 to SimpleKeyboardLayout.LayoutItem(0x11ba, 0x1164),
+            51 to SimpleKeyboardLayout.LayoutItem(0x11af, 0x1163),
+            33 to SimpleKeyboardLayout.LayoutItem(0x11b8, 0x1167),
+            46 to SimpleKeyboardLayout.LayoutItem(0x11c0, 0x1162),
+            48 to SimpleKeyboardLayout.LayoutItem(0x11c1, 0x1165),
+            53 to SimpleKeyboardLayout.LayoutItem(0x1105, 0x201c),
+            49 to SimpleKeyboardLayout.LayoutItem(0x1103, 0x201d),
+            37 to SimpleKeyboardLayout.LayoutItem(0x1106, 0x1174),
+            43 to SimpleKeyboardLayout.LayoutItem(0x110e, 0x100116e),
+            44 to SimpleKeyboardLayout.LayoutItem(0x1111, 0x1001169),
+
+            29 to SimpleKeyboardLayout.LayoutItem(0x11bc, 0x1172),
+            47 to SimpleKeyboardLayout.LayoutItem(0x11ab, 0x1168),
+            32 to SimpleKeyboardLayout.LayoutItem(0x11ae, 0x1175),
+            34 to SimpleKeyboardLayout.LayoutItem(0x11bb, 0x1161),
+            35 to SimpleKeyboardLayout.LayoutItem(0x11bd, 0x1173),
+            36 to SimpleKeyboardLayout.LayoutItem(0x1102, 0x2018),
+            38 to SimpleKeyboardLayout.LayoutItem(0x110b, 0x2019),
+            39 to SimpleKeyboardLayout.LayoutItem(0x1100, 0x003b),
+            40 to SimpleKeyboardLayout.LayoutItem(0x110c, 0x0027),
+            74 to SimpleKeyboardLayout.LayoutItem(0x1107, 0x003a),
+            75 to SimpleKeyboardLayout.LayoutItem(0x1110, 0x0022),
+
+            54 to SimpleKeyboardLayout.LayoutItem(0x11b7, 0x203b),
+            52 to SimpleKeyboardLayout.LayoutItem(0x11a8, 0x116d),
+            31 to SimpleKeyboardLayout.LayoutItem(0x11be, 0x1166),
+            50 to SimpleKeyboardLayout.LayoutItem(0x11c2, 0x1169),
+            30 to SimpleKeyboardLayout.LayoutItem(0x11bf, 0x116e),
+            42 to SimpleKeyboardLayout.LayoutItem(0x1109, 0x00b7),
+            41 to SimpleKeyboardLayout.LayoutItem(0x1112, 0x002f),
+
+            76 to SimpleKeyboardLayout.LayoutItem(0x110f, 0x003f)
+    ))
+
+    private val LAYOUT_SHIN_EDIT_1 = SimpleKeyboardLayout(mapOf(
+            45 to SimpleKeyboardLayout.LayoutItem(0x1164, 0x11ba),
+            51 to SimpleKeyboardLayout.LayoutItem(0x1163, 0x11af),
+            33 to SimpleKeyboardLayout.LayoutItem(0x1167, 0x11b8),
+            46 to SimpleKeyboardLayout.LayoutItem(0x1162, 0x11c0),
+            48 to SimpleKeyboardLayout.LayoutItem(0x1165, 0x11c1),
+            53 to SimpleKeyboardLayout.LayoutItem(0x1105, 0x201c),
+            49 to SimpleKeyboardLayout.LayoutItem(0x1103, 0x201d),
+            37 to SimpleKeyboardLayout.LayoutItem(0x1174, 0x1106),
+            43 to SimpleKeyboardLayout.LayoutItem(0x100116e, 0x110e),
+            44 to SimpleKeyboardLayout.LayoutItem(0x1001169, 0x1111),
+
+            29 to SimpleKeyboardLayout.LayoutItem(0x1172, 0x11bc),
+            47 to SimpleKeyboardLayout.LayoutItem(0x1168, 0x11ab),
+            32 to SimpleKeyboardLayout.LayoutItem(0x1175, 0x11ae),
+            34 to SimpleKeyboardLayout.LayoutItem(0x1161, 0x11bb),
+            35 to SimpleKeyboardLayout.LayoutItem(0x1173, 0x11bd),
+            36 to SimpleKeyboardLayout.LayoutItem(0x1102, 0x2018),
+            38 to SimpleKeyboardLayout.LayoutItem(0x110b, 0x2019),
+            39 to SimpleKeyboardLayout.LayoutItem(0x1100, 0x003b),
+            40 to SimpleKeyboardLayout.LayoutItem(0x110c, 0x0027),
+            74 to SimpleKeyboardLayout.LayoutItem(0x1107, 0x003a),
+            75 to SimpleKeyboardLayout.LayoutItem(0x1110, 0x0022),
+
+            54 to SimpleKeyboardLayout.LayoutItem(0x203b, 0x11b7),
+            52 to SimpleKeyboardLayout.LayoutItem(0x116d, 0x11a8),
+            31 to SimpleKeyboardLayout.LayoutItem(0x1166, 0x11be),
+            50 to SimpleKeyboardLayout.LayoutItem(0x1169, 0x11c2),
+            30 to SimpleKeyboardLayout.LayoutItem(0x116e, 0x11bf),
+            42 to SimpleKeyboardLayout.LayoutItem(0x1109, 0x00b7),
+            41 to SimpleKeyboardLayout.LayoutItem(0x1112, 0x002f),
+
+            76 to SimpleKeyboardLayout.LayoutItem(0x1001169, 0x003f)
+    ))
+
+    val LAYOUT_SHIN_EDIT = listOf(
+            LAYOUT_SHIN_EDIT_0_2_3,
+            LAYOUT_SHIN_EDIT_1,
+            LAYOUT_SHIN_EDIT_0_2_3,
+            LAYOUT_SHIN_EDIT_0_2_3
+    )
 
 }

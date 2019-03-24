@@ -13,6 +13,8 @@ import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hangul.HangulConverter
 import io.github.lee0701.lboard.hangul.VirtualJamoTable
 import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
+import io.github.lee0701.lboard.layouts.alphabet.Alphabet
+import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
 import io.github.lee0701.lboard.softkeyboard.DefaultSoftKeyboard
@@ -28,7 +30,7 @@ class LBoardService: InputMethodService() {
     override fun onCreate() {
         super.onCreate()
         EventBus.getDefault().register(this)
-        val layout = ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL
+        val layout = ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL.map { Alphabet.LAYOUT_QWERTY + it }
         val combinationTable = ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL
         inputMethods += HangulInputMethod(
                 DefaultSoftKeyboard("keyboard_10cols_mod_quote"),
