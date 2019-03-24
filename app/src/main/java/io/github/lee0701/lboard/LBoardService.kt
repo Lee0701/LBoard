@@ -84,7 +84,7 @@ class LBoardService: InputMethodService() {
                 }
             }
         }
-        lastMethodId = last
+        if(inputAfterSwitch) lastMethodId = last
         inputAfterSwitch = false
         setInputView(currentMethod.initView(this))
     }

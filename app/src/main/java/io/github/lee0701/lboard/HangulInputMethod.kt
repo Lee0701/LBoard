@@ -57,7 +57,7 @@ class HangulInputMethod(
             KeyEvent.KEYCODE_SPACE -> {
                 // 천지인 등 스페이스로 조합 끊는 자판일 시
                 if(hardKeyboard is TwelveKeyHardKeyboard && hardKeyboard.spaceForSeparation &&
-                        lastState.cho != null || lastState.jung != null || lastState.jong != null) {
+                        (lastState.cho != null || lastState.jung != null || lastState.jong != null)) {
                     states += HangulConverter.State(other = hangulConverter.display(lastState))
                     hardKeyboard.reset()
                 } else {
