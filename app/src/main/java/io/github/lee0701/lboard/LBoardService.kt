@@ -32,7 +32,7 @@ class LBoardService: InputMethodService() {
                 SebeolHangul.COMBINATION_SEBEOL_391
         )
         inputMethods += HangulInputMethod(
-                DefaultSoftKeyboard("keyboard_10cols_mobile"),
+                DefaultSoftKeyboard("keyboard_10cols_mod_quote"),
                 SimpleHardKeyboard(layout),
                 HangulConverter(combinationTable)
         )
@@ -55,7 +55,10 @@ class LBoardService: InputMethodService() {
 
     @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
         if(!currentMethod.onKeyPress(event.keyCode)) when(event.keyCode) {
-            KeyEvent.KEYCODE_DEL -> currentInputConnection.deleteSurroundingText(1, 0)
+            KeyEvent.KEYCODE_DEL -> {
+                if(currentInputConnection.getSelectedText(0) != null) currentInputConnection.commitText("", 1)
+                else currentInputConnection.deleteSurroundingText(1, 0)
+            }
             else -> sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.FULL).get(event.keyCode, 0).toChar())
         } else currentMethod.onKeyRelease(event.keyCode)
     }
