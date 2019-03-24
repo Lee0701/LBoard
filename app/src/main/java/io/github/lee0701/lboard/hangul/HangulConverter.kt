@@ -14,15 +14,15 @@ open class HangulConverter(
         else State(other = display(composing) + input.toChar())
     
     open fun display(state: State): String {
-        val cho = state.cho?.let { virtualJamoTable.virtualJamos[it] ?: it.toChar() }
-        val jung = state.jung?.let { virtualJamoTable.virtualJamos[it] ?: it.toChar() }
-        val jong = state.jong?.let { virtualJamoTable.virtualJamos[it] ?: it.toChar() }
+        val cho = state.cho?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
+        val jung = state.jung?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
+        val jong = state.jong?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
         return state.other + when {
             cho != null && jung != null -> Normalizer.normalize(cho.toString() + jung + (jong ?: ""), Normalizer.Form.NFC)
             cho != null && jung == null && jong == null -> if(CONVERT_CHO.contains(cho)) COMPAT_CHO[CONVERT_CHO.indexOf(cho)].toString() else cho.toString()
             cho == null && jung != null && jong == null -> if(STD_JUNG.contains(jung)) COMPAT_JUNG[STD_JUNG.indexOf(jung)].toString() else jung.toString()
             cho == null && jung == null && jong != null -> if(CONVERT_JONG.contains(jong)) COMPAT_CHO[CONVERT_JONG.indexOf(jong)].toString() else jong.toString()
-            cho != null || jung != null || jong != null -> (cho ?: 0x115f.toInt()).toString() + (jung ?: 0x1160.toInt()) + (jong ?: "")
+            cho != null || jung != null || jong != null -> (cho ?: 0x115f.toChar()).toString() + (jung ?: 0x1160.toChar()) + (jong ?: "")
             else -> ""
         }
     }

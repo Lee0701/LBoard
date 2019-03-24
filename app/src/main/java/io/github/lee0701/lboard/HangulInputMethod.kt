@@ -9,6 +9,7 @@ import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hangul.HangulConverter
+import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
@@ -42,7 +43,15 @@ class HangulInputMethod(
 
     override fun onKeyPress(keyCode: Int): Boolean {
         when(keyCode) {
-            KeyEvent.KEYCODE_DEL -> if(states.size > 0) states.remove(states.last()) else return false
+            KeyEvent.KEYCODE_DEL -> {
+                if(states.size > 0) {
+                    states.remove(states.last())
+                    updateShinStatus(lastState)
+                } else {
+                    updateShinStatus(lastState)
+                    return false
+                }
+            }
             KeyEvent.KEYCODE_SPACE -> {
                 reset()
                 EventBus.getDefault().post(CommitStringEvent(" "))
@@ -70,8 +79,8 @@ class HangulInputMethod(
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar != null) {
                     val composed = hangulConverter.compose(lastState, converted.resultChar)
-                    println(composed)
                     states += composed
+                    updateShinStatus(composed)
                 } else {
                     reset()
                     EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
@@ -92,6 +101,16 @@ class HangulInputMethod(
         EventBus.getDefault().post(ComposeEvent(hangulConverter.display(lastState)))
         EventBus.getDefault().post(UpdateViewEvent())
         return true
+    }
+
+    private fun updateShinStatus(composed: HangulConverter.State) {
+        if(hardKeyboard is HangulConverterLinkedHardKeyboard) {
+            hardKeyboard.status =
+                    if(composed.jong != null && composed.jong < 0x01000000) 3
+                    else if(composed.jung != null && composed.jung < 0x01000000) 2
+                    else if(composed.cho != null && composed.cho < 0x01000000) 1
+                    else 0
+        }
     }
 
     override fun onKeyRelease(keyCode: Int): Boolean {

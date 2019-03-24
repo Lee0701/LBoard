@@ -1,9 +1,10 @@
 package io.github.lee0701.lboard.layouts.hangul
 
+import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout
 
 object SebeolHangul {
-    val LAYOUT_SEBEOL_391 = mapOf(
+    val LAYOUT_SEBEOL_391 = SimpleKeyboardLayout(mapOf(
             68 to SimpleKeyboardLayout.LayoutItem(0x002a, 0x203b),
 
             8 to SimpleKeyboardLayout.LayoutItem(0x11c2, 0x11a9),
@@ -55,9 +56,9 @@ object SebeolHangul {
             55 to SimpleKeyboardLayout.LayoutItem(0x002c, 0x002c),
             56 to SimpleKeyboardLayout.LayoutItem(0x002e, 0x002e),
             76 to SimpleKeyboardLayout.LayoutItem(0x1169, 0x0021)
-    )
+    ))
 
-    val COMBINATION_SEBEOL_391 = mapOf(
+    val COMBINATION_SEBEOL_391 = CombinationTable(mapOf(
             0x1100 to 0x1100 to 0x1101,	// ㄲ
             0x1103 to 0x1103 to 0x1104,	// ㄸ
             0x1107 to 0x1107 to 0x1108,	// ㅃ
@@ -70,9 +71,10 @@ object SebeolHangul {
             0x116e to 0x1165 to 0x116f,	// ㅝ
             0x116e to 0x1166 to 0x1170,	// ㅞ
             0x116e to 0x1175 to 0x1171	// ㅟ
-    )
+    ))
 
-    val LAYOUT_SEBEOL_390 = mapOf(8 to SimpleKeyboardLayout.LayoutItem(0x11c2, 0x11bd),
+    val LAYOUT_SEBEOL_390 = SimpleKeyboardLayout(mapOf(
+            8 to SimpleKeyboardLayout.LayoutItem(0x11c2, 0x11bd),
             9 to SimpleKeyboardLayout.LayoutItem(0x11bb, 0x0040),
             10 to SimpleKeyboardLayout.LayoutItem(0x11b8, 0x0023),
             11 to SimpleKeyboardLayout.LayoutItem(0x116d, 0x0024),
@@ -116,9 +118,9 @@ object SebeolHangul {
             55 to SimpleKeyboardLayout.LayoutItem(0x002c, 0x0032),
             56 to SimpleKeyboardLayout.LayoutItem(0x002e, 0x0033),
             76 to SimpleKeyboardLayout.LayoutItem(0x1169, 0x003f)
-    )
+    ))
 
-    val COMBINATION_SEBEOL_390 = mapOf(
+    val COMBINATION_SEBEOL_390 = CombinationTable(mapOf(
             0x1100 to 0x1100 to 0x1101,	// ㄲ
             0x1103 to 0x1103 to 0x1104,	// ㄸ
             0x1107 to 0x1107 to 0x1108,	// ㅃ
@@ -146,6 +148,6 @@ object SebeolHangul {
             0x11af to 0x11c2 to 0x11b6,	// ㅀ
             0x11b8 to 0x11ba to 0x11b9,	// ㅄ
             0x11ba to 0x11ba to 0x11bb	// ㅆ
-    )
+    ))
 
 }
