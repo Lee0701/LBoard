@@ -26,7 +26,7 @@ class TwelveKeyHardKeyboard(val layout: TwelveKeyboardLayout, val cycle: Boolean
 
     override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> =
             (if(alt) layout.altLayout else layout.layout)
-                    .map { it.key to (if(shift) it.value.shift else it.value.normal).joinToString("") }.toMap()
+                    .map { it.key to (if(shift) it.value.shift else it.value.normal).map { it.toChar() }.joinToString("") }.toMap()
 
     override fun reset() {
         lastCode = 0

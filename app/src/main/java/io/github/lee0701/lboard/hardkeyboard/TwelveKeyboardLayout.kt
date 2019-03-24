@@ -6,12 +6,12 @@ data class TwelveKeyboardLayout(
 ) {
 
     data class LayoutItem(
-            val normal: List<Char> = listOf(),
-            val shift: List<Char> = listOf()
+            val normal: List<Int> = listOf(),
+            val shift: List<Int> = listOf()
     ) {
-        constructor(normal: Char, shift: Char): this(listOf(normal), listOf(shift))
-        constructor(normal: List<Char>): this(normal, normal.toList())
-        constructor(normal: Char): this(listOf(normal), listOf(normal))
+        constructor(normal: Int, shift: Int): this(listOf(normal), listOf(shift))
+        constructor(normal: List<Int>): this(normal, normal.toList())
+        constructor(normal: Int): this(listOf(normal), listOf(normal))
     }
 
 }

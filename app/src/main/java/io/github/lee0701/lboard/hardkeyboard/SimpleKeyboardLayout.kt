@@ -6,10 +6,10 @@ data class SimpleKeyboardLayout(
 ) {
 
     data class LayoutItem(
-            val normal: Char,
-            val shift: Char
+            val normal: Int,
+            val shift: Int
     ) {
-        constructor(normal: Char): this(normal, normal)
+        constructor(normal: Int): this(normal, normal)
     }
 
 }

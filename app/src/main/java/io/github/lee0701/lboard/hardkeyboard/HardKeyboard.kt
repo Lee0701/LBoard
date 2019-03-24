@@ -8,6 +8,6 @@ interface HardKeyboard {
 
     fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String>
 
-    data class ConvertResult(val resultChar: Char?, val backspace: Boolean = false)
+    data class ConvertResult(val resultChar: Int?, val backspace: Boolean = false)
 
 }
