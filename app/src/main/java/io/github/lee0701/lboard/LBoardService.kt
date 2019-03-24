@@ -5,10 +5,7 @@ import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import io.github.lee0701.lboard.event.CommitComposingEvent
-import io.github.lee0701.lboard.event.CommitStringEvent
-import io.github.lee0701.lboard.event.ComposeEvent
-import io.github.lee0701.lboard.event.SoftKeyClickEvent
+import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout
 import io.github.lee0701.lboard.hardkeyboard.SimpleHardKeyboard
 import io.github.lee0701.lboard.hangul.DubeolHangulConverter
@@ -97,11 +94,17 @@ class LBoardService: InputMethodService() {
         currentMethod.reset()
     }
 
-    @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
-        if(!currentMethod.onKey(event.keyCode, event.shift)) when(event.keyCode) {
-            KeyEvent.KEYCODE_DEL -> currentInputConnection.deleteSurroundingText(1, 0)
-            else -> sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.FULL).get(event.keyCode, if(event.shift) KeyEvent.META_SHIFT_ON else 0).toChar())
+    @Subscribe fun onUpdateView(event: UpdateViewEvent) {
+        currentMethod.updateView(this)?.let {
+            setInputView(it)
         }
+    }
+
+    @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
+        if(!currentMethod.onKeyPress(event.keyCode)) when(event.keyCode) {
+            KeyEvent.KEYCODE_DEL -> currentInputConnection.deleteSurroundingText(1, 0)
+            else -> sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.FULL).get(event.keyCode, 0).toChar())
+        } else currentMethod.onKeyRelease(event.keyCode)
     }
 
     @Subscribe fun onCompose(event: ComposeEvent) {

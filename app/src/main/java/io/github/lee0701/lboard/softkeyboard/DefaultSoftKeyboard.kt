@@ -13,6 +13,7 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
 
     var keyboardView: KeyboardView? = null
 
+    var shift: Boolean = false
     override fun initView(context: Context): View? {
         val layout = Keyboard(context, context.resources.getIdentifier(layoutResId, "xml", context.packageName))
         keyboardView = KeyboardView(context, null).apply {
@@ -23,10 +24,14 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
     }
 
     override fun onKey(primaryCode: Int, keyCodes: IntArray) {
-        when(primaryCode) {
-            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> keyboardView?.isShifted = !(keyboardView?.isShifted ?: false)
-            else -> EventBus.getDefault().post(SoftKeyClickEvent(primaryCode, keyboardView?.isShifted ?: false, 1))
+        EventBus.getDefault().post(SoftKeyClickEvent(primaryCode))
+    }
+
+    override fun setLabels(labels: Map<Int, String>) {
+        keyboardView?.keyboard?.keys?.forEach {
+            it.label = labels[it.codes[0]] ?: it.label
         }
+        keyboardView?.invalidateAllKeys()
     }
 
     override fun onPress(primaryCode: Int) {

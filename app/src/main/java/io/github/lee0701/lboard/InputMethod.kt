@@ -11,8 +11,10 @@ interface InputMethod {
     val hardKeyboard: HardKeyboard
 
     fun initView(context: Context): View?
+    fun updateView(context: Context): View?
 
-    fun onKey(keyCode: Int, shift: Boolean): Boolean
+    fun onKeyPress(keyCode: Int): Boolean
+    fun onKeyRelease(keyCode: Int): Boolean
 
     fun reset()
 

@@ -7,4 +7,6 @@ interface SoftKeyboard {
 
     fun initView(context: Context): View?
 
+    fun setLabels(labels: Map<Int, String>)
+
 }
