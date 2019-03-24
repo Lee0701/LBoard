@@ -1,8 +1,10 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
+import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
+import io.github.lee0701.lboard.event.CommitComposingEvent
 import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.hangul.HangulConverter
@@ -17,6 +19,7 @@ class InputMethod(
 ) {
 
     val states: MutableList<HangulConverter.State> = mutableListOf()
+    val lastState: HangulConverter.State get() = if(states.isEmpty()) HangulConverter.State() else states.last()
 
     fun initView(context: Context): View? {
         return softKeyboard.initView(context)
@@ -26,25 +29,30 @@ class InputMethod(
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> if(states.size > 0) states.remove(states.last()) else return false
             KeyEvent.KEYCODE_SPACE -> {
-                hardKeyboard.reset()
-                states.clear()
+                reset()
                 EventBus.getDefault().post(CommitStringEvent(" "))
             }
             else -> {
                 val converted = hardKeyboard.convert(keyCode, shift)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar != null) {
-                    val composed = hangulConverter.compose(if(states.isEmpty()) HangulConverter.State() else states.last(), converted.resultChar)
+                    val composed = hangulConverter.compose(lastState, converted.resultChar)
                     states += composed
-                } else return false
+                } else {
+                    reset()
+                    EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
+                            .get(keyCode, if(shift) KeyEvent.META_SHIFT_ON else 0).toChar().toString()))
+                }
             }
         }
-        EventBus.getDefault().post(ComposeEvent(states.last().other + states.last().display))
+        EventBus.getDefault().post(ComposeEvent(lastState.other + lastState.display))
         return true
     }
 
     fun reset() {
-
+        EventBus.getDefault().post(CommitComposingEvent())
+        hardKeyboard.reset()
+        states.clear()
     }
 
 }
