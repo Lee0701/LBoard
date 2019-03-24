@@ -11,6 +11,7 @@ import io.github.lee0701.lboard.hardkeyboard.SimpleHardKeyboard
 import io.github.lee0701.lboard.hangul.DubeolHangulConverter
 import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hangul.HangulConverter
+import io.github.lee0701.lboard.hangul.VirtualJamoTable
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.softkeyboard.DefaultSoftKeyboard
 import org.greenrobot.eventbus.EventBus
@@ -34,7 +35,7 @@ class LBoardService: InputMethodService() {
         inputMethods += HangulInputMethod(
                 DefaultSoftKeyboard("keyboard_10cols_mod_quote"),
                 SimpleHardKeyboard(layout),
-                HangulConverter(combinationTable)
+                HangulConverter(combinationTable, VirtualJamoTable(mapOf()))
         )
     }
 

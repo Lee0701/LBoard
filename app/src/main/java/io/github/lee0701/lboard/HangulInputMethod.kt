@@ -89,7 +89,7 @@ class HangulInputMethod(
                 }
             }
         }
-        EventBus.getDefault().post(ComposeEvent(lastState.other + lastState.display))
+        EventBus.getDefault().post(ComposeEvent(hangulConverter.display(lastState)))
         EventBus.getDefault().post(UpdateViewEvent())
         return true
     }

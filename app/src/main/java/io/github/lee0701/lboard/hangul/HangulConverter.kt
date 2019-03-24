@@ -2,24 +2,22 @@ package io.github.lee0701.lboard.hangul
 
 import java.text.Normalizer
 
-open class HangulConverter(val combinationTable: CombinationTable) {
+open class HangulConverter(
+        val combinationTable: CombinationTable,
+        val virtualJamoTable: VirtualJamoTable
+) {
 
     open fun compose(composing: State, input: Char): State =
         if(isCho(input)) cho(composing, input)
         else if(isJung(input)) jung(composing, input)
         else if(isJong(input)) jong(composing, input)
-        else State(other = composing.other + composing.display + input)
-
-    private fun cho(composing: State, input: Char): State =
-            if(composing.cho != null) (if(composing.jung == null) combinationTable.combinations[composing.cho to input]?.let { composing.copy(cho = it) } else null) ?: State(other = composing.other + composing.display, cho = input) else composing.copy(cho = input)
-    private fun jung(composing: State, input: Char): State =
-            if(composing.jung != null) combinationTable.combinations[composing.jung to input]?.let { composing.copy(jung = it) } ?: State(other = composing.other + composing.display, jung = input) else composing.copy(jung = input)
-    private fun jong(composing: State, input: Char): State =
-            if(composing.jong != null) combinationTable.combinations[composing.jong to input]?.let { composing.copy(jong = it) } ?: State(other = composing.other + composing.display, jong = input) else composing.copy(jong = input)
-
-    data class State(val cho: Char? = null, val jung: Char? = null, val jong: Char? = null, val other: String = "") {
-
-        val display: String = when {
+        else State(other = display(composing) + input)
+    
+    open fun display(state: State): String {
+        val cho = state.cho?.let { virtualJamoTable.virtualJamos[it] ?: it }
+        val jung = state.jung?.let { virtualJamoTable.virtualJamos[it] ?: it }
+        val jong = state.jong?.let { virtualJamoTable.virtualJamos[it] ?: it }
+        return state.other + when {
             cho != null && jung != null -> Normalizer.normalize(cho.toString() + jung + (jong ?: ""), Normalizer.Form.NFC)
             cho != null && jung == null && jong == null -> if(CONVERT_CHO.contains(cho)) COMPAT_CHO[CONVERT_CHO.indexOf(cho)].toString() else cho.toString()
             cho == null && jung != null && jong == null -> if(STD_JUNG.contains(jung)) COMPAT_JUNG[STD_JUNG.indexOf(jung)].toString() else jung.toString()
@@ -27,6 +25,16 @@ open class HangulConverter(val combinationTable: CombinationTable) {
             cho != null || jung != null || jong != null -> (cho ?: 0x115f.toChar()).toString() + (jung ?: 0x1160.toChar()) + (jong ?: "")
             else -> ""
         }
+    }
+
+    private fun cho(composing: State, input: Char): State =
+            if(composing.cho != null) (if(composing.jung == null) combinationTable.combinations[composing.cho to input]?.let { composing.copy(cho = it) } else null) ?: State(other = display(composing), cho = input) else composing.copy(cho = input)
+    private fun jung(composing: State, input: Char): State =
+            if(composing.jung != null) combinationTable.combinations[composing.jung to input]?.let { composing.copy(jung = it) } ?: State(other = display(composing), jung = input) else composing.copy(jung = input)
+    private fun jong(composing: State, input: Char): State =
+            if(composing.jong != null) combinationTable.combinations[composing.jong to input]?.let { composing.copy(jong = it) } ?: State(other = display(composing), jong = input) else composing.copy(jong = input)
+
+    data class State(val cho: Char? = null, val jung: Char? = null, val jong: Char? = null, val other: String = "") {
 
         constructor(char: Char): this(
                 if(isCho(char)) char else null,
