@@ -4,7 +4,7 @@ import java.text.Normalizer
 
 open class HangulConverter(
         val combinationTable: CombinationTable,
-        val virtualJamoTable: VirtualJamoTable
+        val virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
 ) {
 
     open fun compose(composing: State, input: Int): State =
