@@ -1,6 +1,10 @@
 package io.github.lee0701.lboard.hardkeyboard
 
-class TwelveKeyHardKeyboard(val layout: TwelveKeyboardLayout, val cycle: Boolean = true): HardKeyboard {
+class TwelveKeyHardKeyboard(
+        val layout: TwelveKeyboardLayout,
+        val cycle: Boolean = true,
+        val spaceForSeparation: Boolean = false
+): HardKeyboard {
 
     var lastCode = 0
     var lastIndex = 0

@@ -13,29 +13,38 @@ import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hangul.HangulConverter
 import io.github.lee0701.lboard.hangul.VirtualJamoTable
 import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
+import io.github.lee0701.lboard.hardkeyboard.TwelveKeyHardKeyboard
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
+import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import io.github.lee0701.lboard.softkeyboard.DefaultSoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class LBoardService: InputMethodService() {
 
-    val inputMethods: MutableList<HangulInputMethod> = mutableListOf()
-    var currentMethodId: Int = 0
-    val currentMethod: HangulInputMethod get() = inputMethods[currentMethodId]
+    private val inputMethods: MutableList<InputMethod> = mutableListOf()
+    private var currentMethodId: Int = 0
+    private val currentMethod: InputMethod get() = inputMethods[currentMethodId]
 
     override fun onCreate() {
         super.onCreate()
         EventBus.getDefault().register(this)
+        /*
         val layout = ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL.map { Alphabet.LAYOUT_QWERTY + it }
         val combinationTable = ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL
         inputMethods += HangulInputMethod(
                 DefaultSoftKeyboard("keyboard_10cols_mod_quote"),
                 HangulConverterLinkedHardKeyboard(layout),
                 HangulConverter(combinationTable, VirtualJamoTable(mapOf()))
+        )
+        */
+        inputMethods += HangulInputMethod(
+                DefaultSoftKeyboard("keyboard_12key_4cols"),
+                TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_CHEONJIIN, true, true),
+                DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_CHEONJIIN, TwelveDubeolHangul.VIRTUAL_CHEONJIIN)
         )
     }
 

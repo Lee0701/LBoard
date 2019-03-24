@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="25%p" android:horizontalGap="0px"
+    android:verticalGap="0px" android:keyHeight="54dip">
+
+    <Row android:rowEdgeFlags="bottom">
+        <Key android:codes="0x0201" android:keyLabel="1" android:keyEdgeFlags="left" />
+        <Key android:codes="0x0202" android:keyLabel="2" />
+        <Key android:codes="0x0203" android:keyLabel="3" />
+        <Key android:codes="67" android:keyEdgeFlags="right"
+            android:keyLabel="DEL" android:isRepeatable="true" />
+    </Row>
+
+    <Row>
+        <Key android:codes="0x0204" android:keyLabel="4" android:keyEdgeFlags="left" />
+        <Key android:codes="0x0205" android:keyLabel="5" />
+        <Key android:codes="0x0206" android:keyLabel="6" />
+        <Key android:codes="204" android:keyLabel="가" android:keyWidth="12.5%p" />
+        <Key android:codes="57" android:keyWidth="12.5%p" android:keyLabel="123" android:keyEdgeFlags="right" />
+    </Row>
+
+    <Row>
+        <Key android:codes="0x0207" android:keyLabel="7" android:keyEdgeFlags="left" />
+        <Key android:codes="0x0208" android:keyLabel="8" />
+        <Key android:codes="0x0209" android:keyLabel="9" />
+        <Key android:codes="62" android:keyEdgeFlags="right"
+            android:keyLabel=" " />
+    </Row>
+
+    <Row android:rowEdgeFlags="bottom">
+        <Key android:codes="0x020b" android:keyLabel="*" android:keyEdgeFlags="left" />
+        <Key android:codes="0x020a" android:keyLabel="0" />
+        <Key android:codes="0x020c" android:keyLabel="#" />
+        <Key android:codes="66" android:keyEdgeFlags="right"
+            android:keyLabel="RET" />
+    </Row>
+
+</Keyboard>

@@ -11,6 +11,7 @@ import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hangul.HangulConverter
 import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
+import io.github.lee0701.lboard.hardkeyboard.TwelveKeyHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 
@@ -44,6 +45,7 @@ class HangulInputMethod(
     override fun onKeyPress(keyCode: Int): Boolean {
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> {
+                hardKeyboard.reset()
                 if(states.size > 0) {
                     states.remove(states.last())
                     updateShinStatus(lastState)
@@ -53,8 +55,15 @@ class HangulInputMethod(
                 }
             }
             KeyEvent.KEYCODE_SPACE -> {
-                reset()
-                EventBus.getDefault().post(CommitStringEvent(" "))
+                // 천지인 등 스페이스로 조합 끊는 자판일 시
+                if(hardKeyboard is TwelveKeyHardKeyboard && hardKeyboard.spaceForSeparation &&
+                        lastState.cho != null || lastState.jung != null || lastState.jong != null) {
+                    states += HangulConverter.State(other = hangulConverter.display(lastState))
+                    hardKeyboard.reset()
+                } else {
+                    reset()
+                    EventBus.getDefault().post(CommitStringEvent(" "))
+                }
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
                 if(capsLock) {

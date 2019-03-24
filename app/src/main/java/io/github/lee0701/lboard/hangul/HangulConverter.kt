@@ -18,7 +18,8 @@ open class HangulConverter(
         val jung = state.jung?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
         val jong = state.jong?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
         return state.other + when {
-            cho != null && jung != null -> Normalizer.normalize(cho.toString() + jung + (jong ?: ""), Normalizer.Form.NFC)
+            cho != null && jung != null && cho.toInt() in 0x1100 .. 0x1112 && jung.toInt() in 0x1161 .. 0x1175 && (jong == null || jong.toInt() in 0x11a8 .. 0x11c2) ->
+                Normalizer.normalize(cho.toString() + jung + (jong ?: ""), Normalizer.Form.NFC)
             cho != null && jung == null && jong == null -> if(CONVERT_CHO.contains(cho)) COMPAT_CHO[CONVERT_CHO.indexOf(cho)].toString() else cho.toString()
             cho == null && jung != null && jong == null -> if(STD_JUNG.contains(jung)) COMPAT_JUNG[STD_JUNG.indexOf(jung)].toString() else jung.toString()
             cho == null && jung == null && jong != null -> if(CONVERT_JONG.contains(jong)) COMPAT_CHO[CONVERT_JONG.indexOf(jong)].toString() else jong.toString()
@@ -48,16 +49,16 @@ open class HangulConverter(
     }
 
     companion object {
-        fun isCho(char: Int) = (char and 0xffffff) in 0x1100 .. 0x115f
-        fun isJung(char: Int) = (char and 0xffffff) in 0x1160 .. 0x11a7
-        fun isJong(char: Int) = (char and 0xffffff) in 0x11a8 .. 0x11ff
+        fun isCho(char: Int) = (char and 0xffffff).let { it in 0x1100 .. 0x115f || it in 0xa960 .. 0xa97c }
+        fun isJung(char: Int) = (char and 0xffffff).let { it in 0x1160 .. 0x11a7 || it in 0xd7b0 .. 0xd7c6 }
+        fun isJong(char: Int) = (char and 0xffffff).let { it in 0x11a8 .. 0x11ff || it in 0xd7cb .. 0xd7fb }
 
         const val COMPAT_CHO = "ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ"
-        const val COMPAT_JUNG = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ"
+        const val COMPAT_JUNG = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣㆇㆈㆉㆊㆋㆌㆍㆎ"
 
         const val CONVERT_CHO = "ᄀᄁ ᄂ  ᄃᄄᄅ       ᄆᄇᄈ ᄉᄊᄋᄌᄍᄎᄏᄐᄑᄒ"
         const val CONVERT_JONG = "ᆨᆩᆪᆫᆬᆭᆮ ᆯᆰᆱᆲᆳᆴᆵᆶᆷᆸ ᆹᆺᆻᆼᆽ ᆾᆿᇀᇁᇂ"
-        const val STD_JUNG = "ᅡᅢᅣᅤᅥᅦᅧᅨᅩᅪᅫᅬᅭᅮᅯᅰᅱᅲᅳᅴᅵ"
+        const val STD_JUNG = "ᅡᅢᅣᅤᅥᅦᅧᅨᅩᅪᅫᅬᅭᅮᅯᅰᅱᅲᅳᅴᅵᆄᆅᆈᆑᆒᆔᆞᆡ"
 
     }
 

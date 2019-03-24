@@ -30,14 +30,14 @@ class DubeolHangulConverter(
             else composing.copy(jung = toJung(input))
 
     companion object {
-        fun isConsonant(char: Int) = char.toInt() in 0x3131 .. 0x314e
-        fun isVowel(char: Int) = char.toInt() in 0x314f .. 0x3163
+        fun isConsonant(char: Int) = (char and 0xffffff).let { it in 0x3131 .. 0x314e || it in 0x3165 .. 0x3186 }
+        fun isVowel(char: Int) = (char and 0xffffff).let { it in 0x314f .. 0x3163 || it in 0x3187 .. 0x318e }
 
-        fun toCho(char: Int) = CONVERT_CHO[COMPAT_CHO.indexOf(char.toChar())].toInt()
-        fun toJung(char: Int) = STD_JUNG[COMPAT_JUNG.indexOf(char.toChar())].toInt()
-        fun toJong(char: Int) = CONVERT_JONG[COMPAT_CHO.indexOf(char.toChar())].toInt()
+        fun toCho(char: Int) = (char and 0x7f000000) or CONVERT_CHO[COMPAT_CHO.indexOf(char.toChar())].toInt()
+        fun toJung(char: Int) = (char and 0x7f000000) or STD_JUNG[COMPAT_JUNG.indexOf(char.toChar())].toInt()
+        fun toJong(char: Int) = (char and 0x7f000000) or CONVERT_JONG[COMPAT_CHO.indexOf(char.toChar())].toInt()
 
-        fun ghostLight(char: Int) = toCho(COMPAT_CHO[CONVERT_JONG.indexOf(char.toChar())].toInt())
+        fun ghostLight(char: Int) = (char and 0x7f000000) or toCho(COMPAT_CHO[CONVERT_JONG.indexOf(char.toChar())].toInt())
 
     }
 
