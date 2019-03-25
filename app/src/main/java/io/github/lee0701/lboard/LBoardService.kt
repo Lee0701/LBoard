@@ -78,7 +78,7 @@ class LBoardService: InputMethodService() {
         inputAfterSwitch = false
     }
 
-    private fun nextInputMethod(switchBetweenApps: Boolean = false) {
+    private fun switchInputMethod(switchBetweenApps: Boolean = false) {
         currentMethod.reset()
 
         val last = currentMethodId
@@ -111,7 +111,7 @@ class LBoardService: InputMethodService() {
         setInputView(currentMethod.initView(this))
     }
 
-    private fun nextKeyMode() {
+    private fun switchKeyMode() {
         currentMethod.reset()
         val last = currentModeId
         if(inputAfterSwitch && currentModeId != 0) {
@@ -133,11 +133,11 @@ class LBoardService: InputMethodService() {
     @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
         when(event.keyCode) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
-                nextInputMethod(true)
+                switchInputMethod(true)
                 return
             }
             KeyEvent.KEYCODE_SYM -> {
-                nextKeyMode()
+                switchKeyMode()
                 return
             }
         }
