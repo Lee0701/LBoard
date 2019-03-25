@@ -30,6 +30,11 @@ class StripeSoftKeyboard(val layout: StripeKeyboardView.Layout, val keyHeight: F
     }
 
     override fun setLabels(labels: Map<Int, String>) {
+        layout.rows.forEach { row ->
+            row.keys.forEach { key ->
+                key.label = labels[key.keyCode] ?: key.label
+            }
+        }
     }
 
     override fun onKey(keyCode: Int, x: Int, y: Int) {

@@ -82,11 +82,11 @@ class LBoardService: InputMethodService() {
                 Key(41, "m"),
                 Key(67, "DEL")
         ), Row.Type.ODD), Row(listOf(
-                Key(keyCode = 63, labelNormal = "SYM", relativeWidth = 1.5f/10f),
-                Key(keyCode = 204, labelNormal = "ABC", relativeWidth = 1.5f/10f),
+                Key(keyCode = 63, label = "SYM", relativeWidth = 1.5f/10f),
+                Key(keyCode = 204, label = "ABC", relativeWidth = 1.5f/10f),
                 Key(keyCode = 62, relativeWidth = 4/10f),
-                Key(keyCode = 128, labelNormal = ".,", relativeWidth = 1/10f),
-                Key(keyCode = 66, labelNormal = "RETURN", relativeWidth = 2/10f)
+                Key(keyCode = 56, label = ".", relativeWidth = 1/10f),
+                Key(keyCode = 66, label = "RETURN", relativeWidth = 2/10f)
         ), Row.Type.BOTTOM)))
 
         val cheonjiin = HangulInputMethod(

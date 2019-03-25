@@ -53,8 +53,7 @@ class StripeKeyboardView(
                 key.width = if(key.relativeWidth == 0f) width / row.keys.size else (width * key.relativeWidth).toInt()
                 key.height = row.height
 
-                val label = key.labelNormal
-                val boundString = label.map { "W" }.joinToString("")
+                val boundString = key.label.map { "W" }.joinToString("")
                 key.textSize = key.width / paint.measureText(boundString) * paint.textSize / 3 * 2
 
                 x += key.width
@@ -120,12 +119,11 @@ class StripeKeyboardView(
     private fun onDrawKeyForeground(canvas: Canvas, key: Key) {
         val theme = theme.keyTheme[key.keyCode] ?: theme.keyTheme[null] ?: return
 
-        val label = key.labelNormal
         paint.color = theme.textColor
 
         paint.textSize = key.textSize
 
-        canvas.drawText(label, (key.x + key.width/2).toFloat(), (key.y + key.height/4*3).toFloat(), paint)
+        canvas.drawText(key.label, (key.x + key.width/2).toFloat(), (key.y + key.height/4*3).toFloat(), paint)
 
     }
 
@@ -223,7 +221,7 @@ class StripeKeyboardView(
 
     data class Key (
             val keyCode: Int = 0,
-            val labelNormal: String = "",
+            var label: String = "",
 
             val relativeWidth: Float = 0f
     ) {
