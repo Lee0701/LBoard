@@ -19,7 +19,7 @@ class DubeolHangulConverter(
 
     private fun consonant(composing: State, input: Int): State =
             if(composing.jong != null) combinationTable.combinations[composing.jong to toJong(input)]?.let { composing.copy(jong = it) } ?: State(other = display(composing), cho = toCho(input))
-            else if(composing.cho != null && composing.jung != null) composing.copy(jong = toJong(input))
+            else if(composing.cho != null && composing.jung != null) toJong(input).let { if(it == 0x20) State(other = display(composing), cho = toCho(input)) else composing.copy(jong = it) }
             else if(composing.cho != null) combinationTable.combinations[composing.cho to toCho(input)]?.let { composing.copy(cho = it) } ?: State(other = display(composing), cho = toCho(input))
             else composing.copy(cho = toCho(input))
 

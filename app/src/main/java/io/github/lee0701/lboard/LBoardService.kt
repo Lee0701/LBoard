@@ -30,6 +30,7 @@ class LBoardService: InputMethodService() {
 
     private var lastMethodId: Int = 0
     private var inputAfterSwitch = false
+    private var switchedFromOutside = true
 
     override fun onCreate() {
         super.onCreate()
@@ -66,6 +67,11 @@ class LBoardService: InputMethodService() {
         currentMethod.reset()
     }
 
+    override fun onFinishInputView(finishingInput: Boolean) {
+        super.onFinishInputView(finishingInput)
+        if(finishingInput) switchedFromOutside = true
+    }
+
     private fun reset() {
         currentMethodId = 0
         lastMethodId = 0
@@ -74,17 +80,29 @@ class LBoardService: InputMethodService() {
 
     private fun nextInputMethod(switchBetweenApps: Boolean = false) {
         currentMethod.reset()
+
         val last = currentMethodId
         currentModeId = 0
-        if(inputAfterSwitch && currentMethodId != lastMethodId) {
-            currentMethodId = lastMethodId
+
+        val fromOutside = switchedFromOutside
+        switchedFromOutside = false
+
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val token = window.window.attributes.token
+
+        if(inputAfterSwitch && (currentMethodId != lastMethodId || fromOutside)) {
+            if(fromOutside) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) switchToPreviousInputMethod()
+                else imm.switchToLastInputMethod(token)
+            } else {
+                currentMethodId = lastMethodId
+            }
         } else {
             if(++currentMethodId >= inputMethods.size) {
                 currentMethodId = 0
                 if(switchBetweenApps) {
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) switchToNextInputMethod(true)
-                    else (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
-                            .switchToLastInputMethod(window.window.attributes.token)
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)  switchToNextInputMethod(false)
+                    else imm.switchToNextInputMethod(token, false)
                 }
             }
         }
