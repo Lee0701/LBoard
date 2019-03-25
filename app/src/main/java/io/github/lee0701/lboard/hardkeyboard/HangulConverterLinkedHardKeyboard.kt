@@ -14,7 +14,8 @@ class HangulConverterLinkedHardKeyboard(val layouts: List<SimpleKeyboardLayout>)
         status = 0
     }
 
-    override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> =
-            (if(alt) currentLayout?.altLayout ?: layouts[0].altLayout else (currentLayout ?: layouts[0]).layout)
-                    .map { it.key to (if(shift) it.value.shift else it.value.normal).toChar().toString() }.toMap()
+    override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> {
+        return (currentLayout?.layout ?: layouts[0].layout)
+                .map { it.key to (if(shift) it.value.shift else it.value.normal).toChar().toString() }.toMap()
+    }
 }

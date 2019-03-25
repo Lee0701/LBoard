@@ -16,7 +16,7 @@
         <Key android:codes="0x0205" android:keyLabel="5" />
         <Key android:codes="0x0206" android:keyLabel="6" />
         <Key android:codes="204" android:keyLabel="가" android:keyWidth="12.5%p" />
-        <Key android:codes="57" android:keyWidth="12.5%p" android:keyLabel="123" android:keyEdgeFlags="right" />
+        <Key android:codes="63" android:keyWidth="12.5%p" android:keyLabel="123" android:keyEdgeFlags="right" />
     </Row>
 
     <Row>

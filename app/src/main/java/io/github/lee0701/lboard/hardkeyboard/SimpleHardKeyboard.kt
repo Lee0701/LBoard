@@ -6,9 +6,9 @@ class SimpleHardKeyboard(val layout: SimpleKeyboardLayout): HardKeyboard {
         return HardKeyboard.ConvertResult(layout.layout[keyCode]?.let { if(shift) it.shift else it.normal })
     }
 
-    override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> =
-            (if(alt) layout.altLayout else layout.layout)
-                    .map { it.key to (if(shift) it.value.shift else it.value.normal).toChar().toString() }.toMap()
+    override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> {
+        return layout.layout.map { it.key to (if(shift) it.value.shift else it.value.normal).toChar().toString() }.toMap()
+    }
 
     override fun reset() {
     }

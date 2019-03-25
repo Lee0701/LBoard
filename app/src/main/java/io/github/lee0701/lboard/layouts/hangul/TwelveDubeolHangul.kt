@@ -20,7 +20,7 @@ object TwelveDubeolHangul {
             0x0209 to LayoutItem(listOf(0x3148, 0x314a, 0x3149)),
             0x020a to LayoutItem(listOf(0x3147, 0x3141)),
             0x020b to LayoutItem(listOf())
-    ))
+    ), labelLength = 2)
     
     val COMBINATION_CHEONJIIN = CombinationTable(mapOf(
 
@@ -53,7 +53,7 @@ object TwelveDubeolHangul {
             0x116e to 0x100119e to 0x1172,	        // ㅠ
             0x1173 to 0x1175 to 0x1174,         	// ㅢ
 
-            0x11a8 to 0x11a8 to 0x11a9,	// ㄲ
+//            0x11a8 to 0x11a8 to 0x11a9,	// ㄲ
             0x11a8 to 0x11ba to 0x11aa,	// ㄳ
             0x11ab to 0x11bd to 0x11ac,	// ㄵ
             0x11ab to 0x11ba to 0x11ad,	// ㄶ
@@ -65,8 +65,8 @@ object TwelveDubeolHangul {
             0x11af to 0x11ae to 0x11b4,	// ㄾ
             0x11af to 0x11c1 to 0x11b5,	// ㄿ
             0x11af to 0x11c2 to 0x11b6,	// ㅀ
-            0x11b8 to 0x11ba to 0x11b9,	// ㅄ
-            0x11ba to 0x11ba to 0x11bb	// ㅆ
+            0x11b8 to 0x11ba to 0x11b9	// ㅄ
+//            0x11ba to 0x11ba to 0x11bb	// ㅆ
     ))
 
     val VIRTUAL_CHEONJIIN = VirtualJamoTable(mapOf(

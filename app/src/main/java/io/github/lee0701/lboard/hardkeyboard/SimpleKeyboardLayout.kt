@@ -1,12 +1,11 @@
 package io.github.lee0701.lboard.hardkeyboard
 
 data class SimpleKeyboardLayout(
-        val layout: Map<Int, LayoutItem>,
-        val altLayout: Map<Int, LayoutItem> = layout.toMap()
+        val layout: Map<Int, LayoutItem>
 ) {
 
     operator fun plus(other: SimpleKeyboardLayout): SimpleKeyboardLayout {
-        return SimpleKeyboardLayout(this.layout + other.layout, this.altLayout + other.altLayout)
+        return SimpleKeyboardLayout(this.layout + other.layout)
     }
 
     data class LayoutItem(

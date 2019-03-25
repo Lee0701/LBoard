@@ -2,7 +2,7 @@ package io.github.lee0701.lboard.hardkeyboard
 
 data class TwelveKeyboardLayout(
         val layout: Map<Int, LayoutItem>,
-        val altLayout: Map<Int, LayoutItem> = layout.toMap()
+        val labelLength: Int = Int.MAX_VALUE
 ) {
 
     data class LayoutItem(

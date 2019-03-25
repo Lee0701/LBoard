@@ -58,7 +58,7 @@
     </Row>
 
     <Row android:rowEdgeFlags="bottom">
-        <Key android:codes="57" android:keyLabel="ALT"
+        <Key android:codes="63" android:keyLabel="SYM"
             android:keyWidth="10%p" android:keyEdgeFlags="left"/>
         <Key android:codes="56" android:keyLabel="."/>
         <Key android:codes="204" android:keyLabel="A"/>
