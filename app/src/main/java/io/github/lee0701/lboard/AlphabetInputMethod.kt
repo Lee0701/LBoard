@@ -43,6 +43,10 @@ class AlphabetInputMethod(
                 reset()
                 EventBus.getDefault().post(CommitStringEvent(" "))
             }
+            KeyEvent.KEYCODE_ENTER -> {
+                reset()
+                return false
+            }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
                 if(capsLock) {
                     capsLock = false

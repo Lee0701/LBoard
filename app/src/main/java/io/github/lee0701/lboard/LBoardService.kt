@@ -147,6 +147,16 @@ class LBoardService: InputMethodService() {
                 if(currentInputConnection.getSelectedText(0) != null) currentInputConnection.commitText("", 1)
                 else currentInputConnection.deleteSurroundingText(1, 0)
             }
+            KeyEvent.KEYCODE_ENTER -> {
+                when(currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION) {
+                    EditorInfo.IME_ACTION_SEARCH, EditorInfo.IME_ACTION_GO -> {
+                        sendDefaultEditorAction(true)
+                    }
+                    else -> {
+                        sendKeyChar('\n')
+                    }
+                }
+            }
             else -> sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.FULL).get(event.keyCode, 0).toChar())
         } else currentMethod.onKeyRelease(event.keyCode)
     }
