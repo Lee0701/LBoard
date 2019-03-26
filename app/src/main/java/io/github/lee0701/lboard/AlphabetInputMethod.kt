@@ -68,12 +68,14 @@ class AlphabetInputMethod(
             else -> {
                 val converted = hardKeyboard.convert(keyCode, shift, alt)
                 if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
-                if(converted.resultChar != null) {
-                    EventBus.getDefault().post(CommitStringEvent(converted.resultChar.toChar().toString()))
-                } else {
+                if(converted.resultChar == null) {
                     reset()
                     EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
                             .get(keyCode, 0).toChar().toString()))
+                } else if(converted.resultChar == 0) {
+                    reset()
+                } else {
+                    EventBus.getDefault().post(CommitStringEvent(converted.resultChar.toChar().toString()))
                 }
                 if(shift && !capsLock) {
                     shift = false

@@ -12,6 +12,7 @@ import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hardkeyboard.SimpleHardKeyboard
 import io.github.lee0701.lboard.hangul.DubeolHangulConverter
 import io.github.lee0701.lboard.hangul.HangulConverter
+import io.github.lee0701.lboard.hangul.VirtualJamoTable
 import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.TwelveKeyHardKeyboard
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
@@ -94,6 +95,11 @@ class LBoardService: InputMethodService() {
                 TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_CHEONJIIN, true, true),
                 DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_CHEONJIIN, TwelveDubeolHangul.VIRTUAL_CHEONJIIN)
         )
+        val naratgeul = HangulInputMethod(
+                DefaultSoftKeyboard("keyboard_12key_4cols"),
+                TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_NARATGEUL, true, false),
+                DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_NARATGEUL, VirtualJamoTable(mapOf()))
+        )
         val shin = HangulInputMethod(
                 DefaultSoftKeyboard("keyboard_10cols_mod_quote"),
                 HangulConverterLinkedHardKeyboard(ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL.map { Alphabet.LAYOUT_QWERTY + it }),
@@ -107,7 +113,7 @@ class LBoardService: InputMethodService() {
                 DefaultSoftKeyboard("keyboard_10cols_mobile"),
                 SimpleHardKeyboard(Symbols.LAYOUT_SYMBOLS_A)
         )
-        inputMethods += InputMethodSet(cheonjiin, symbols)
+        inputMethods += InputMethodSet(naratgeul, symbols)
         inputMethods += InputMethodSet(qwerty, symbols)
         inputMethods += InputMethodSet(shin, symbols)
     }

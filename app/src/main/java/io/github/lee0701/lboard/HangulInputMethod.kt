@@ -90,14 +90,16 @@ class HangulInputMethod(
             else -> {
                 val converted = hardKeyboard.convert(keyCode, shift, alt)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
-                if(converted.resultChar != null) {
-                    val composed = hangulConverter.compose(lastState, converted.resultChar)
-                    states += composed
-                    updateShinStatus(composed)
-                } else {
+                if(converted.resultChar == null) {
                     reset()
                     EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
                             .get(keyCode, 0).toChar().toString()))
+                } else if(converted.resultChar == 0) {
+                    reset()
+                } else {
+                    val composed = hangulConverter.compose(lastState, converted.resultChar)
+                    states += composed
+                    updateShinStatus(composed)
                 }
                 if(shift && !capsLock) {
                     shift = false

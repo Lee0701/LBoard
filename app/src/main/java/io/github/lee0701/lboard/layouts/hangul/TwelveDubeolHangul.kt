@@ -73,5 +73,82 @@ object TwelveDubeolHangul {
             0x100119e to 0x00b7,
             0x10011a2 to 0x2025
     ))
+
+    val LAYOUT_NARATGEUL = TwelveKeyboardLayout(mapOf(
+            0x0201 to LayoutItem(listOf(0x3131)),
+            0x0202 to LayoutItem(listOf(0x3134)),
+            0x0203 to LayoutItem(listOf(0x314f, 0x3153)),
+            0x0204 to LayoutItem(listOf(0x3139)),
+            0x0205 to LayoutItem(listOf(0x3141)),
+            0x0206 to LayoutItem(listOf(0x3157, 0x315c)),
+            0x0207 to LayoutItem(listOf(0x3145)),
+            0x0208 to LayoutItem(listOf(0x3147)),
+            0x0209 to LayoutItem(listOf(0x3163)),
+            0x020a to LayoutItem(listOf(0x3161)),
+            0x020b to LayoutItem(listOf(0x70000000)),
+            0x020c to LayoutItem(listOf(0x70000001))
+    ), listOf(
+            mapOf(
+                    0x3131 to 0x314b,   // ㄱ-ㅋ
+                    0x3134 to 0x3137,   // ㄴ-ㄷ
+                    0x3137 to 0x314c,   // ㄷ-ㅌ
+                    0x3141 to 0x3142,   // ㅁ-ㅂ
+                    0x3142 to 0x314d,   // ㅂ-ㅍ
+                    0x3145 to 0x3148,   // ㅅ-ㅈ
+                    0x3148 to 0x314a,   // ㅈ-ㅊ
+                    0x3147 to 0x314e,   // ㅇ-ㅎ
+                    0x3146 to 0x3149,   // ㅆ-ㅉ
+
+                    0x314f to 0x3151,   // ㅑ
+                    0x3153 to 0x3155,   // ㅕ
+                    0x3157 to 0x315b,   // ㅛ
+                    0x315c to 0x3160    // ㅠ
+            ),
+            mapOf(
+                    0x3131 to 0x3132,   // ㄲ
+                    0x3137 to 0x3138,   // ㄸ
+                    0x3142 to 0x3143,   // ㅃ
+                    0x3145 to 0x3146,   // ㅆ
+                    0x3148 to 0x3149    // ㅉ
+            )
+    ))
+
+    val COMBINATION_NARATGEUL = CombinationTable(mapOf(
+
+            0x1161 to 0x1175 to 0x1162, // ㅐ
+            0x1163 to 0x1175 to 0x1164, // ㅒ
+            0x1165 to 0x1175 to 0x1166, // ㅔ
+            0x1167 to 0x1175 to 0x1168, // ㅖ
+
+            0x1169 to 0x1162 to 0x116b,	// ㅙ (ㅗ+ㅐ)
+            0x116a to 0x1175 to 0x116b,	// ㅙ (ㅘ+ㅣ)
+            0x1169 to 0x1161 to 0x116a,	// ㅘ
+            0x1169 to 0x1175 to 0x116c,	// ㅚ
+            0x116e to 0x1166 to 0x1170,	// ㅞ (ㅜ+ㅔ)
+            0x116f to 0x1175 to 0x1170,	// ㅞ (ㅝ+ㅣ)
+//            0x116e to 0x1161 to 0x116f,	// ㅝ (ㅜ+ㅏ)
+            0x116e to 0x1165 to 0x116f,	// ㅝ (ㅜ+ㅓ)
+            0x116e to 0x1175 to 0x1171,	// ㅟ
+            0x1173 to 0x1175 to 0x1174,
+
+//            0x11a8 to 0x11a8 to 0x11a9,	// ㄲ
+            0x11a8 to 0x11ba to 0x11aa,	// ㄳ
+//            0x11ab to 0x11ba to 0x11ac,	// ㄵ
+            0x11ab to 0x11bd to 0x11ac,	// ㄵ
+//            0x11ab to 0x11bc to 0x11ad,	// ㄶ
+            0x11ab to 0x11c2 to 0x11ad,	// ㄶ
+            0x11af to 0x11a8 to 0x11b0,	// ㄺ
+            0x11af to 0x11b7 to 0x11b1,	// ㄻ
+            0x11af to 0x11b8 to 0x11b2,	// ㄼ
+            0x11af to 0x11ba to 0x11b3,	// ㄽ
+//            0x11af to 0x11ab to 0x11b4,	// ㄾ
+//            0x11af to 0x11ae to 0x11b4,	// ㄾ
+            0x11af to 0x11c0 to 0x11b4,	// ㄾ
+            0x11af to 0x11c1 to 0x11b5,	// ㄿ
+//            0x11af to 0x11bc to 0x11b6,	// ㅀ
+            0x11af to 0x11c2 to 0x11b6,	// ㅀ
+            0x11b8 to 0x11ba to 0x11b9	// ㅄ
+//            0x11ba to 0x11ba to 0x11bb	// ㅆ
+    ))
     
 }

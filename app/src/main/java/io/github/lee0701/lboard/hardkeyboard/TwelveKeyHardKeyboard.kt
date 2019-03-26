@@ -10,6 +10,8 @@ class TwelveKeyHardKeyboard(
     var lastIndex = 0
     var lastShift = false
 
+    var lastChar = 0
+
     override fun convert(keyCode: Int, shift: Boolean, alt: Boolean): HardKeyboard.ConvertResult {
         val codes = layout.layout[keyCode]?.let { if(lastShift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null)
         var backspace = false
@@ -22,8 +24,17 @@ class TwelveKeyHardKeyboard(
         lastCode = keyCode
         lastShift = shift
 
-        return HardKeyboard.ConvertResult(codes[lastIndex], backspace)
+        var result = codes[lastIndex]
 
+        if(result and 0x70000000 == 0x70000000) {
+            val strokeTableIndex = result and 0x000000ff
+            result = layout.strokes[strokeTableIndex][lastChar] ?: lastChar
+            backspace = true
+        }
+
+        lastChar = result
+
+        return HardKeyboard.ConvertResult(result, backspace)
     }
 
     override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> {
@@ -38,6 +49,8 @@ class TwelveKeyHardKeyboard(
         lastCode = 0
         lastIndex = 0
         lastShift = false
+
+        lastChar = 0
     }
 
 }
