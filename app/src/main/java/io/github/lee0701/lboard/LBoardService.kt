@@ -9,19 +9,18 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import io.github.lee0701.lboard.event.*
-import io.github.lee0701.lboard.hardkeyboard.SimpleHardKeyboard
 import io.github.lee0701.lboard.hangul.DubeolHangulConverter
 import io.github.lee0701.lboard.hangul.HangulConverter
 import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
+import io.github.lee0701.lboard.hardkeyboard.SimpleHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.TwelveKeyHardKeyboard
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
-import io.github.lee0701.lboard.layouts.hangul.*
-import io.github.lee0701.lboard.softkeyboard.DefaultSoftKeyboard
+import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
+import io.github.lee0701.lboard.layouts.hangul.Symbols
+import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
+import io.github.lee0701.lboard.softkeyboard.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-
-import io.github.lee0701.lboard.softkeyboard.StripeKeyboardView.*
-import io.github.lee0701.lboard.softkeyboard.StripeSoftKeyboard
 
 class LBoardService: InputMethodService() {
 
@@ -50,7 +49,7 @@ class LBoardService: InputMethodService() {
                 Key(15, "8"),
                 Key(16, "9"),
                 Key(7, "0")
-        ), Row.Type.NUMBER), Row(listOf(
+        ), Row.Type.NUMBER, 0.005f, 0.005f), Row(listOf(
                 Key(45, "q"),
                 Key(51, "w"),
                 Key(33, "e"),
@@ -61,7 +60,7 @@ class LBoardService: InputMethodService() {
                 Key(37, "i"),
                 Key(43, "o"),
                 Key(44, "p")
-        ), Row.Type.ODD), Row(listOf(
+        ), Row.Type.ODD, 0.01f, 0.01f), Row(listOf(
                 Key(29, "a"),
                 Key(47, "s"),
                 Key(32, "d"),
@@ -71,7 +70,7 @@ class LBoardService: InputMethodService() {
                 Key(38, "j"),
                 Key(39, "k"),
                 Key(40, "l")
-        ), Row.Type.EVEN), Row(listOf(
+        ), Row.Type.EVEN, 0.05f, 0.05f), Row(listOf(
                 Key(59, "SFT"),
                 Key(54, "z"),
                 Key(52, "x"),
@@ -81,7 +80,7 @@ class LBoardService: InputMethodService() {
                 Key(42, "n"),
                 Key(41, "m"),
                 Key(67, "DEL")
-        ), Row.Type.ODD), Row(listOf(
+        ), Row.Type.ODD, 0.02f, 0.02f), Row(listOf(
                 Key(keyCode = 63, label = "SYM", relativeWidth = 1.5f/10f),
                 Key(keyCode = 204, label = "ABC", relativeWidth = 1.5f/10f),
                 Key(keyCode = 62, relativeWidth = 4/10f),
@@ -100,7 +99,7 @@ class LBoardService: InputMethodService() {
                 HangulConverter(ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL)
         )
         val qwerty = AlphabetInputMethod(
-                StripeSoftKeyboard(layout, 50f),
+                ThemeableSoftKeyboard(layout, 50f),
                 SimpleHardKeyboard(Alphabet.LAYOUT_QWERTY)
         )
         val symbols = AlphabetInputMethod(
