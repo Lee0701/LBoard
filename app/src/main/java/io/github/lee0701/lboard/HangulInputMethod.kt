@@ -19,16 +19,7 @@ class HangulInputMethod(
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
         val hangulConverter: HangulConverter
-): InputMethod {
-
-    var shift: Boolean = false
-    var alt: Boolean = false
-
-    var capsLock: Boolean = false
-    var altLock: Boolean = false
-
-    var inputOnShift = false
-    var inputOnAlt = false
+): CommonInputMethod() {
 
     val states: MutableList<HangulConverter.State> = mutableListOf()
     val lastState: HangulConverter.State get() = if(states.isEmpty()) HangulConverter.State() else states.last()
@@ -66,26 +57,13 @@ class HangulInputMethod(
                 }
             }
             KeyEvent.KEYCODE_ENTER -> {
-                reset()
-                return false
+                return super.onKeyPress(keyCode)
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
-                if(capsLock) {
-                    capsLock = false
-                    shift = false
-                }
-                else if(shift && !inputOnShift) capsLock = true
-                else shift = !shift
-                inputOnShift = false
+                return super.onKeyPress(keyCode)
             }
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
-                if(altLock) {
-                    altLock = false
-                    alt = false
-                }
-                else if(alt && !inputOnAlt) altLock = true
-                else alt = !alt
-                inputOnAlt = false
+                return super.onKeyPress(keyCode)
             }
             else -> {
                 val converted = hardKeyboard.convert(keyCode, shift, alt)
@@ -141,15 +119,9 @@ class HangulInputMethod(
     }
 
     override fun reset() {
-        shift = false
-        alt = false
-        capsLock = false
-        altLock = false
-
         EventBus.getDefault().post(CommitComposingEvent())
-        hardKeyboard.reset()
         states.clear()
-        EventBus.getDefault().post(UpdateViewEvent())
+        super.reset()
     }
 
 }

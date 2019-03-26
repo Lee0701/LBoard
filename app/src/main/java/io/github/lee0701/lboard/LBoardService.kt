@@ -105,7 +105,7 @@ class LBoardService: InputMethodService() {
                 HangulConverterLinkedHardKeyboard(ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL.map { Alphabet.LAYOUT_QWERTY + it }),
                 HangulConverter(ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL)
         )
-        val qwerty = AlphabetInputMethod(
+        val qwerty = WordComposingInputMethod(
                 StripeSoftKeyboard(layout, 50f),
                 SimpleHardKeyboard(Alphabet.LAYOUT_QWERTY)
         )

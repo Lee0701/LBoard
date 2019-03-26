@@ -4,16 +4,21 @@ import android.content.Context
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
+import io.github.lee0701.lboard.event.CommitComposingEvent
 import io.github.lee0701.lboard.event.CommitStringEvent
+import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 
-class AlphabetInputMethod(
+class WordComposingInputMethod(
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard
 ): CommonInputMethod() {
+
+    val states: MutableList<String> = mutableListOf()
+    val lastState: String get() = if(states.isEmpty()) "" else states.last()
 
     override fun initView(context: Context): View? {
         return softKeyboard.initView(context)
@@ -27,7 +32,12 @@ class AlphabetInputMethod(
     override fun onKeyPress(keyCode: Int): Boolean {
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> {
-                return super.onKeyPress(keyCode)
+                hardKeyboard.reset()
+                if(states.size > 0) {
+                    states.remove(states.last())
+                } else {
+                    return false
+                }
             }
             KeyEvent.KEYCODE_SPACE -> {
                 return super.onKeyPress(keyCode)
@@ -42,9 +52,32 @@ class AlphabetInputMethod(
                 return super.onKeyPress(keyCode)
             }
             else -> {
-                return super.onKeyPress(keyCode)
+                val converted = hardKeyboard.convert(keyCode, shift, alt)
+                if(converted.backspace && states.size > 0) states.remove(states.last())
+                if(converted.resultChar == null) {
+                    reset()
+                    EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
+                            .get(keyCode, 0).toChar().toString()))
+                } else if(converted.resultChar == 0) {
+                    reset()
+                } else {
+                    states += lastState + converted.resultChar.toChar().toString()
+                }
+                if(shift && !capsLock) {
+                    shift = false
+                } else {
+                    inputOnShift = true
+                }
+                if(alt && !altLock) {
+                    alt = false
+                } else {
+                    inputOnAlt = true
+                }
             }
         }
+        EventBus.getDefault().post(ComposeEvent(lastState))
+        EventBus.getDefault().post(UpdateViewEvent())
+        return true
     }
 
     override fun onKeyRelease(keyCode: Int): Boolean {
@@ -60,6 +93,8 @@ class AlphabetInputMethod(
     }
 
     override fun reset() {
+        EventBus.getDefault().post(CommitComposingEvent())
+        states.clear()
         super.reset()
     }
 }
