@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">LBoard</string>
     <string name="service_name">LBoard</string>
+    <string name="settings_name">LBoard Settings</string>
+
+    <string name="pref_activation_title">Activation</string>
+
+    <string name="pref_activation_enabler_title">Enable / Disable input methods</string>
+    <string name="pref_activation_enabler_summary">Please enable \'LBoard\'.</string>
+    <string name="pref_activation_picker_title">Show input method picker</string>
+
 </resources>
