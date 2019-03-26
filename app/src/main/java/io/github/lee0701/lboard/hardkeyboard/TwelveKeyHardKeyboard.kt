@@ -1,9 +1,7 @@
 package io.github.lee0701.lboard.hardkeyboard
 
 class TwelveKeyHardKeyboard(
-        val layout: TwelveKeyboardLayout,
-        val cycle: Boolean = true,
-        val spaceForSeparation: Boolean = false
+        val layout: TwelveKeyboardLayout
 ): HardKeyboard {
 
     var lastCode = 0
@@ -17,7 +15,7 @@ class TwelveKeyHardKeyboard(
         var backspace = false
         if(lastCode == keyCode && lastShift == shift) {
             if(++lastIndex >= codes.size) lastIndex = 0
-            if(codes.size > 1 && (cycle || lastIndex != 0)) backspace = true
+            if(codes.size > 1 && (layout.cycle || lastIndex != 0)) backspace = true
         } else {
             lastIndex = 0
         }
@@ -41,8 +39,7 @@ class TwelveKeyHardKeyboard(
         return layout.layout.map { entry ->
             entry.key to (if(shift) entry.value.shift else entry.value.normal)
                     .map { it.toChar() }.joinToString("")
-                    .let { if(it.length > layout.labelLength) it.substring(0, layout.labelLength) else it }
-        }.toMap()
+        }.toMap() + layout.labels
     }
 
     override fun reset() {

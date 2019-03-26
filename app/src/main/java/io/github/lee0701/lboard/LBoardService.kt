@@ -92,12 +92,12 @@ class LBoardService: InputMethodService() {
 
         val cheonjiin = HangulInputMethod(
                 DefaultSoftKeyboard("keyboard_12key_4cols"),
-                TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_CHEONJIIN, true, true),
+                TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_CHEONJIIN),
                 DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_CHEONJIIN, TwelveDubeolHangul.VIRTUAL_CHEONJIIN)
         )
         val naratgeul = HangulInputMethod(
                 DefaultSoftKeyboard("keyboard_12key_4cols"),
-                TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_NARATGEUL, true, false),
+                TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_NARATGEUL),
                 DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_NARATGEUL, VirtualJamoTable(mapOf()))
         )
         val shin = HangulInputMethod(
