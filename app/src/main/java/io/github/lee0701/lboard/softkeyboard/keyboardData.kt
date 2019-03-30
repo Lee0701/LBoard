@@ -37,12 +37,14 @@ interface OnKeyListener {
 
 
 data class Layout(
-        val rows: List<Row>
+        val rows: List<Row>,
+        val keyWidth: Float = 0.1f
 )
 
 data class Row(
         val keys: List<Key>,
         val type: Type? = null,
+        val keyWidth: Float = 0f,
         val paddingLeft: Float = 0f,
         val paddingRight: Float = 0f
 ) {
@@ -56,7 +58,7 @@ data class Row(
 data class Key (
         val keyCode: Int = 0,
         var label: String = "",
-        val relativeWidth: Float = 0f
+        val keyWidth: Float = 0f
 ) {
     var x: Int = 0
     var y: Int = 0

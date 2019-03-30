@@ -39,7 +39,6 @@ class ThemeableKeyboardView(
         val keyHeight = keyboardHeight / rows.size
 
         rows.forEachIndexed { j, row ->
-            val width = keyboardWidth - ((row.paddingLeft + row.paddingRight) * keyboardWidth).toInt()
             var x = (row.paddingLeft * keyboardWidth).toInt()
             row.y = j * keyHeight
             row.height = keyHeight
@@ -47,7 +46,10 @@ class ThemeableKeyboardView(
             row.keys.forEachIndexed { i, key ->
                 key.x = x
                 key.y = row.y
-                key.width = if(key.relativeWidth == 0f) width / row.keys.size else (width * key.relativeWidth).toInt()
+                key.width =
+                        if(key.keyWidth != 0f) (keyboardWidth * key.keyWidth).toInt()
+                        else if(row.keyWidth != 0f) (keyboardWidth * row.keyWidth).toInt()
+                        else (keyboardWidth * layout.keyWidth).toInt()
                 key.height = row.height
 
                 val boundString = key.label.map { "W" }.joinToString("")
