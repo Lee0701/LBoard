@@ -1,0 +1,98 @@
+package io.github.lee0701.lboard.softkeyboard
+
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
+import android.graphics.drawable.Drawable
+import android.support.v4.view.animation.FastOutLinearInInterpolator
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.PathInterpolator
+
+data class TouchPointer(
+        var x: Int,
+        var y: Int,
+        var pressure: Float,
+        val key: Key?
+)
+
+data class KeyTheme(
+        val background: Drawable,
+        val backgroundPressed: Drawable,
+        val textColor: Int,
+        val foreground: Drawable? = null
+)
+
+data class RowTheme(
+        val background: Drawable
+)
+
+data class KeyboardTheme(
+        val background: Drawable,
+        val rowTheme: Map<Row.Type?, RowTheme> = mapOf(),
+        val keyTheme: Map<Int?, KeyTheme> = mapOf()
+)
+
+interface OnKeyListener {
+    fun onKey(keyCode: Int, x: Int, y: Int)
+}
+
+
+data class Layout(
+        val rows: List<Row>
+)
+
+data class Row(
+        val keys: List<Key>,
+        val type: Type? = null,
+        val paddingLeft: Float = 0f,
+        val paddingRight: Float = 0f
+) {
+    var y: Int = 0
+    var height: Int = 0
+    enum class Type {
+        ODD, EVEN, NUMBER, BOTTOM
+    }
+}
+
+data class Key (
+        val keyCode: Int = 0,
+        var label: String = "",
+
+        val relativeWidth: Float = 0f
+) {
+    var onShift: Boolean = false
+    var x: Int = 0
+    var y: Int = 0
+    var width: Int = 0
+    var height: Int = 0
+    var textSize: Float = 0f
+
+    private var pressAnimator: ValueAnimator? = null
+    private var releaseAnimator: ValueAnimator? = null
+
+    val alpha: Float? get() = releaseAnimator?.getAnimatedValue("alpha") as Float?
+            ?: pressAnimator?.getAnimatedValue("alpha") as Float?
+
+    fun onPressed(updateListener: (ValueAnimator) -> Unit) {
+        this.pressAnimator = ValueAnimator().apply {
+            val scale = PropertyValuesHolder.ofFloat("alpha", 0.3f, 1f)
+            this.setValues(scale)
+            this.addUpdateListener(updateListener)
+            this.interpolator = DecelerateInterpolator()
+            this.duration = 25
+            this.start()
+        }
+        this.releaseAnimator = null
+    }
+
+    fun onReleased(updateListener: (ValueAnimator) -> Unit) {
+        this.releaseAnimator = ValueAnimator().apply {
+            val alpha = PropertyValuesHolder.ofFloat("alpha", 1f, 0f)
+            this.setValues(alpha)
+            this.addUpdateListener(updateListener)
+            this.interpolator = DecelerateInterpolator()
+            this.duration = 100
+            this.start()
+        }
+    }
+
+}

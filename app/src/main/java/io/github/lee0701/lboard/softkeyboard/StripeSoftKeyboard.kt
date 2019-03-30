@@ -8,20 +8,20 @@ import android.view.View
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import org.greenrobot.eventbus.EventBus
 
-class StripeSoftKeyboard(val layout: StripeKeyboardView.Layout, val keyHeight: Float): SoftKeyboard, StripeKeyboardView.Listener {
+class StripeSoftKeyboard(val layout: Layout, val keyHeight: Float): SoftKeyboard, OnKeyListener {
 
     var keyboardView: StripeKeyboardView? = null
 
     override fun initView(context: Context): View? {
-        val theme = StripeKeyboardView.KeyboardTheme(
+        val theme = KeyboardTheme(
                 ColorDrawable(Color.argb(0xff, 0x15, 0x65, 0xc0)),
                 mapOf(
-                        null to StripeKeyboardView.RowTheme(ColorDrawable(Color.TRANSPARENT)),
-                        StripeKeyboardView.Row.Type.EVEN to StripeKeyboardView.RowTheme(ColorDrawable(Color.argb(64, 255, 255, 255))),
-                        StripeKeyboardView.Row.Type.BOTTOM to StripeKeyboardView.RowTheme(ColorDrawable(Color.argb(64, 255, 255, 255)))
+                        null to RowTheme(ColorDrawable(Color.TRANSPARENT)),
+                        Row.Type.EVEN to RowTheme(ColorDrawable(Color.argb(64, 255, 255, 255))),
+                        Row.Type.BOTTOM to RowTheme(ColorDrawable(Color.argb(64, 255, 255, 255)))
                 ),
                 mapOf(
-                        null to StripeKeyboardView.KeyTheme(ColorDrawable(Color.TRANSPARENT), ColorDrawable(Color.argb(64, 255, 255, 255)), Color.WHITE)
+                        null to KeyTheme(ColorDrawable(Color.TRANSPARENT), ColorDrawable(Color.argb(64, 255, 255, 255)), Color.WHITE)
                 )
         )
         val keyboardHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyHeight, context.resources.displayMetrics) * layout.rows.size
