@@ -128,36 +128,41 @@ class BasicKeyboardView(
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean =
-        when(event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                val key = getKey(event.x.toInt(), event.y.toInt())
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val pointerId = event.getPointerId(event.actionIndex)
+        val x = event.getX(event.actionIndex)
+        val y = event.getY(event.actionIndex)
+        val pressure = event.getPressure(event.actionIndex)
+        return when(event.actionMasked) {
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
+                val key = getKey(x.toInt(), y.toInt())
                 key?.onPressed { invalidate() }
-                pointers += 0 to TouchPointer(event.x.toInt(), event.y.toInt(), event.pressure, key)
+                pointers += pointerId to TouchPointer(x.toInt(), y.toInt(), pressure, key)
                 true
             }
 
             MotionEvent.ACTION_MOVE -> {
-                pointers[0]?.let { pointer ->
-                    pointer.x = event.x.toInt()
-                    pointer.y = event.y.toInt()
-                    pointer.pressure = event.pressure
+                pointers[pointerId]?.let { pointer ->
+                    pointer.x = x.toInt()
+                    pointer.y = y.toInt()
+                    pointer.pressure = pressure
                 }
                 true
             }
 
-            MotionEvent.ACTION_UP -> {
-                pointers[0]?.let { pointer ->
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
+                pointers[pointerId]?.let { pointer ->
                     pointer.key?.let { key ->
                         key.onReleased { invalidate() }
                         onKeyListener.onKey(key.keyCode, pointer.x, pointer.y)
                     }
                 }
-                pointers.clear()
+                pointers -= pointerId
                 true
             }
             else -> super.onTouchEvent(event)
         }
+    }
 
     fun getKey(x: Int, y: Int): Key? {
         layout.rows.forEach { row ->

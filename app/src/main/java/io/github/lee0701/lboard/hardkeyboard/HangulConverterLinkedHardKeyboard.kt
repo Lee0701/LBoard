@@ -4,7 +4,7 @@ class HangulConverterLinkedHardKeyboard(val layouts: List<SimpleKeyboardLayout>)
 
     var status: Int = 0
 
-    val currentLayout: SimpleKeyboardLayout? get() = layouts.getOrNull(status)
+    private val currentLayout: SimpleKeyboardLayout? get() = layouts.getOrNull(status)
 
     override fun convert(keyCode: Int, shift: Boolean, alt: Boolean): HardKeyboard.ConvertResult {
         return HardKeyboard.ConvertResult((currentLayout ?: layouts[0]).layout[keyCode]?.let { if(shift) it.shift else it.normal })
