@@ -56,7 +56,7 @@ class LBoardService: InputMethodService() {
                 HangulConverter(ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL)
         )
         val qwerty = WordComposingInputMethod(
-                ThemeableSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, 50f),
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, 50f),
                 SimpleHardKeyboard(Alphabet.LAYOUT_QWERTY)
         )
         val symbols = AlphabetInputMethod(

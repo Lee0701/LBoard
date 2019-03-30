@@ -1,14 +1,11 @@
 package io.github.lee0701.lboard.softkeyboard
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.inputmethodservice.Keyboard
 import android.support.v4.content.ContextCompat
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.View
 import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
@@ -16,14 +13,9 @@ import org.greenrobot.eventbus.EventBus
 
 
 
-class ThemeableSoftKeyboard(val layout: Layout, val keyHeight: Float): SoftKeyboard, OnKeyListener {
+class BasicSoftKeyboard(val layout: Layout, val keyHeight: Float): SoftKeyboard, OnKeyListener {
 
-    var keyboardView: ThemeableKeyboardView? = null
-
-    /** Qwerty keyboard [ENTER]  */
-    val KEYCODE_QWERTY_ENTER = 66
-    /** Qwerty keyboard [SHIFT]  */
-    val KEYCODE_QWERTY_SHIFT = 59
+    var keyboardView: BasicKeyboardView? = null
 
     override fun initView(context: Context): View? {
         val theme = KeyboardTheme(
@@ -37,22 +29,22 @@ class ThemeableSoftKeyboard(val layout: Layout, val keyHeight: Float): SoftKeybo
                                 ContextCompat.getDrawable(context, R.drawable.keybg_white_p)!!,
                                 Color.parseColor("#dd000000")
                         ),
-                        KEYCODE_QWERTY_ENTER to KeyTheme(
+                        KeyEvent.KEYCODE_ENTER to KeyTheme(
                                 ContextCompat.getDrawable(context, R.drawable.keybg_white_enter)!!,
                                 ContextCompat.getDrawable(context, R.drawable.keybg_white_mod_p)!!,
                                 Color.parseColor("#dd000000"),
                                 ContextCompat.getDrawable(context, R.drawable.key_qwerty_enter)
                         ),
-                        KEYCODE_QWERTY_SHIFT to KeyTheme(
+                        KeyEvent.KEYCODE_SHIFT_LEFT to KeyTheme(
                                 ContextCompat.getDrawable(context, R.drawable.keybg_white_mod)!!,
                                 ContextCompat.getDrawable(context, R.drawable.keybg_white_mod_p)!!,
                                 Color.parseColor("#dd000000"),
-                                ContextCompat.getDrawable(context, R.drawable.key_qwerty_shift)
+                                ContextCompat.getDrawable(context, R.drawable.key_qwerty_shift_b)
                         )
                 )
         )
         val keyboardHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyHeight, context.resources.displayMetrics) * layout.rows.size
-        keyboardView = ThemeableKeyboardView(context, keyboardHeight.toInt(), layout, theme, this)
+        keyboardView = BasicKeyboardView(context, keyboardHeight.toInt(), layout, theme, this)
         return keyboardView
     }
 

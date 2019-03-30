@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 
 
-class ThemeableKeyboardView(
+class BasicKeyboardView(
         context: Context,
         val keyboardHeight: Int,
         val layout: Layout,
