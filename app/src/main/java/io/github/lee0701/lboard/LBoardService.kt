@@ -21,6 +21,7 @@ import io.github.lee0701.lboard.layouts.hangul.Symbols
 import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import io.github.lee0701.lboard.layouts.soft.SoftLayout
 import io.github.lee0701.lboard.softkeyboard.*
+import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -56,7 +57,7 @@ class LBoardService: InputMethodService() {
                 HangulConverter(ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL)
         )
         val qwerty = WordComposingInputMethod(
-                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, 50f),
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, 50f),
                 SimpleHardKeyboard(Alphabet.LAYOUT_QWERTY)
         )
         val symbols = AlphabetInputMethod(

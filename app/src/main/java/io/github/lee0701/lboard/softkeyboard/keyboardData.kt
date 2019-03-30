@@ -2,10 +2,8 @@ package io.github.lee0701.lboard.softkeyboard
 
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
-import android.graphics.drawable.Drawable
-import android.support.v4.view.animation.FastOutLinearInInterpolator
+import android.support.annotation.DrawableRes
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.PathInterpolator
 
 data class TouchPointer(
         var x: Int,
@@ -15,18 +13,18 @@ data class TouchPointer(
 )
 
 data class KeyTheme(
-        val background: Drawable,
-        val backgroundPressed: Drawable,
+        @DrawableRes val background: Int,
+        @DrawableRes val backgroundPressed: Int,
         val textColor: Int,
-        val foreground: Drawable? = null
+        @DrawableRes val foreground: Int? = null
 )
 
 data class RowTheme(
-        val background: Drawable
+        @DrawableRes val background: Int? = null
 )
 
 data class KeyboardTheme(
-        val background: Drawable,
+        @DrawableRes val background: Int,
         val rowTheme: Map<Row.Type?, RowTheme> = mapOf(),
         val keyTheme: Map<Int?, KeyTheme> = mapOf()
 )

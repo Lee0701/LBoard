@@ -3,6 +3,7 @@ package io.github.lee0701.lboard.softkeyboard
 import android.content.Context
 import android.app.Service
 import android.graphics.*
+import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
@@ -43,7 +44,7 @@ class BasicKeyboardView(
             row.y = j * keyHeight
             row.height = keyHeight
 
-            row.keys.forEachIndexed { i, key ->
+            row.keys.forEachIndexed { _, key ->
                 key.x = x
                 key.y = row.y
                 key.width =
@@ -65,7 +66,7 @@ class BasicKeyboardView(
 
         getLocalVisibleRect(rect)
 
-        val background = theme.background
+        val background = ContextCompat.getDrawable(context, theme.background)!!
         background.setBounds(rect)
         background.draw(canvas)
 
@@ -77,8 +78,8 @@ class BasicKeyboardView(
 
         rows.forEachIndexed { j, row ->
             val rowTheme = theme.rowTheme[row.type] ?: theme.rowTheme[null]
-            rowTheme?.let { theme ->
-                val drawable = theme.background
+            rowTheme?.background?.let { background ->
+                val drawable = ContextCompat.getDrawable(context, background)!!
                 drawable.setBounds(0, j * row.keys[0].height, keyboardWidth, (j + 1) * row.keys[0].height)
                 drawable.draw(canvas)
             }
@@ -97,7 +98,7 @@ class BasicKeyboardView(
 
         val widthRatio = 1.0f
 
-        val bgDrawable = theme.background
+        val bgDrawable = ContextCompat.getDrawable(context, theme.background)!!
         val width = (key.width * widthRatio).toInt()
         val x = key.x + key.width/2 - width/2
 
@@ -106,7 +107,7 @@ class BasicKeyboardView(
 
         val alpha = ((key.alpha ?: 0f) * 255).toInt()
 
-        val pressedBgDrawable = theme.backgroundPressed
+        val pressedBgDrawable = ContextCompat.getDrawable(context, theme.backgroundPressed)!!
         pressedBgDrawable.setBounds(x, key.y, x + width, key.y + key.height)
         pressedBgDrawable.alpha = alpha
         pressedBgDrawable.draw(canvas)
@@ -115,15 +116,14 @@ class BasicKeyboardView(
     private fun onDrawKeyForeground(canvas: Canvas, key: Key) {
         val theme = theme.keyTheme[key.keyCode] ?: theme.keyTheme[null] ?: return
 
-        if (theme.foreground != null) with(theme.foreground){
+        if (theme.foreground != null) with(ContextCompat.getDrawable(context, theme.foreground)!!) {
                 val x = key.x + (key.width - intrinsicWidth)/2
                 val y = key.y + (key.height - intrinsicHeight)/2
                 setBounds(x, y, x + intrinsicWidth, y + intrinsicHeight)
                 draw(canvas)
-        } else{
+        } else {
             paint.color = theme.textColor
             paint.textSize = key.textSize
-
             canvas.drawText(key.label, (key.x + key.width/2).toFloat(), (key.y + key.height/4*3).toFloat(), paint)
         }
     }
