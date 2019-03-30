@@ -52,12 +52,12 @@ class LBoardService: InputMethodService() {
                 DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_NARATGEUL, VirtualJamoTable(mapOf()))
         )
         val shin = HangulInputMethod(
-                DefaultSoftKeyboard("keyboard_10cols_mod_quote"),
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOD_QUOTE, BasicSoftKeyboardTheme.WHITE, 50f),
                 HangulConverterLinkedHardKeyboard(ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL.map { Alphabet.LAYOUT_QWERTY + it }),
                 HangulConverter(ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL)
         )
         val qwerty = WordComposingInputMethod(
-                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, 50f),
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM, BasicSoftKeyboardTheme.WHITE, 50f),
                 SimpleHardKeyboard(Alphabet.LAYOUT_QWERTY)
         )
         val symbols = AlphabetInputMethod(

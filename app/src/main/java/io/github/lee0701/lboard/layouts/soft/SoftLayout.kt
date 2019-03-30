@@ -38,7 +38,7 @@ object SoftLayout {
             Key(41, "m"),
             Key(67, "DEL", keyWidth = 0.15f)
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 63, label = "SYM", keyWidth = 1.5f/10f),
+            Key(keyCode = 63, label = "?12", keyWidth = 1.5f/10f),
             Key(keyCode = 204, label = "ABC", keyWidth = 1.5f/10f),
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
@@ -88,7 +88,7 @@ object SoftLayout {
             Key(41, "m"),
             Key(67, "DEL", keyWidth = 0.15f)
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 63, label = "SYM", keyWidth = 1.5f/10f),
+            Key(keyCode = 63, label = "?12", keyWidth = 1.5f/10f),
             Key(keyCode = 204, label = "ABC", keyWidth = 1.5f/10f),
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
@@ -137,13 +137,15 @@ object SoftLayout {
             Key(30, "b"),
             Key(42, "n"),
             Key(41, "m"),
+            Key(75, "'"),
             Key(67, "DEL")
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 63, label = "SYM", keyWidth = 1.5f/10f),
-            Key(keyCode = 204, label = "ABC", keyWidth = 1.5f/10f),
-            Key(keyCode = 62, keyWidth = 4/10f),
-            Key(keyCode = 56, label = ".", keyWidth = 1/10f),
-            Key(keyCode = 66, label = "RETURN", keyWidth = 2/10f)
+            Key(keyCode = 63, label = "?12", keyWidth = 0.125f),
+            Key(keyCode = 56, label = ".", keyWidth = 0.1f),
+            Key(keyCode = 204, label = "ABC", keyWidth = 0.125f),
+            Key(keyCode = 62, keyWidth = 0.4f),
+            Key(keyCode = 76, label = "/", keyWidth = 0.1f),
+            Key(keyCode = 66, label = "RETURN", keyWidth = 0.15f)
     ), Row.Type.BOTTOM)))
 
 }

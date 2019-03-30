@@ -54,8 +54,8 @@ object Alphabet {
             42 to LayoutItem(0x006e, 0x004e),
             41 to LayoutItem(0x006d, 0x004d),
 
-            55 to LayoutItem(0x002c, 0x002c),
-            56 to LayoutItem(0x002e, 0x002e),
+            55 to LayoutItem(0x002c, 0x003c),
+            56 to LayoutItem(0x002e, 0x003e),
             76 to LayoutItem(0x002f, 0x003f)
     ))
 }
