@@ -56,10 +56,8 @@ data class Row(
 data class Key (
         val keyCode: Int = 0,
         var label: String = "",
-
         val relativeWidth: Float = 0f
 ) {
-    var onShift: Boolean = false
     var x: Int = 0
     var y: Int = 0
     var width: Int = 0
