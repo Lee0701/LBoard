@@ -5,26 +5,31 @@ import android.app.Service
 import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
+import io.github.lee0701.lboard.event.SoftKeyClickEvent
+import org.greenrobot.eventbus.EventBus
+import java.util.*
+import kotlin.concurrent.timerTask
 
 
 class BasicKeyboardView(
         context: Context,
-        val keyboardHeight: Int,
         val layout: Layout,
         val theme: KeyboardTheme,
-        val onKeyListener: io.github.lee0701.lboard.softkeyboard.OnKeyListener)
-: View(context){
+        val onKeyListener: OnKeyListener,
+        val keyboardHeight: Int,
+        val longClickDelay: Int,
+        val repeatRate: Int
+): View(context) {
 
-    val rect = Rect()
-    val displayMetrics = DisplayMetrics()
+    private val rect = Rect()
+    private val displayMetrics = DisplayMetrics()
 
-    val paint = Paint()
+    private val paint = Paint()
 
-    val pointers = mutableMapOf<Int, TouchPointer>()
+    private val pointers = mutableMapOf<Int, TouchPointer>()
+
+    private val timer = Timer()
 
     init {
         paint.textAlign = Paint.Align.CENTER
@@ -59,6 +64,7 @@ class BasicKeyboardView(
                 x += key.width
             }
         }
+
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -133,12 +139,22 @@ class BasicKeyboardView(
         val x = event.getX(event.actionIndex)
         val y = event.getY(event.actionIndex)
         val pressure = event.getPressure(event.actionIndex)
-        return when(event.actionMasked) {
+        when(event.actionMasked) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
-                val key = getKey(x.toInt(), y.toInt())
-                key?.onPressed { invalidate() }
-                pointers += pointerId to TouchPointer(x.toInt(), y.toInt(), pressure, key)
-                true
+                val key = getKey(x.toInt(), y.toInt()) ?: return super.onTouchEvent(event)
+                key.onPressed { invalidate() }
+
+                val onLongClick = if(key.repeatable) timerTask {
+                    onKeyListener.onKey(key.keyCode, x.toInt(), y.toInt())
+                } else timerTask {
+                    onKeyListener.onKeyLongClick(key.keyCode)
+                }
+
+                if(key.keyCode == KeyEvent.KEYCODE_DEL) timer.scheduleAtFixedRate(onLongClick, longClickDelay.toLong(), repeatRate.toLong())
+                else timer.schedule(onLongClick, longClickDelay.toLong())
+
+                pointers += pointerId to TouchPointer(x.toInt(), y.toInt(), pressure, key, onLongClick)
+                return true
             }
 
             MotionEvent.ACTION_MOVE -> {
@@ -147,24 +163,23 @@ class BasicKeyboardView(
                     pointer.y = y.toInt()
                     pointer.pressure = pressure
                 }
-                true
+                return true
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                 pointers[pointerId]?.let { pointer ->
-                    pointer.key?.let { key ->
-                        key.onReleased { invalidate() }
-                        onKeyListener.onKey(key.keyCode, pointer.x, pointer.y)
-                    }
+                    pointer.longClickHandler.cancel()
+                    pointer.key.onReleased { invalidate() }
+                    onKeyListener.onKey(pointer.key.keyCode, pointer.x, pointer.y)
+                    pointers -= pointerId
                 }
-                pointers -= pointerId
-                true
+                return true
             }
-            else -> super.onTouchEvent(event)
         }
+        return super.onTouchEvent(event)
     }
 
-    fun getKey(x: Int, y: Int): Key? {
+    private fun getKey(x: Int, y: Int): Key? {
         layout.rows.forEach { row ->
             if (y in row.y until row.y + row.height) {
                 row.keys.forEach { key ->
@@ -179,4 +194,22 @@ class BasicKeyboardView(
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         setMeasuredDimension(measuredWidth, keyboardHeight)
     }
+
+    companion object {
+        const val TOKEN_KEYCODE = "keycode_"
+    }
+
+    data class TouchPointer(
+            var x: Int,
+            var y: Int,
+            var pressure: Float,
+            val key: Key,
+            val longClickHandler: TimerTask
+    )
+
+    interface OnKeyListener {
+        fun onKey(keyCode: Int, x: Int, y: Int)
+        fun onKeyLongClick(keyCode: Int)
+    }
+
 }

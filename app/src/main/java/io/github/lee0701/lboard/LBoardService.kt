@@ -61,10 +61,9 @@ class LBoardService: InputMethodService() {
                 SimpleHardKeyboard(Alphabet.LAYOUT_QWERTY)
         )
         val symbols = AlphabetInputMethod(
-                DefaultSoftKeyboard("keyboard_10cols_mobile"),
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, 50f),
                 SimpleHardKeyboard(Symbols.LAYOUT_SYMBOLS_A)
         )
-        inputMethods += InputMethodSet(naratgeul, symbols)
         inputMethods += InputMethodSet(qwerty, symbols)
         inputMethods += InputMethodSet(shin, symbols)
     }

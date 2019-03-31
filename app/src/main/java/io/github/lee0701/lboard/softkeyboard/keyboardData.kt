@@ -5,13 +5,6 @@ import android.animation.ValueAnimator
 import android.support.annotation.DrawableRes
 import android.view.animation.DecelerateInterpolator
 
-data class TouchPointer(
-        var x: Int,
-        var y: Int,
-        var pressure: Float,
-        val key: Key?
-)
-
 data class KeyTheme(
         @DrawableRes val background: Int,
         @DrawableRes val backgroundPressed: Int,
@@ -28,11 +21,6 @@ data class KeyboardTheme(
         val rowTheme: Map<Row.Type?, RowTheme> = mapOf(),
         val keyTheme: Map<Int?, KeyTheme> = mapOf()
 )
-
-interface OnKeyListener {
-    fun onKey(keyCode: Int, x: Int, y: Int)
-}
-
 
 data class Layout(
         val rows: List<Row>,
@@ -56,6 +44,7 @@ data class Row(
 data class Key (
         val keyCode: Int = 0,
         var label: String = "",
+        val repeatable: Boolean = false,
         val keyWidth: Float = 0f
 ) {
     var x: Int = 0
