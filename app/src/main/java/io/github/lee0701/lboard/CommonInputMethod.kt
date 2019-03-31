@@ -10,8 +10,8 @@ import org.greenrobot.eventbus.EventBus
 
 abstract class CommonInputMethod: InputMethod {
 
-    var shift: Boolean = false
-    var alt: Boolean = false
+    override var shift: Boolean = false
+    override var alt: Boolean = false
 
     var capsLock: Boolean = false
     var altLock: Boolean = false

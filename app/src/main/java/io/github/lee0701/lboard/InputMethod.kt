@@ -7,6 +7,9 @@ import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 
 interface InputMethod {
 
+    var shift: Boolean
+    var alt: Boolean
+
     val softKeyboard: SoftKeyboard
     val hardKeyboard: HardKeyboard
 

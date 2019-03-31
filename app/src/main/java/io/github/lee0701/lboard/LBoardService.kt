@@ -52,16 +52,16 @@ class LBoardService: InputMethodService() {
                 DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_NARATGEUL, VirtualJamoTable(mapOf()))
         )
         val shin = HangulInputMethod(
-                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOD_QUOTE, BasicSoftKeyboardTheme.WHITE, 50f),
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOD_QUOTE, BasicSoftKeyboardTheme.WHITE, 54f),
                 HangulConverterLinkedHardKeyboard(ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL.map { Alphabet.LAYOUT_QWERTY + it }),
                 HangulConverter(ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL)
         )
         val qwerty = WordComposingInputMethod(
-                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM, BasicSoftKeyboardTheme.WHITE, 50f),
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM, BasicSoftKeyboardTheme.WHITE, 54f),
                 SimpleHardKeyboard(Alphabet.LAYOUT_QWERTY)
         )
         val symbols = AlphabetInputMethod(
-                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, 50f),
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, 54f),
                 SimpleHardKeyboard(Symbols.LAYOUT_SYMBOLS_A)
         )
         inputMethods += InputMethodSet(qwerty, symbols)
@@ -169,6 +169,14 @@ class LBoardService: InputMethodService() {
             }
             else -> sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.FULL).get(event.keyCode, 0).toChar())
         } else currentMethod.onKeyRelease(event.keyCode)
+    }
+
+    @Subscribe fun onSoftKeyLongClick(event: SoftKeyLongClickEvent) {
+        if(!currentMethod.shift) currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
+    }
+
+    @Subscribe fun onSoftKeyFlick(event: SoftKeyFlickEvent) {
+        if(!currentMethod.shift) currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
     }
 
     @Subscribe fun onCompose(event: ComposeEvent) {

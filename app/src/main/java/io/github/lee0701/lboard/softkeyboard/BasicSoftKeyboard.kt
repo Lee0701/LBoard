@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.View
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
+import io.github.lee0701.lboard.event.SoftKeyFlickEvent
+import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
 import org.greenrobot.eventbus.EventBus
 
 class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHeight: Float): SoftKeyboard, BasicKeyboardView.OnKeyListener {
@@ -29,6 +31,23 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
     }
 
     override fun onKeyLongClick(keyCode: Int) {
+        EventBus.getDefault().post(SoftKeyLongClickEvent(keyCode))
+    }
+
+    override fun onKeyFlickLeft(keyCode: Int) {
+        EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.LEFT))
+    }
+
+    override fun onKeyFlickRight(keyCode: Int) {
+        EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.RIGHT))
+    }
+
+    override fun onKeyFlickUp(keyCode: Int) {
+        EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.UP))
+    }
+
+    override fun onKeyFlickDown(keyCode: Int) {
+        EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.DOWN))
     }
 
 }

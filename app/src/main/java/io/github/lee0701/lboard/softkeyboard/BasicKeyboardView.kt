@@ -6,10 +6,10 @@ import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.view.*
-import io.github.lee0701.lboard.event.SoftKeyClickEvent
-import org.greenrobot.eventbus.EventBus
+import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import java.util.*
 import kotlin.concurrent.timerTask
+import kotlin.math.abs
 
 
 class BasicKeyboardView(
@@ -162,16 +162,36 @@ class BasicKeyboardView(
                     pointer.x = x.toInt()
                     pointer.y = y.toInt()
                     pointer.pressure = pressure
+
+                    if(abs(pointer.dy) > abs((pointer.dx))) {
+                        if(pointer.y > pointer.key.y + pointer.key.height && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.DOWN) {
+                            onKeyListener.onKeyFlickDown(pointer.key.keyCode)
+                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.DOWN
+                        } else if(pointer.y < pointer.key.y && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.UP) {
+                            onKeyListener.onKeyFlickUp(pointer.key.keyCode)
+                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.UP
+                        }
+                    } else {
+                        if(pointer.x > pointer.key.x + pointer.key.width && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.RIGHT) {
+                            onKeyListener.onKeyFlickRight(pointer.key.keyCode)
+                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.RIGHT
+                        } else if(pointer.x < pointer.key.x && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.LEFT) {
+                            onKeyListener.onKeyFlickLeft(pointer.key.keyCode)
+                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.LEFT
+                        }
+                    }
                 }
                 return true
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                 pointers[pointerId]?.let { pointer ->
+                    pointers -= pointerId
+
                     pointer.longClickHandler.cancel()
                     pointer.key.onReleased { invalidate() }
+
                     onKeyListener.onKey(pointer.key.keyCode, pointer.x, pointer.y)
-                    pointers -= pointerId
                 }
                 return true
             }
@@ -195,21 +215,30 @@ class BasicKeyboardView(
         setMeasuredDimension(measuredWidth, keyboardHeight)
     }
 
-    companion object {
-        const val TOKEN_KEYCODE = "keycode_"
-    }
-
     data class TouchPointer(
-            var x: Int,
-            var y: Int,
+            val initialX: Int,
+            val initialY: Int,
             var pressure: Float,
             val key: Key,
             val longClickHandler: TimerTask
-    )
+    ) {
+        var x: Int = initialX
+        var y: Int = initialY
+
+        val dx get() = x - initialX
+        val dy get() = y - initialY
+
+        var flickDirection: SoftKeyFlickEvent.FlickDirection? = null
+
+    }
 
     interface OnKeyListener {
         fun onKey(keyCode: Int, x: Int, y: Int)
         fun onKeyLongClick(keyCode: Int)
+        fun onKeyFlickLeft(keyCode: Int)
+        fun onKeyFlickRight(keyCode: Int)
+        fun onKeyFlickUp(keyCode: Int)
+        fun onKeyFlickDown(keyCode: Int)
     }
 
 }
