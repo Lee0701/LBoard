@@ -29,7 +29,8 @@
 
         <activity
             android:name=".settings.SettingsActivity"
-            android:label="@string/settings_name">
+            android:label="@string/settings_name"
+            android:theme="@style/AppTheme">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
