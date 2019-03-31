@@ -58,8 +58,7 @@ class BasicKeyboardView(
                         else (keyboardWidth * layout.keyWidth).toInt()
                 key.height = row.height
 
-                val boundString = key.label.map { "W" }.joinToString("")
-                key.textSize = key.width / paint.measureText(boundString) * paint.textSize / 3 * 2
+                key.textSize = 4f
 
                 x += key.width
             }
@@ -73,7 +72,7 @@ class BasicKeyboardView(
         getLocalVisibleRect(rect)
 
         val background = ContextCompat.getDrawable(context, theme.background)!!
-        background.setBounds(rect)
+        background.bounds = rect
         background.draw(canvas)
 
         val rows = layout.rows
@@ -129,7 +128,9 @@ class BasicKeyboardView(
                 draw(canvas)
         } else {
             paint.color = theme.textColor
+            val boundString = key.label.map { "W" }.joinToString("")
             paint.textSize = key.textSize
+            paint.textSize = key.textSize * (if(key.width > key.height) key.height else key.width) / paint.measureText(boundString) / 3 * 2
             canvas.drawText(key.label, (key.x + key.width/2).toFloat(), (key.y + key.height/4*3).toFloat(), paint)
         }
     }

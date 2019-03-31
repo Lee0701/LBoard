@@ -20,6 +20,7 @@ import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.Symbols
 import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import io.github.lee0701.lboard.layouts.soft.SoftLayout
+import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
@@ -47,7 +48,7 @@ class LBoardService: InputMethodService() {
                 DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_CHEONJIIN, TwelveDubeolHangul.VIRTUAL_CHEONJIIN)
         )
         val naratgeul = HangulInputMethod(
-                DefaultSoftKeyboard("keyboard_12key_4cols"),
+                BasicSoftKeyboard(TwelveSoftLayout.LAYOUT_12KEY_4COLS, BasicSoftKeyboardTheme.WHITE, 54f),
                 TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_NARATGEUL),
                 DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_NARATGEUL, VirtualJamoTable(mapOf()))
         )
@@ -66,6 +67,7 @@ class LBoardService: InputMethodService() {
         )
         inputMethods += InputMethodSet(qwerty, symbols)
         inputMethods += InputMethodSet(shin, symbols)
+        inputMethods += InputMethodSet(naratgeul, symbols)
     }
 
     override fun onCreateInputView(): View? {
