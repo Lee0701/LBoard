@@ -7,6 +7,7 @@ import android.view.View
 import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
 import org.greenrobot.eventbus.EventBus
+import org.json.JSONObject
 
 abstract class CommonInputMethod: InputMethod {
 
@@ -109,4 +110,12 @@ abstract class CommonInputMethod: InputMethod {
         hardKeyboard.reset()
         EventBus.getDefault().post(UpdateViewEvent())
     }
+
+    override fun serialize(): JSONObject {
+        return super.serialize().apply {
+            put("soft-keyboard", softKeyboard.serialize())
+            put("hard-keyboard", hardKeyboard.serialize())
+        }
+    }
+
 }

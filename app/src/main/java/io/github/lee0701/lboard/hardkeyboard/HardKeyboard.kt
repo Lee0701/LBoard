@@ -1,6 +1,8 @@
 package io.github.lee0701.lboard.hardkeyboard
 
-interface HardKeyboard {
+import io.github.lee0701.lboard.InputMethodModule
+
+interface HardKeyboard: InputMethodModule {
 
     fun convert(keyCode: Int, shift: Boolean, alt: Boolean): ConvertResult
 

@@ -6,7 +6,11 @@ import android.view.View
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
+import io.github.lee0701.lboard.layouts.soft.SoftLayout
+import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
+import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
+import org.json.JSONObject
 
 class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHeight: Float): SoftKeyboard, BasicKeyboardView.OnKeyListener {
 
@@ -48,6 +52,39 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
 
     override fun onKeyFlickDown(keyCode: Int) {
         EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.DOWN))
+    }
+
+    override fun serialize(): JSONObject {
+        return super.serialize().apply {
+            put("layout", REVERSE_LAYOUTS[layout])
+            put("theme", REVERSE_THEMES[theme])
+            put("height", keyHeight.toInt())
+        }
+    }
+
+    companion object {
+
+        @JvmStatic fun deserialize(json: JSONObject): BasicSoftKeyboard? {
+            val layout = LAYOUTS[json.getString("layout")] ?: return null
+            val theme = THEMES[json.getString("theme")] ?: return null
+            val keyHeight = json.getInt("height").toFloat()
+            return BasicSoftKeyboard(layout, theme, keyHeight)
+        }
+
+        val LAYOUTS = mapOf(
+                "10cols-mobile" to SoftLayout.LAYOUT_10COLS_MOBILE,
+                "10cols-mobile-with-num" to SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
+                "10cols-mod-quote" to SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
+
+                "12key-4cols" to TwelveSoftLayout.LAYOUT_12KEY_4COLS
+        )
+        val REVERSE_LAYOUTS = LAYOUTS.map { it.value to it.key }.toMap()
+
+        val THEMES = mapOf(
+                "WHITE" to BasicSoftKeyboardTheme.WHITE
+        )
+        val REVERSE_THEMES = THEMES.map { it.value to it.key }.toMap()
+
     }
 
 }

@@ -6,6 +6,7 @@ import android.inputmethodservice.KeyboardView
 import android.view.View
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import org.greenrobot.eventbus.EventBus
+import org.json.JSONObject
 
 class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.OnKeyboardActionListener {
 
@@ -52,6 +53,18 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
     }
 
     override fun onText(text: CharSequence?) {
+    }
+
+    override fun serialize(): JSONObject {
+        return super.serialize().apply {
+            put("layout", layoutResId)
+        }
+    }
+
+    companion object {
+        @JvmStatic fun deserialize(json: JSONObject): DefaultSoftKeyboard? {
+            return DefaultSoftKeyboard(json.getString("layout"))
+        }
     }
 
 }

@@ -11,6 +11,7 @@ import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
+import org.json.JSONObject
 
 class WordComposingInputMethod(
         override val softKeyboard: SoftKeyboard,
@@ -97,4 +98,13 @@ class WordComposingInputMethod(
         states.clear()
         super.reset()
     }
+
+    companion object {
+        @JvmStatic fun deserialize(json: JSONObject): WordComposingInputMethod? {
+            val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard
+            val hardKeyboard = InputMethod.deserializeModule(json.getJSONObject("hard-keyboard")) as HardKeyboard
+            return WordComposingInputMethod(softKeyboard, hardKeyboard)
+        }
+    }
+
 }

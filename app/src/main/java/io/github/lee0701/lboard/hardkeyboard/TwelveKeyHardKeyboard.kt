@@ -1,5 +1,8 @@
 package io.github.lee0701.lboard.hardkeyboard
 
+import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
+import org.json.JSONObject
+
 class TwelveKeyHardKeyboard(
         val layout: TwelveKeyboardLayout
 ): HardKeyboard {
@@ -48,6 +51,26 @@ class TwelveKeyHardKeyboard(
         lastShift = false
 
         lastChar = 0
+    }
+
+    override fun serialize(): JSONObject {
+        return super.serialize().apply {
+            put("layout", REVERSE_LAYOUTS[layout])
+        }
+    }
+
+    companion object {
+
+        @JvmStatic fun deserialize(json: JSONObject): TwelveKeyHardKeyboard? {
+            val layout = LAYOUTS[json.getString("layout")] ?: return null
+            return TwelveKeyHardKeyboard(layout)
+        }
+
+        val LAYOUTS = mapOf(
+                "dubeol-cheonjiin" to TwelveDubeolHangul.LAYOUT_CHEONJIIN,
+                "dubeol-naratgeul" to TwelveDubeolHangul.LAYOUT_NARATGEUL
+        )
+        val REVERSE_LAYOUTS = LAYOUTS.map { it.value to it.key }.toMap()
     }
 
 }

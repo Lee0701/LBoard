@@ -54,7 +54,7 @@ class LBoardService: InputMethodService() {
         )
         val shin = HangulInputMethod(
                 BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOD_QUOTE, BasicSoftKeyboardTheme.WHITE, 54f),
-                HangulConverterLinkedHardKeyboard(ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL.map { Alphabet.LAYOUT_QWERTY + it }),
+                HangulConverterLinkedHardKeyboard(ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL),
                 HangulConverter(ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL)
         )
         val qwerty = WordComposingInputMethod(
@@ -65,9 +65,13 @@ class LBoardService: InputMethodService() {
                 BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, 54f),
                 SimpleHardKeyboard(Symbols.LAYOUT_SYMBOLS_A)
         )
+
+        val loader = InputMethodLoader()
+
         inputMethods += InputMethodSet(qwerty, symbols)
         inputMethods += InputMethodSet(shin, symbols)
         inputMethods += InputMethodSet(naratgeul, symbols)
+        inputMethods += InputMethodSet(loader.load(loader.store(cheonjiin)), symbols)
     }
 
     override fun onCreateInputView(): View? {

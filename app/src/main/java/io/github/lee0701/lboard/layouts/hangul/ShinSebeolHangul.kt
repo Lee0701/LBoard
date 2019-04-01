@@ -4,6 +4,7 @@ import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout
 
 import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout.LayoutItem
+import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 
 object ShinSebeolHangul {
 
@@ -82,7 +83,7 @@ object ShinSebeolHangul {
             LAYOUT_SHIN_ORIGINAL_1,
             LAYOUT_SHIN_ORIGINAL_0_2_3,
             LAYOUT_SHIN_ORIGINAL_0_2_3
-    )
+    ).map { Alphabet.LAYOUT_QWERTY + it }
 
     val COMBINATION_SHIN_ORIGINAL = CombinationTable(mapOf(
             0x1100 to 0x1100 to 0x1101,	// ㄲ
@@ -188,6 +189,6 @@ object ShinSebeolHangul {
             LAYOUT_SHIN_EDIT_1,
             LAYOUT_SHIN_EDIT_0_2_3,
             LAYOUT_SHIN_EDIT_0_2_3
-    )
+    ).map { Alphabet.LAYOUT_QWERTY + it }
 
 }

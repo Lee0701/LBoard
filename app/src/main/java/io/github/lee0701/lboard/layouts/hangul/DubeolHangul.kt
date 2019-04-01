@@ -4,10 +4,11 @@ import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout
 
 import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout.LayoutItem
+import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 
 object DubeolHangul {
 
-    val LAYOUT_DUBEOL_STANDARD = SimpleKeyboardLayout(mapOf(
+    val LAYOUT_DUBEOL_STANDARD = Alphabet.LAYOUT_QWERTY + SimpleKeyboardLayout(mapOf(
             45 to LayoutItem(0x3142, 0x3143),
             51 to LayoutItem(0x3148, 0x3149),
             33 to LayoutItem(0x3137, 0x3138),

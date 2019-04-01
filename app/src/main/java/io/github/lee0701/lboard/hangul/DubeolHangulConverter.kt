@@ -1,5 +1,7 @@
 package io.github.lee0701.lboard.hangul
 
+import org.json.JSONObject
+
 class DubeolHangulConverter(
         combinationTable: CombinationTable,
         virtualJamoTable: VirtualJamoTable
@@ -38,6 +40,12 @@ class DubeolHangulConverter(
         fun toJong(char: Int) = (char and 0x7f000000) or CONVERT_JONG[COMPAT_CHO.indexOf(char.toChar())].toInt()
 
         fun ghostLight(char: Int) = (char and 0x7f000000) or toCho(COMPAT_CHO[CONVERT_JONG.indexOf(char.toChar())].toInt())
+
+        @JvmStatic fun deserialize(json: JSONObject): HangulConverter? {
+            val combinationTable = COMBINATION_TABLES[json.optString("combination-table")] ?: CombinationTable(mapOf())
+            val virtualJamoTable = VIRTUAL_JAMO_TABLES[json.optString("virtual-jamo-table")] ?: VirtualJamoTable(mapOf())
+            return DubeolHangulConverter(combinationTable, virtualJamoTable)
+        }
 
     }
 

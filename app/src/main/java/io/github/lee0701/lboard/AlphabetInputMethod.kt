@@ -1,14 +1,11 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
-import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
-import io.github.lee0701.lboard.event.CommitStringEvent
-import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
-import org.greenrobot.eventbus.EventBus
+import org.json.JSONObject
 
 class AlphabetInputMethod(
         override val softKeyboard: SoftKeyboard,
@@ -62,4 +59,13 @@ class AlphabetInputMethod(
     override fun reset() {
         super.reset()
     }
+
+    companion object {
+        @JvmStatic fun deserialize(json: JSONObject): AlphabetInputMethod? {
+            val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard
+            val hardKeyboard = InputMethod.deserializeModule(json.getJSONObject("hard-keyboard")) as HardKeyboard
+            return AlphabetInputMethod(softKeyboard, hardKeyboard)
+        }
+    }
+
 }

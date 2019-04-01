@@ -14,6 +14,7 @@ import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.TwelveKeyHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
+import org.json.JSONObject
 
 class HangulInputMethod(
         override val softKeyboard: SoftKeyboard,
@@ -122,6 +123,21 @@ class HangulInputMethod(
         EventBus.getDefault().post(CommitComposingEvent())
         states.clear()
         super.reset()
+    }
+
+    override fun serialize(): JSONObject {
+        return super.serialize().apply {
+            put("hangul-converter", hangulConverter.serialize())
+        }
+    }
+
+    companion object {
+        @JvmStatic fun deserialize(json: JSONObject): HangulInputMethod? {
+            val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard
+            val hardKeyboard = InputMethod.deserializeModule(json.getJSONObject("hard-keyboard")) as HardKeyboard
+            val hangulConverter = InputMethod.deserializeModule(json.getJSONObject("hangul-converter")) as HangulConverter
+            return HangulInputMethod(softKeyboard, hardKeyboard, hangulConverter)
+        }
     }
 
 }
