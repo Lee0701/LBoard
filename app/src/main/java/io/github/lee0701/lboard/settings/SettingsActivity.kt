@@ -2,11 +2,9 @@ package io.github.lee0701.lboard.settings
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.preference.PreferenceFragmentCompat
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +14,11 @@ import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
 
-    val fragments = listOf<Fragment>(ActivationFragment())
+    val fragments = listOf<Fragment>(
+            ActivationFragment(),
+            InputMethodFragmentEn(),
+            InputMethodFragmentKo()
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +72,24 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
         override val icon = R.drawable.ic_playlist_add_check_black_24dp
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.lboard_pref_activation)
+        }
+    }
+
+    abstract class InputMethodFragment: Fragment() {
+        override val icon = R.drawable.ic_keyboard_black_24dp
+    }
+
+    class InputMethodFragmentEn: InputMethodFragment() {
+        override val title = R.string.pref_method_en_title
+        override fun onCreatePreferences(p0: Bundle?, p1: String?) {
+            addPreferencesFromResource(R.xml.lboard_pref_method_en)
+        }
+    }
+
+    class InputMethodFragmentKo: InputMethodFragment() {
+        override val title = R.string.pref_method_ko_title
+        override fun onCreatePreferences(p0: Bundle?, p1: String?) {
+            addPreferencesFromResource(R.xml.lboard_pref_method_ko)
         }
     }
 

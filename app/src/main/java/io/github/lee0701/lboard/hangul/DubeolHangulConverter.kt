@@ -4,7 +4,7 @@ import org.json.JSONObject
 
 class DubeolHangulConverter(
         combinationTable: CombinationTable,
-        virtualJamoTable: VirtualJamoTable
+        virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
 ): HangulConverter(combinationTable, virtualJamoTable) {
 
     val reversedCombinations = combinationTable.combinations.map { it.value to it.key }.toMap()

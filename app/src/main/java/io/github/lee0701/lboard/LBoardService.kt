@@ -1,8 +1,10 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.inputmethodservice.InputMethodService
 import android.os.Build
+import android.support.v7.preference.PreferenceManager
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
@@ -42,25 +44,40 @@ class LBoardService: InputMethodService() {
         super.onCreate()
         EventBus.getDefault().register(this)
 
-        val cheonjiin = HangulInputMethod(
-                DefaultSoftKeyboard("keyboard_12key_4cols"),
-                TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_CHEONJIIN),
-                DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_CHEONJIIN, TwelveDubeolHangul.VIRTUAL_CHEONJIIN)
+        PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_en, true)
+        PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+        val methodEn = WordComposingInputMethod(
+                BasicSoftKeyboard(
+                        BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!,
+                        BasicSoftKeyboard.THEMES[prefs.getString("method_en_soft_theme", null)!!]!!,
+                        prefs.getInt("method_en_soft_height", 0).toFloat()
+                ),
+                SimpleHardKeyboard(
+                        SimpleHardKeyboard.LAYOUTS[prefs.getString("method_en_hard_layout", null)!!]!!
+                )
         )
-        val naratgeul = HangulInputMethod(
-                BasicSoftKeyboard(TwelveSoftLayout.LAYOUT_12KEY_4COLS, BasicSoftKeyboardTheme.WHITE, 54f),
-                TwelveKeyHardKeyboard(TwelveDubeolHangul.LAYOUT_NARATGEUL),
-                DubeolHangulConverter(TwelveDubeolHangul.COMBINATION_NARATGEUL, VirtualJamoTable(mapOf()))
+
+        val combinationTable = HangulConverter.COMBINATION_TABLES[prefs.getString("method_ko_hangul_combination", null)!!]!!
+
+        val converterType = prefs.getString("method_ko_hangul_type", null)!!
+        val converter =
+                if(converterType == "dubeol") DubeolHangulConverter(combinationTable)
+                else HangulConverter(combinationTable)
+
+        val methodKo = HangulInputMethod(
+                BasicSoftKeyboard(
+                        BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!,
+                        BasicSoftKeyboard.THEMES[prefs.getString("method_ko_soft_theme", null)!!]!!,
+                        prefs.getInt("method_ko_soft_height", 0).toFloat()
+                ),
+                SimpleHardKeyboard(
+                        SimpleHardKeyboard.LAYOUTS[prefs.getString("method_ko_hard_layout", null)!!]!!
+                ),
+                converter
         )
-        val shin = HangulInputMethod(
-                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOD_QUOTE, BasicSoftKeyboardTheme.WHITE, 54f),
-                HangulConverterLinkedHardKeyboard(ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL),
-                HangulConverter(ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL)
-        )
-        val qwerty = WordComposingInputMethod(
-                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM, BasicSoftKeyboardTheme.WHITE, 54f),
-                SimpleHardKeyboard(Alphabet.LAYOUT_QWERTY)
-        )
+
         val symbols = AlphabetInputMethod(
                 BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, 54f),
                 SimpleHardKeyboard(Symbols.LAYOUT_SYMBOLS_A)
@@ -68,10 +85,8 @@ class LBoardService: InputMethodService() {
 
         val loader = InputMethodLoader()
 
-        inputMethods += InputMethodSet(qwerty, symbols)
-        inputMethods += InputMethodSet(shin, symbols)
-        inputMethods += InputMethodSet(naratgeul, symbols)
-        inputMethods += InputMethodSet(loader.load(loader.store(cheonjiin)), symbols)
+        inputMethods += InputMethodSet(methodEn, symbols)
+        inputMethods += InputMethodSet(methodKo, symbols)
     }
 
     override fun onCreateInputView(): View? {
