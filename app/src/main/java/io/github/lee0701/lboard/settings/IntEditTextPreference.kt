@@ -8,7 +8,7 @@ class IntEditTextPreference(context: Context, attrs: AttributeSet): EditTextPref
 
     override fun getPersistedString(defaultReturnValue: String?): String? {
         return try {
-            getPersistedInt(Integer.valueOf(defaultReturnValue)).toString()
+            getPersistedInt(defaultReturnValue?.toInt() ?: return null).toString()
         } catch(e: NumberFormatException) {
             null
         }
@@ -16,10 +16,13 @@ class IntEditTextPreference(context: Context, attrs: AttributeSet): EditTextPref
 
     override fun persistString(value: String?): Boolean {
         return try {
-            persistInt(Integer.valueOf(value))
+            persistInt(value?.toInt() ?: return false)
         } catch (e: NumberFormatException) {
             false
         }
+    }
 
+    override fun onSetInitialValue(defaultValue: Any?) {
+        this.text = this.getPersistedInt((defaultValue as String?)?.toInt() ?: 0).toString()
     }
 }
