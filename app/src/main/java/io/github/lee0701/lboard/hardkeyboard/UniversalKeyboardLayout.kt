@@ -15,7 +15,7 @@ data class UniversalKeyboardLayout(
 
     operator fun plus(other: UniversalKeyboardLayout): UniversalKeyboardLayout {
         return UniversalKeyboardLayout(
-                (this.layers + other.layers).map { it.key to it.value + other[it.key]!! }.toMap(),
+                (this.layers + other.layers).map { it.key to (this[it.key] ?: LayoutLayer(mapOf())) + (other[it.key] ?: LayoutLayer(mapOf())) }.toMap(),
                 other.strokes,
                 this.labels + other.labels,
                 other.cycle,
