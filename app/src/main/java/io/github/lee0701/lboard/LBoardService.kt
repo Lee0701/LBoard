@@ -44,6 +44,7 @@ class LBoardService: InputMethodService() {
         super.onCreate()
         EventBus.getDefault().register(this)
 
+        PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_common, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_en, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -52,7 +53,7 @@ class LBoardService: InputMethodService() {
                 BasicSoftKeyboard(
                         BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!,
                         BasicSoftKeyboard.THEMES[prefs.getString("method_en_soft_theme", null)!!]!!,
-                        prefs.getInt("method_en_soft_height", 0).toFloat()
+                        prefs.getInt("common_soft_height", 0).toFloat()
                 ),
                 SimpleHardKeyboard(
                         SimpleHardKeyboard.LAYOUTS[prefs.getString("method_en_hard_layout", null)!!]!!
@@ -70,7 +71,7 @@ class LBoardService: InputMethodService() {
                 BasicSoftKeyboard(
                         BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!,
                         BasicSoftKeyboard.THEMES[prefs.getString("method_ko_soft_theme", null)!!]!!,
-                        prefs.getInt("method_ko_soft_height", 0).toFloat()
+                        prefs.getInt("common_soft_height", 0).toFloat()
                 ),
                 SimpleHardKeyboard(
                         SimpleHardKeyboard.LAYOUTS[prefs.getString("method_ko_hard_layout", null)!!]!!
@@ -79,7 +80,7 @@ class LBoardService: InputMethodService() {
         )
 
         val symbols = AlphabetInputMethod(
-                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, 54f),
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, prefs.getInt("common_soft_height", 0).toFloat()),
                 SimpleHardKeyboard(Symbols.LAYOUT_SYMBOLS_A)
         )
 

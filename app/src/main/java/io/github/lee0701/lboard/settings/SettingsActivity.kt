@@ -16,6 +16,7 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
 
     val fragments = listOf<Fragment>(
             ActivationFragment(),
+            CommonFragment(),
             InputMethodFragmentEn(),
             InputMethodFragmentKo()
     )
@@ -72,6 +73,14 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
         override val icon = R.drawable.ic_playlist_add_check_black_24dp
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.lboard_pref_activation)
+        }
+    }
+
+    class CommonFragment: Fragment() {
+        override val icon = R.drawable.ic_keyboard_black_24dp
+        override val title = R.string.pref_common_title
+        override fun onCreatePreferences(p0: Bundle?, p1: String?) {
+            addPreferencesFromResource(R.xml.lboard_pref_common)
         }
     }
 

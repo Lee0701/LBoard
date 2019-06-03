@@ -8,18 +8,6 @@
             android:entries="@array/method_soft_layouts"
             android:entryValues="@array/method_soft_layout_ids"
             android:defaultValue="10cols-mobile-with-num" />
-        <ListPreference
-            android:key="method_ko_soft_theme"
-            android:title="@string/pref_method_soft_theme_title"
-            android:summary="@string/pref_method_soft_theme_summary"
-            android:entries="@array/method_soft_themes"
-            android:entryValues="@array/method_soft_theme_ids"
-            android:defaultValue="white" />
-        <io.github.lee0701.lboard.settings.IntEditTextPreference
-            android:key="method_ko_soft_height"
-            android:title="@string/pref_method_soft_height_title"
-            android:summary="@string/pref_method_soft_height_summary"
-            android:defaultValue="50" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_method_hard_title">

@@ -4,8 +4,18 @@
     <string name="settings_name">LBoard Settings</string>
 
     <string name="pref_activation_title">Activation</string>
+    <string name="pref_common_title">Common</string>
     <string name="pref_method_en_title">Alphabet Input Method</string>
     <string name="pref_method_ko_title">Korean Input Method</string>
+
+
+    <string name="pref_common_soft_theme_title">Soft Keyboard Theme</string>
+    <string name="pref_common_soft_theme_summary">Choose a soft keyboard theme.</string>
+
+    <string name="pref_common_soft_themes_white">White</string>
+
+    <string name="pref_common_soft_height_title">Soft Key Height</string>
+    <string name="pref_common_soft_height_summary">Adjust the key height.</string>
 
 
     <string name="pref_method_soft_title">Soft Keyboard</string>
@@ -16,14 +26,6 @@
     <string name="pref_method_soft_layout_10cols_mobile">10 Columns Mobile</string>
     <string name="pref_method_soft_layout_10cols_mobile_with_num">10 Columns Mobile With Numbers</string>
     <string name="pref_method_soft_layout_10cols_mod_quote">10 Columns Mod. Quote</string>
-
-    <string name="pref_method_soft_theme_title">Soft Keyboard Theme</string>
-    <string name="pref_method_soft_theme_summary">Choose a soft keyboard theme.</string>
-
-    <string name="pref_method_soft_themes_white">White</string>
-
-    <string name="pref_method_soft_height_title">Soft Key Height</string>
-    <string name="pref_method_soft_height_summary">Adjust the key height.</string>
 
 
     <string name="pref_method_hard_title">Hard Keyboard</string>

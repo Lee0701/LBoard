@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="common_soft_themes">
+        <item>@string/pref_common_soft_themes_white</item>
+    </string-array>
+
+    <string-array name="common_soft_theme_ids">
+        <item>white</item>
+    </string-array>
+
     <string-array name="method_soft_layouts">
         <item>@string/pref_method_soft_layout_10cols_mobile</item>
         <item>@string/pref_method_soft_layout_10cols_mobile_with_num</item>
@@ -10,14 +18,6 @@
         <item>10cols-mobile</item>
         <item>10cols-mobile-with-num</item>
         <item>10cols-mod-quote</item>
-    </string-array>
-
-    <string-array name="method_soft_themes">
-        <item>@string/pref_method_soft_themes_white</item>
-    </string-array>
-
-    <string-array name="method_soft_theme_ids">
-        <item>white</item>
     </string-array>
 
     <string-array name="method_en_hard_layouts">

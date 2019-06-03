@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_method_soft_title">
+        <ListPreference
+            android:key="common_soft_theme"
+            android:title="@string/pref_common_soft_theme_title"
+            android:summary="@string/pref_common_soft_theme_summary"
+            android:entries="@array/common_soft_themes"
+            android:entryValues="@array/common_soft_theme_ids"
+            android:defaultValue="white" />
+        <io.github.lee0701.lboard.settings.IntEditTextPreference
+            android:key="common_soft_height"
+            android:title="@string/pref_common_soft_height_title"
+            android:summary="@string/pref_common_soft_height_summary"
+            android:defaultValue="50" />
+    </PreferenceCategory>
+</PreferenceScreen>
