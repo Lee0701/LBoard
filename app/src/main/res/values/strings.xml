@@ -26,6 +26,7 @@
     <string name="pref_method_soft_layout_10cols_mobile">10 Columns Mobile</string>
     <string name="pref_method_soft_layout_10cols_mobile_with_num">10 Columns Mobile With Numbers</string>
     <string name="pref_method_soft_layout_10cols_mod_quote">10 Columns Mod. Quote</string>
+    <string name="pref_method_soft_layout_12key_4cols">12 Key 4 Columns</string>
 
 
     <string name="pref_method_hard_title">Hard Keyboard</string>
@@ -37,6 +38,10 @@
     <string name="pref_method_hard_layout_dubeol_standard">Dubeolsik Standard</string>
     <string name="pref_method_hard_layout_sebeol_390">Sebeolsik 390</string>
     <string name="pref_method_hard_layout_sebeol_391">Sebeolsik Final</string>
+    <string name="pref_method_hard_layout_sebeol_shin_original">Shin Sebeolsik Original</string>
+    <string name="pref_method_hard_layout_sebeol_shin_edit">Shin Sebeolsik Edit</string>
+    <string name="pref_method_hard_layout_dubeol_cheonjiin">T10 Dubeolsik Cheonjiin</string>
+    <string name="pref_method_hard_layout_dubeol_naratgeul">T12 Dubeolsik Naratgeul</string>
 
 
     <string name="pref_method_hangul_title">Hangul Converter</string>

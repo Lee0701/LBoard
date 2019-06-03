@@ -1,5 +1,10 @@
 package io.github.lee0701.lboard.hardkeyboard
 
+import io.github.lee0701.lboard.layouts.alphabet.Alphabet
+import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
+import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
+import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
+import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import org.json.JSONObject
 
 class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
@@ -50,12 +55,36 @@ class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
     }
 
     override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> {
-        return currentLayer.layout
-                .map { it.key to (if(shift) it.value.shift[0] else it.value.normal[0]).toChar().toString() }.toMap() +
+        return currentLayer.layout.map { it.key to (if(shift) it.value.shift else it.value.normal).map { it.toChar() }.joinToString("") }.toMap() +
                 layout.labels
     }
 
     override fun serialize(): JSONObject {
-        return super.serialize()
+        return super.serialize().apply {
+            put("layout", REVERSE_LAYOUTS[layout])
+        }
     }
+
+    companion object {
+
+        @JvmStatic fun deserialize(json: JSONObject): UniversalHardKeyboard? {
+            val layout = LAYOUTS[json.getString("layout")] ?: return null
+            return UniversalHardKeyboard(layout)
+        }
+
+        val LAYOUTS = mapOf<String, UniversalKeyboardLayout>(
+                "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
+                "dubeol-standard" to DubeolHangul.LAYOUT_DUBEOL_STANDARD,
+                "sebeol-390" to SebeolHangul.LAYOUT_SEBEOL_390,
+                "sebeol-391" to SebeolHangul.LAYOUT_SEBEOL_391,
+
+                "sebeol-shin-original" to ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL,
+                "sebeol-shin-edit" to ShinSebeolHangul.LAYOUT_SHIN_EDIT,
+
+                "dubeol-cheonjiin" to TwelveDubeolHangul.LAYOUT_CHEONJIIN,
+                "dubeol-naratgeul" to TwelveDubeolHangul.LAYOUT_NARATGEUL
+        )
+        val REVERSE_LAYOUTS = LAYOUTS.map { it.value to it.key }.toMap()
+    }
+
 }

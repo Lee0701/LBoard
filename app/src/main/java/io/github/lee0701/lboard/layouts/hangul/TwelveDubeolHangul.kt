@@ -18,8 +18,7 @@ object TwelveDubeolHangul {
             0x0207 to LayoutItem(listOf(0x3142, 0x314d, 0x3143)),
             0x0208 to LayoutItem(listOf(0x3145, 0x314e, 0x3146)),
             0x0209 to LayoutItem(listOf(0x3148, 0x314a, 0x3149)),
-            0x020a to LayoutItem(listOf(0x3147, 0x3141)),
-            0x020b to LayoutItem(listOf())
+            0x020a to LayoutItem(listOf(0x3147, 0x3141))
     )), labels = mapOf(
             0x0204 to "ㄱㅋ",
             0x0206 to "ㄷㅌ",

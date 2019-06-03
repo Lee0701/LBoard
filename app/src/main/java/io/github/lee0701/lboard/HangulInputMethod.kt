@@ -13,6 +13,7 @@ import io.github.lee0701.lboard.hangul.SebeolHangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.TwelveKeyHardKeyboard
+import io.github.lee0701.lboard.hardkeyboard.UniversalHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
@@ -99,13 +100,13 @@ class HangulInputMethod(
     }
 
     private fun updateShinStatus(composed: HangulComposer.State) {
-        if(hardKeyboard is HangulConverterLinkedHardKeyboard) {
-            hardKeyboard.status =
-                    if(composed.jong != null && composed.jong < 0x01000000) 3
-                    else if(composed.jung != null && composed.jung < 0x01000000) 2
-                    else if(composed.cho != null && composed.cho < 0x01000000) 1
-                    else 0
-        }
+        val status =
+                if(composed.jong != null && composed.jong < 0x01000000) 3
+                else if(composed.jung != null && composed.jung < 0x01000000) 2
+                else if(composed.cho != null && composed.cho < 0x01000000) 1
+                else 0
+        if(hardKeyboard is HangulConverterLinkedHardKeyboard) hardKeyboard.status = status
+        else if(hardKeyboard is UniversalHardKeyboard) hardKeyboard.status = status
     }
 
     override fun onKeyRelease(keyCode: Int): Boolean {
