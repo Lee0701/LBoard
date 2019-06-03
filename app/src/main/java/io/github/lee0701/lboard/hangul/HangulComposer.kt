@@ -8,18 +8,14 @@ import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import org.json.JSONObject
 import java.text.Normalizer
 
-open class HangulConverter(
+abstract class HangulComposer(
         val combinationTable: CombinationTable,
         val virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
 ): InputMethodModule {
 
-    open fun compose(composing: State, input: Int): State =
-        if(isCho(input)) cho(composing, input)
-        else if(isJung(input)) jung(composing, input)
-        else if(isJong(input)) jong(composing, input)
-        else State(other = display(composing) + input.toChar())
-    
-    open fun display(state: State): String {
+    abstract fun compose(composing: State, input: Int): State
+
+    fun display(state: State): String {
         val cho = state.cho?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
         val jung = state.jung?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
         val jong = state.jong?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
@@ -33,13 +29,6 @@ open class HangulConverter(
             else -> ""
         }
     }
-
-    private fun cho(composing: State, input: Int): State =
-            if(composing.cho != null) (if(composing.jung == null) combinationTable.combinations[composing.cho to input]?.let { composing.copy(cho = it) } else null) ?: State(other = display(composing), cho = input) else composing.copy(cho = input)
-    private fun jung(composing: State, input: Int): State =
-            if(composing.jung != null) combinationTable.combinations[composing.jung to input]?.let { composing.copy(jung = it) } ?: State(other = display(composing), jung = input) else composing.copy(jung = input)
-    private fun jong(composing: State, input: Int): State =
-            if(composing.jong != null) combinationTable.combinations[composing.jong to input]?.let { composing.copy(jong = it) } ?: State(other = display(composing), jong = input) else composing.copy(jong = input)
 
     data class State(val cho: Int? = null, val jung: Int? = null, val jong: Int? = null, val other: String = "") {
 
@@ -87,12 +76,6 @@ open class HangulConverter(
                 "dubeol-cheonjiin" to TwelveDubeolHangul.VIRTUAL_CHEONJIIN
         )
         val REVERSE_VIRTUAL_JAMO_TABLES = VIRTUAL_JAMO_TABLES.map { it.value to it.key }.toMap()
-
-        @JvmStatic fun deserialize(json: JSONObject): HangulConverter? {
-            val combinationTable = COMBINATION_TABLES[json.optString("combination-table")] ?: CombinationTable(mapOf())
-            val virtualJamoTable = VIRTUAL_JAMO_TABLES[json.optString("virtual-jamo-table")] ?: VirtualJamoTable(mapOf())
-            return HangulConverter(combinationTable, virtualJamoTable)
-        }
 
     }
 

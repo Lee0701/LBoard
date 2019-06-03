@@ -1,7 +1,6 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.support.v7.preference.PreferenceManager
@@ -11,18 +10,12 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import io.github.lee0701.lboard.event.*
-import io.github.lee0701.lboard.hangul.DubeolHangulConverter
-import io.github.lee0701.lboard.hangul.HangulConverter
-import io.github.lee0701.lboard.hangul.VirtualJamoTable
-import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
+import io.github.lee0701.lboard.hangul.DubeolHangulComposer
+import io.github.lee0701.lboard.hangul.HangulComposer
+import io.github.lee0701.lboard.hangul.SebeolHangulComposer
 import io.github.lee0701.lboard.hardkeyboard.SimpleHardKeyboard
-import io.github.lee0701.lboard.hardkeyboard.TwelveKeyHardKeyboard
-import io.github.lee0701.lboard.layouts.alphabet.Alphabet
-import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.Symbols
-import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import io.github.lee0701.lboard.layouts.soft.SoftLayout
-import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
@@ -60,12 +53,12 @@ class LBoardService: InputMethodService() {
                 )
         )
 
-        val combinationTable = HangulConverter.COMBINATION_TABLES[prefs.getString("method_ko_hangul_combination", null)!!]!!
+        val combinationTable = HangulComposer.COMBINATION_TABLES[prefs.getString("method_ko_hangul_combination", null)!!]!!
 
         val converterType = prefs.getString("method_ko_hangul_type", null)!!
         val converter =
-                if(converterType == "dubeol") DubeolHangulConverter(combinationTable)
-                else HangulConverter(combinationTable)
+                if(converterType == "dubeol") DubeolHangulComposer(combinationTable)
+                else SebeolHangulComposer(combinationTable)
 
         val methodKo = HangulInputMethod(
                 BasicSoftKeyboard(

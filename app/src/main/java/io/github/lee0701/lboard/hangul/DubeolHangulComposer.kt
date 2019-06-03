@@ -2,10 +2,10 @@ package io.github.lee0701.lboard.hangul
 
 import org.json.JSONObject
 
-class DubeolHangulConverter(
+class DubeolHangulComposer(
         combinationTable: CombinationTable,
         virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
-): HangulConverter(combinationTable, virtualJamoTable) {
+): HangulComposer(combinationTable, virtualJamoTable) {
 
     val reversedCombinations = combinationTable.combinations.map { it.value to it.key }.toMap()
 
@@ -41,10 +41,10 @@ class DubeolHangulConverter(
 
         fun ghostLight(char: Int) = (char and 0x7f000000) or toCho(COMPAT_CHO[CONVERT_JONG.indexOf(char.toChar())].toInt())
 
-        @JvmStatic fun deserialize(json: JSONObject): HangulConverter? {
+        @JvmStatic fun deserialize(json: JSONObject): HangulComposer? {
             val combinationTable = COMBINATION_TABLES[json.optString("combination-table")] ?: CombinationTable(mapOf())
             val virtualJamoTable = VIRTUAL_JAMO_TABLES[json.optString("virtual-jamo-table")] ?: VirtualJamoTable(mapOf())
-            return DubeolHangulConverter(combinationTable, virtualJamoTable)
+            return DubeolHangulComposer(combinationTable, virtualJamoTable)
         }
 
     }

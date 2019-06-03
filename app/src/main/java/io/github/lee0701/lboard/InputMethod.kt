@@ -2,7 +2,6 @@ package io.github.lee0701.lboard
 
 import android.content.Context
 import android.view.View
-import io.github.lee0701.lboard.hangul.HangulConverter
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.json.JSONObject

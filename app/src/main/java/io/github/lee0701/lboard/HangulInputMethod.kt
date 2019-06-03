@@ -8,7 +8,8 @@ import io.github.lee0701.lboard.event.CommitComposingEvent
 import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
-import io.github.lee0701.lboard.hangul.HangulConverter
+import io.github.lee0701.lboard.hangul.HangulComposer
+import io.github.lee0701.lboard.hangul.SebeolHangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.TwelveKeyHardKeyboard
@@ -19,11 +20,11 @@ import org.json.JSONObject
 class HangulInputMethod(
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
-        val hangulConverter: HangulConverter
+        val hangulConverter: HangulComposer
 ): CommonInputMethod() {
 
-    val states: MutableList<HangulConverter.State> = mutableListOf()
-    val lastState: HangulConverter.State get() = if(states.isEmpty()) HangulConverter.State() else states.last()
+    val states: MutableList<HangulComposer.State> = mutableListOf()
+    val lastState: HangulComposer.State get() = if(states.isEmpty()) HangulComposer.State() else states.last()
 
     override fun initView(context: Context): View? {
         return softKeyboard.initView(context)
@@ -50,7 +51,7 @@ class HangulInputMethod(
                 // 천지인 등 스페이스로 조합 끊는 자판일 시
                 if(hardKeyboard is TwelveKeyHardKeyboard && hardKeyboard.layout.spaceForSeparation &&
                         (lastState.cho != null || lastState.jung != null || lastState.jong != null)) {
-                    states += HangulConverter.State(other = hangulConverter.display(lastState))
+                    states += HangulComposer.State(other = hangulConverter.display(lastState))
                     hardKeyboard.reset()
                 } else {
                     reset()
@@ -97,7 +98,7 @@ class HangulInputMethod(
         return true
     }
 
-    private fun updateShinStatus(composed: HangulConverter.State) {
+    private fun updateShinStatus(composed: HangulComposer.State) {
         if(hardKeyboard is HangulConverterLinkedHardKeyboard) {
             hardKeyboard.status =
                     if(composed.jong != null && composed.jong < 0x01000000) 3
@@ -135,7 +136,7 @@ class HangulInputMethod(
         @JvmStatic fun deserialize(json: JSONObject): HangulInputMethod? {
             val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard
             val hardKeyboard = InputMethod.deserializeModule(json.getJSONObject("hard-keyboard")) as HardKeyboard
-            val hangulConverter = InputMethod.deserializeModule(json.getJSONObject("hangul-converter")) as HangulConverter
+            val hangulConverter = InputMethod.deserializeModule(json.getJSONObject("hangul-converter")) as SebeolHangulComposer
             return HangulInputMethod(softKeyboard, hardKeyboard, hangulConverter)
         }
     }
