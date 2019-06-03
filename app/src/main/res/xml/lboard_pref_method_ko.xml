@@ -12,28 +12,12 @@
 
     <PreferenceCategory android:title="@string/pref_method_hard_title">
         <ListPreference
-            android:key="method_ko_hard_layout"
+            android:key="method_ko_predefined"
             android:title="@string/pref_method_hard_layout_title"
             android:summary="@string/pref_method_hard_layout_summary"
-            android:entries="@array/method_ko_hard_layouts"
-            android:entryValues="@array/method_ko_hard_layout_ids"
+            android:entries="@array/method_ko_predefined_layouts"
+            android:entryValues="@array/method_ko_predefined_layout_ids"
             android:defaultValue="dubeol-standard" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_method_hangul_title">
-        <ListPreference
-            android:key="method_ko_hangul_type"
-            android:title="@string/pref_method_hangul_type_title"
-            android:summary="@string/pref_method_hangul_type_summary"
-            android:entries="@array/method_ko_converters"
-            android:entryValues="@array/method_ko_converter_ids"
-            android:defaultValue="dubeol"/>
-        <ListPreference
-            android:key="method_ko_hangul_combination"
-            android:title="@string/pref_method_hangul_combination_title"
-            android:summary="@string/pref_method_hangul_combination_summary"
-            android:entries="@array/method_ko_combinations"
-            android:entryValues="@array/method_ko_combination_ids"
-            android:defaultValue="dubeol-standard" />
-    </PreferenceCategory>
 </PreferenceScreen>
