@@ -35,9 +35,9 @@ class HangulConverterLinkedHardKeyboard(val layouts: List<SimpleKeyboardLayout>)
             return HangulConverterLinkedHardKeyboard(layout)
         }
 
-        val LAYOUTS = mapOf(
-                "sebeol-shin-original" to ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL,
-                "sebeol-shin-edit" to ShinSebeolHangul.LAYOUT_SHIN_EDIT
+        val LAYOUTS = mapOf<String, List<SimpleKeyboardLayout>>(
+//                "sebeol-shin-original" to ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL,
+//                "sebeol-shin-edit" to ShinSebeolHangul.LAYOUT_SHIN_EDIT
         )
         val REVERSE_LAYOUTS = LAYOUTS.map { it.value to it.key }.toMap()
     }

@@ -31,11 +31,11 @@ class SimpleHardKeyboard(val layout: SimpleKeyboardLayout): HardKeyboard {
             return SimpleHardKeyboard(layout)
         }
 
-        val LAYOUTS = mapOf(
-                "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
-                "dubeol-standard" to DubeolHangul.LAYOUT_DUBEOL_STANDARD,
-                "sebeol-390" to SebeolHangul.LAYOUT_SEBEOL_390,
-                "sebeol-391" to SebeolHangul.LAYOUT_SEBEOL_391
+        val LAYOUTS = mapOf<String, SimpleKeyboardLayout>(
+//                "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
+//                "dubeol-standard" to DubeolHangul.LAYOUT_DUBEOL_STANDARD,
+//                "sebeol-390" to SebeolHangul.LAYOUT_SEBEOL_390,
+//                "sebeol-391" to SebeolHangul.LAYOUT_SEBEOL_391
         )
         val REVERSE_LAYOUTS = LAYOUTS.map { it.value to it.key }.toMap()
     }

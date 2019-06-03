@@ -66,9 +66,9 @@ class TwelveKeyHardKeyboard(
             return TwelveKeyHardKeyboard(layout)
         }
 
-        val LAYOUTS = mapOf(
-                "dubeol-cheonjiin" to TwelveDubeolHangul.LAYOUT_CHEONJIIN,
-                "dubeol-naratgeul" to TwelveDubeolHangul.LAYOUT_NARATGEUL
+        val LAYOUTS = mapOf<String, TwelveKeyboardLayout>(
+//                "dubeol-cheonjiin" to TwelveDubeolHangul.LAYOUT_CHEONJIIN,
+//                "dubeol-naratgeul" to TwelveDubeolHangul.LAYOUT_NARATGEUL
         )
         val REVERSE_LAYOUTS = LAYOUTS.map { it.value to it.key }.toMap()
     }

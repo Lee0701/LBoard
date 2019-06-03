@@ -11,11 +11,14 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.DubeolHangulComposer
-import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hangul.SebeolHangulComposer
-import io.github.lee0701.lboard.hardkeyboard.SimpleHardKeyboard
+import io.github.lee0701.lboard.hardkeyboard.UniversalHardKeyboard
+import io.github.lee0701.lboard.layouts.alphabet.Alphabet
+import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.Symbols
+import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import io.github.lee0701.lboard.layouts.soft.SoftLayout
+import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
@@ -42,6 +45,7 @@ class LBoardService: InputMethodService() {
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
+        /*
         val methodEn = WordComposingInputMethod(
                 BasicSoftKeyboard(
                         BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!,
@@ -71,16 +75,37 @@ class LBoardService: InputMethodService() {
                 ),
                 converter
         )
+        */
 
         val symbols = AlphabetInputMethod(
                 BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, BasicSoftKeyboardTheme.WHITE, prefs.getInt("common_soft_height", 0).toFloat()),
-                SimpleHardKeyboard(Symbols.LAYOUT_SYMBOLS_A)
+                UniversalHardKeyboard(Symbols.LAYOUT_SYMBOLS_A)
         )
 
         val loader = InputMethodLoader()
 
-        inputMethods += InputMethodSet(methodEn, symbols)
-        inputMethods += InputMethodSet(methodKo, symbols)
+        val qwerty = WordComposingInputMethod(
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOD_QUOTE, BasicSoftKeyboardTheme.WHITE, 50f),
+                UniversalHardKeyboard(Alphabet.LAYOUT_QWERTY)
+        )
+
+        val sebeol390 = HangulInputMethod(
+                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOD_QUOTE, BasicSoftKeyboardTheme.WHITE, 50f),
+                UniversalHardKeyboard(SebeolHangul.LAYOUT_SEBEOL_390),
+                SebeolHangulComposer(SebeolHangul.COMBINATION_SEBEOL_390)
+        )
+
+        val naratgul = HangulInputMethod(
+                BasicSoftKeyboard(TwelveSoftLayout.LAYOUT_12KEY_4COLS, BasicSoftKeyboardTheme.WHITE, 50f),
+                UniversalHardKeyboard(TwelveDubeolHangul.LAYOUT_NARATGEUL),
+                DubeolHangulComposer(TwelveDubeolHangul.COMBINATION_NARATGEUL)
+        )
+
+        inputMethods += InputMethodSet(qwerty, symbols)
+        inputMethods += InputMethodSet(sebeol390, symbols)
+        inputMethods += InputMethodSet(naratgul, symbols)
+//        inputMethods += InputMethodSet(methodEn, symbols)
+//        inputMethods += InputMethodSet(methodKo, symbols)
     }
 
     override fun onCreateInputView(): View? {

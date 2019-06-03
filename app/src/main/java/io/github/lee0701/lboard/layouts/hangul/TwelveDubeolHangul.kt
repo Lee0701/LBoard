@@ -2,13 +2,13 @@ package io.github.lee0701.lboard.layouts.hangul
 
 import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hangul.VirtualJamoTable
-import io.github.lee0701.lboard.hardkeyboard.TwelveKeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
 
-import io.github.lee0701.lboard.hardkeyboard.TwelveKeyboardLayout.LayoutItem
+import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout.*
 
 object TwelveDubeolHangul {
     
-    val LAYOUT_CHEONJIIN = TwelveKeyboardLayout(mapOf(
+    val LAYOUT_CHEONJIIN = UniversalKeyboardLayout(LayoutLayer(mapOf(
             0x0201 to LayoutItem(listOf(0x3163)),
             0x0202 to LayoutItem(listOf(0x100318d)),
             0x0203 to LayoutItem(listOf(0x3161)),
@@ -20,7 +20,7 @@ object TwelveDubeolHangul {
             0x0209 to LayoutItem(listOf(0x3148, 0x314a, 0x3149)),
             0x020a to LayoutItem(listOf(0x3147, 0x3141)),
             0x020b to LayoutItem(listOf())
-    ), labels = mapOf(
+    )), labels = mapOf(
             0x0204 to "ㄱㅋ",
             0x0206 to "ㄷㅌ",
             0x0207 to "ㅂㅍ",
@@ -80,7 +80,7 @@ object TwelveDubeolHangul {
             0x10011a2 to 0x2025
     ))
 
-    val LAYOUT_NARATGEUL = TwelveKeyboardLayout(mapOf(
+    val LAYOUT_NARATGEUL = UniversalKeyboardLayout(LayoutLayer(mapOf(
             0x0201 to LayoutItem(listOf(0x3131)),
             0x0202 to LayoutItem(listOf(0x3134)),
             0x0203 to LayoutItem(listOf(0x314f, 0x3153)),
@@ -93,8 +93,8 @@ object TwelveDubeolHangul {
             0x020a to LayoutItem(listOf(0x3161)),
             0x020b to LayoutItem(listOf(0x70000000)),
             0x020c to LayoutItem(listOf(0x70000001))
-    ), listOf(
-            mapOf(
+    )), listOf(
+            StrokeTable(mapOf(
                     0x3131 to 0x314b,   // ㄱ-ㅋ
                     0x3134 to 0x3137,   // ㄴ-ㄷ
                     0x3137 to 0x314c,   // ㄷ-ㅌ
@@ -109,14 +109,14 @@ object TwelveDubeolHangul {
                     0x3153 to 0x3155,   // ㅕ
                     0x3157 to 0x315b,   // ㅛ
                     0x315c to 0x3160    // ㅠ
-            ),
-            mapOf(
+            )),
+            StrokeTable(mapOf(
                     0x3131 to 0x3132,   // ㄲ
                     0x3137 to 0x3138,   // ㄸ
                     0x3142 to 0x3143,   // ㅃ
                     0x3145 to 0x3146,   // ㅆ
                     0x3148 to 0x3149    // ㅉ
-            )
+            ))
     ), labels = mapOf(
             0x020b to "획추가",
             0x020c to "쌍자음"

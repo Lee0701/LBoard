@@ -1,13 +1,13 @@
 package io.github.lee0701.lboard.layouts.hangul
 
-import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
 
-import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout.LayoutItem
+import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout.*
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 
 object Symbols {
 
-    val LAYOUT_SYMBOLS_A = Alphabet.LAYOUT_QWERTY + SimpleKeyboardLayout(mapOf(
+    val LAYOUT_SYMBOLS_A = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(LayoutLayer(mapOf(
             8 to LayoutItem(0x0021, 0x2460),
             9 to LayoutItem(0x0040, 0x2461),
             10 to LayoutItem(0x0023, 0x2462),
@@ -47,6 +47,6 @@ object Symbols {
             30 to LayoutItem(0x003f, 0x03c0),
             42 to LayoutItem(0x002d, 0x300c),
             41 to LayoutItem(0x0022, 0x300d)
-    ))
+    )))
 
 }

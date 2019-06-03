@@ -1,11 +1,11 @@
 package io.github.lee0701.lboard.layouts.alphabet
 
-import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
 
-import io.github.lee0701.lboard.hardkeyboard.SimpleKeyboardLayout.LayoutItem
+import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout.*
 
 object Alphabet {
-    val LAYOUT_QWERTY = SimpleKeyboardLayout(mapOf(
+    val LAYOUT_QWERTY = UniversalKeyboardLayout(LayoutLayer(mapOf(
             68 to LayoutItem(0x0060, 0x207e),
 
             8 to LayoutItem(0x0031, 0x0021),
@@ -57,5 +57,5 @@ object Alphabet {
             55 to LayoutItem(0x002c, 0x003c),
             56 to LayoutItem(0x002e, 0x003e),
             76 to LayoutItem(0x002f, 0x003f)
-    ))
+    )))
 }
