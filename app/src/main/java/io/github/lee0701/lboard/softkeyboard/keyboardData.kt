@@ -65,7 +65,7 @@ data class Key (
             this.setValues(scale)
             this.addUpdateListener(updateListener)
             this.interpolator = DecelerateInterpolator()
-            this.duration = 25
+            this.duration = 0
             this.start()
         }
         this.releaseAnimator = null
