@@ -8,8 +8,11 @@ data class UniversalKeyboardLayout(
         val spaceForSeparation: Boolean = false
 ) {
 
+    constructor(layerId: Int, main: LayoutLayer, strokes: List<StrokeTable> = listOf(), labels: Map<Int, String> = mapOf(), cycle: Boolean = true, spaceForSeparation: Boolean = false):
+            this(mapOf(layerId to main), strokes, labels, cycle, spaceForSeparation)
+
     constructor(main: LayoutLayer, strokes: List<StrokeTable> = listOf(), labels: Map<Int, String> = mapOf(), cycle: Boolean = true, spaceForSeparation: Boolean = false):
-            this(mapOf(0 to main), strokes, labels  , cycle, spaceForSeparation)
+            this(0, main, strokes, labels, cycle, spaceForSeparation)
 
     operator fun get(i: Int): LayoutLayer? = layers[i]
 

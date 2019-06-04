@@ -7,7 +7,6 @@
     <string name="pref_common_title">Common</string>
     <string name="pref_method_en_title">Alphabet Input Method</string>
     <string name="pref_method_ko_title">Korean Input Method</string>
-    <string name="pref_method_symbols_title">Symbols Input Method</string>
 
 
     <string name="pref_common_soft_theme_title">Soft Keyboard Theme</string>
@@ -35,6 +34,9 @@
 
     <string name="pref_method_hard_layout_title">Keyboard Layout</string>
     <string name="pref_method_hard_layout_summary">Choose a keyboard layout.</string>
+
+    <string name="pref_method_symbols_layout_title">Symbols Layout</string>
+    <string name="pref_method_symbols_layout_summary">Choose a symbols keyboard layout.</string>
 
     <string name="pref_method_hard_layout_symbols_a">Symbols A</string>
     <string name="pref_method_hard_layout_symbols_b">Symbols B</string>

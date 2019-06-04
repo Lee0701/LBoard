@@ -7,7 +7,7 @@ import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 
 object Symbols {
 
-    val LAYOUT_SYMBOLS_A = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_SYMBOLS_A = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(10, LayoutLayer(mapOf(
             8 to LayoutItem(0x0021, 0x2460),
             9 to LayoutItem(0x0040, 0x2461),
             10 to LayoutItem(0x0023, 0x2462),
@@ -49,7 +49,7 @@ object Symbols {
             41 to LayoutItem(0x0022, 0x300d)
     )))
 
-    val LAYOUT_SYMBOLS_B = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_SYMBOLS_B = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(10, LayoutLayer(mapOf(
             8 to LayoutItem(0x0031, 0x2460),
             9 to LayoutItem(0x0032, 0x2461),
             10 to LayoutItem(0x0033, 0x2462),

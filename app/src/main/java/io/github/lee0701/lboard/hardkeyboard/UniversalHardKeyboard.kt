@@ -12,18 +12,23 @@ class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
 
     var status: Int = 0
 
-    private val currentLayer: UniversalKeyboardLayout.LayoutLayer get() = layout[status] ?: layout[0] ?: UniversalKeyboardLayout.LayoutLayer()
+    private val currentLayer: UniversalKeyboardLayout.LayoutLayer
+        get() = layout[status] ?: layout[0] ?: UniversalKeyboardLayout.LayoutLayer()
+
+    private val altLayer: UniversalKeyboardLayout.LayoutLayer get() = layout[10] ?: currentLayer
 
     var lastCode = 0
     var lastIndex = 0
     var lastShift = false
+    var lastAlt = false
 
     var lastChar = 0
 
     override fun convert(keyCode: Int, shift: Boolean, alt: Boolean): HardKeyboard.ConvertResult {
-        val codes = currentLayer[keyCode]?.let { if(shift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null)
+        val codes = (if(alt) altLayer else currentLayer)[keyCode]
+                ?.let { if(shift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null)
         var backspace = false
-        if(lastCode == keyCode && lastShift == shift) {
+        if(lastCode == keyCode && lastShift == shift && lastAlt == lastAlt) {
             if(++lastIndex >= codes.size) lastIndex = 0
             if(codes.size > 1 && (layout.cycle || lastIndex != 0)) backspace = true
         } else {
@@ -31,11 +36,12 @@ class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
         }
         lastCode = keyCode
         lastShift = shift
+        lastAlt = alt
 
         var result = codes[lastIndex]
 
-        if(result and 0x70000000 == 0x70000000) {
-            val strokeTableIndex = result and 0x000000ff
+        if(result and MASK_SYSTEM_CODE == SYSTEM_CODE_STROKE) {
+            val strokeTableIndex = result and 0xff
             result = layout.strokes[strokeTableIndex][lastChar] ?: lastChar
             backspace = true
         }
@@ -51,13 +57,15 @@ class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
         lastCode = 0
         lastIndex = 0
         lastShift = false
+        lastAlt = false
 
         lastChar = 0
     }
 
     override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> {
-        return currentLayer.layout.map { it.key to (if(shift) it.value.shift else it.value.normal).map { it.toChar() }.joinToString("") }.toMap() +
-                layout.labels
+        return (if(alt) altLayer else currentLayer).layout.map { item ->
+            item.key to (if(shift) item.value.shift else item.value.normal).map { it.toChar() }.joinToString("")
+        }.toMap() + layout.labels
     }
 
     override fun serialize(): JSONObject {
@@ -67,6 +75,9 @@ class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
     }
 
     companion object {
+
+        const val MASK_SYSTEM_CODE = 0x70000000
+        const val SYSTEM_CODE_STROKE = 0x70000000
 
         @JvmStatic fun deserialize(json: JSONObject): UniversalHardKeyboard? {
             val layout = LAYOUTS[json.getString("layout")] ?: return null

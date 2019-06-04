@@ -14,20 +14,17 @@ import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.UniversalHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
 import io.github.lee0701.lboard.layouts.hangul.*
-import io.github.lee0701.lboard.layouts.soft.SoftLayout
 import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
-import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.softkeyboard.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class LBoardService: InputMethodService() {
 
-    private val inputMethods: MutableList<InputMethodSet> = mutableListOf()
+    private val inputMethods: MutableList<InputMethod> = mutableListOf()
     private var currentMethodId: Int = 0
     private var currentModeId: Int = 0
-    private val currentMethodSet: InputMethodSet get() = inputMethods[currentMethodId]
-    private val currentMethod: InputMethod get() = currentMethodSet.keyModes[currentModeId]
+    private val currentMethod: InputMethod get() = inputMethods[currentMethodId]
 
     private var lastMethodId: Int = 0
     private var inputAfterSwitch = false
@@ -40,56 +37,44 @@ class LBoardService: InputMethodService() {
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_common, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_en, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
-        PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_symbols, true)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null)!!]!!
         val height = prefs.getInt("common_soft_height", 0).toFloat()
 
-        val methodEn = WordComposingInputMethod(
-                BasicSoftKeyboard(
-                        BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!,
-                        theme,
-                        height
-                ),
-                UniversalHardKeyboard(
-                        UniversalHardKeyboard.LAYOUTS[prefs.getString("method_en_hard_layout", null)!!]!!
-                )
-        )
+        run {
+            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!
+            val hardLayout = UniversalHardKeyboard.LAYOUTS[prefs.getString("method_en_hard_layout", null)!!]!!
+            val symbolsLayout = UniversalHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
 
-        val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_ko_predefined", null)!!]!!
+            val methodEn = WordComposingInputMethod(
+                    BasicSoftKeyboard(softLayout, theme, height),
+                    UniversalHardKeyboard(symbolsLayout + hardLayout)
+            )
+            inputMethods += methodEn
+        }
 
-        val combinationTable = predefinedMethod.combinationTable
-        val virtualJamoTable = predefinedMethod.virtualJamoTable
+        run {
+            val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_ko_predefined", null)!!]!!
 
-        val converter =
-                if(predefinedMethod.hangulConverter == PredefinedHangulConverter.DUBEOL) DubeolHangulComposer(combinationTable, virtualJamoTable)
-                else SebeolHangulComposer(combinationTable, virtualJamoTable)
+            val softLayout = predefinedMethod.softLayout ?: BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!
+            val symbolsLayout = UniversalHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)!!]!!
 
-        val methodKo = HangulInputMethod(
-                BasicSoftKeyboard(
-                        predefinedMethod.softLayout ?: BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!,
-                        theme,
-                        height
-                ),
-                UniversalHardKeyboard(
-                        predefinedMethod.hardLayout
-                ),
-                converter
-        )
+            val combinationTable = predefinedMethod.combinationTable
+            val virtualJamoTable = predefinedMethod.virtualJamoTable
 
-        val symbols = AlphabetInputMethod(
-                BasicSoftKeyboard(
-                        BasicSoftKeyboard.LAYOUTS[prefs.getString("method_symbols_soft_layout", null)!!]!!,
-                        theme, height
-                ),
-                UniversalHardKeyboard(
-                        UniversalHardKeyboard.LAYOUTS[prefs.getString("method_symbols_hard_layout", null)!!]!!
-                )
-        )
+            val converter =
+                    if(predefinedMethod.hangulConverter == PredefinedHangulConverter.DUBEOL) DubeolHangulComposer(combinationTable, virtualJamoTable)
+                    else SebeolHangulComposer(combinationTable, virtualJamoTable)
 
-        inputMethods += InputMethodSet(methodEn, symbols)
-        inputMethods += InputMethodSet(methodKo, symbols)
+            val methodKo = HangulInputMethod(
+                    BasicSoftKeyboard(softLayout, theme, height),
+                    UniversalHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
+                    converter
+            )
+            inputMethods += methodKo
+        }
+
     }
 
     override fun onCreateInputView(): View? {
@@ -145,19 +130,6 @@ class LBoardService: InputMethodService() {
         setInputView(currentMethod.initView(this))
     }
 
-    private fun switchKeyMode() {
-        currentMethod.reset()
-        val last = currentModeId
-        if(inputAfterSwitch && currentModeId != 0) {
-            currentModeId = 0
-        } else {
-            if(++currentModeId >= currentMethodSet.keyModes.size)
-                currentModeId = 0
-        }
-        if(inputAfterSwitch) lastMethodId = last
-        setInputView(currentMethod.initView(this))
-    }
-
     @Subscribe fun onUpdateView(event: UpdateViewEvent) {
         currentMethod.updateView(this)?.let {
             setInputView(it)
@@ -168,10 +140,6 @@ class LBoardService: InputMethodService() {
         when(event.keyCode) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
                 switchInputMethod(true)
-                return
-            }
-            KeyEvent.KEYCODE_SYM -> {
-                switchKeyMode()
                 return
             }
         }

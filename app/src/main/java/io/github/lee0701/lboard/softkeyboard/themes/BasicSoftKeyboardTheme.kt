@@ -44,6 +44,8 @@ object BasicSoftKeyboardTheme {
                     KeyEvent.KEYCODE_SHIFT_RIGHT to WHITE_KEY_SHIFT,
                     KeyEvent.KEYCODE_DEL to WHITE_KEY_DEL,
                     KeyEvent.KEYCODE_SYM to WHITE_KEY_MOD,
+                    KeyEvent.KEYCODE_ALT_LEFT to WHITE_KEY_MOD,
+                    KeyEvent.KEYCODE_ALT_RIGHT to WHITE_KEY_MOD,
                     KeyEvent.KEYCODE_LANGUAGE_SWITCH to WHITE_KEY_LANG
             )
     )
@@ -83,6 +85,8 @@ object BasicSoftKeyboardTheme {
                     KeyEvent.KEYCODE_SHIFT_RIGHT to DARK_KEY_SHIFT,
                     KeyEvent.KEYCODE_DEL to DARK_KEY_DEL,
                     KeyEvent.KEYCODE_SYM to DARK_KEY_MOD,
+                    KeyEvent.KEYCODE_ALT_LEFT to DARK_KEY_MOD,
+                    KeyEvent.KEYCODE_ALT_RIGHT to DARK_KEY_MOD,
                     KeyEvent.KEYCODE_LANGUAGE_SWITCH to DARK_KEY_LANG
             )
     )

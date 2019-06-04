@@ -18,8 +18,7 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
             ActivationFragment(),
             CommonFragment(),
             InputMethodFragmentEn(),
-            InputMethodFragmentKo(),
-            InputMethodFragmentSymbols()
+            InputMethodFragmentKo()
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,13 +99,6 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
         override val title = R.string.pref_method_ko_title
         override fun onCreatePreferences(p0: Bundle?, p1: String?) {
             addPreferencesFromResource(R.xml.lboard_pref_method_ko)
-        }
-    }
-
-    class InputMethodFragmentSymbols: InputMethodFragment() {
-        override val title = R.string.pref_method_symbols_title
-        override fun onCreatePreferences(p0: Bundle?, p1: String?) {
-            addPreferencesFromResource(R.xml.lboard_pref_method_symbols)
         }
     }
 
