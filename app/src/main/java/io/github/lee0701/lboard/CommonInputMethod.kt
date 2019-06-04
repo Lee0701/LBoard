@@ -30,6 +30,7 @@ abstract class CommonInputMethod: InputMethod {
     }
 
     override fun onKeyPress(keyCode: Int): Boolean {
+        if(isSystemKey(keyCode)) return false
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
@@ -90,6 +91,7 @@ abstract class CommonInputMethod: InputMethod {
     }
 
     override fun onKeyRelease(keyCode: Int): Boolean {
+        if(isSystemKey(keyCode)) return false
         when(keyCode) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
                 if(shift && !capsLock) shift = !inputOnShift
@@ -110,6 +112,8 @@ abstract class CommonInputMethod: InputMethod {
         hardKeyboard.reset()
         EventBus.getDefault().post(UpdateViewEvent())
     }
+
+    fun isSystemKey(keyCode: Int): Boolean = keyCode in 0 .. 6 || keyCode in 24 .. 28 || keyCode in 79 .. 85
 
     override fun serialize(): JSONObject {
         return super.serialize().apply {

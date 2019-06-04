@@ -208,11 +208,11 @@ class LBoardService: InputMethodService() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return super.onKeyDown(keyCode, event)
+        return currentMethod.onKeyPress(keyCode) || super.onKeyDown(keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return super.onKeyUp(keyCode, event)
+        return currentMethod.onKeyRelease(keyCode) || super.onKeyUp(keyCode, event)
     }
 
     override fun onEvaluateInputViewShown(): Boolean {

@@ -31,6 +31,7 @@ class WordComposingInputMethod(
     }
 
     override fun onKeyPress(keyCode: Int): Boolean {
+        if(isSystemKey(keyCode)) return false
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
@@ -78,18 +79,6 @@ class WordComposingInputMethod(
         }
         EventBus.getDefault().post(ComposeEvent(lastState))
         EventBus.getDefault().post(UpdateViewEvent())
-        return true
-    }
-
-    override fun onKeyRelease(keyCode: Int): Boolean {
-        when(keyCode) {
-            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
-                if(shift && !capsLock) shift = !inputOnShift
-            }
-            KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
-                if(alt && !altLock) alt = !inputOnAlt
-            }
-        }
         return true
     }
 
