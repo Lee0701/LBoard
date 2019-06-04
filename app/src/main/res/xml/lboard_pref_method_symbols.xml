@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_method_soft_title">
+        <ListPreference
+            android:key="method_symbols_soft_layout"
+            android:title="@string/pref_method_soft_layout_title"
+            android:summary="@string/pref_method_soft_layout_summary"
+            android:entries="@array/method_soft_layouts"
+            android:entryValues="@array/method_soft_layout_ids"
+            android:defaultValue="10cols-mobile-with-num" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_method_hard_title">
+        <ListPreference
+            android:key="method_symbols_hard_layout"
+            android:title="@string/pref_method_hard_layout_title"
+            android:summary="@string/pref_method_hard_layout_summary"
+            android:entries="@array/method_symbols_hard_layouts"
+            android:entryValues="@array/method_symbols_hard_layout_ids"
+            android:defaultValue="symbols-b" />
+    </PreferenceCategory>
+</PreferenceScreen>

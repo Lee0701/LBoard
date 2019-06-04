@@ -18,7 +18,8 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
             ActivationFragment(),
             CommonFragment(),
             InputMethodFragmentEn(),
-            InputMethodFragmentKo()
+            InputMethodFragmentKo(),
+            InputMethodFragmentSymbols()
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +78,7 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
     }
 
     class CommonFragment: Fragment() {
-        override val icon = R.drawable.ic_keyboard_black_24dp
+        override val icon = R.drawable.ic_check_box_black_24dp
         override val title = R.string.pref_common_title
         override fun onCreatePreferences(p0: Bundle?, p1: String?) {
             addPreferencesFromResource(R.xml.lboard_pref_common)
@@ -99,6 +100,13 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
         override val title = R.string.pref_method_ko_title
         override fun onCreatePreferences(p0: Bundle?, p1: String?) {
             addPreferencesFromResource(R.xml.lboard_pref_method_ko)
+        }
+    }
+
+    class InputMethodFragmentSymbols: InputMethodFragment() {
+        override val title = R.string.pref_method_symbols_title
+        override fun onCreatePreferences(p0: Bundle?, p1: String?) {
+            addPreferencesFromResource(R.xml.lboard_pref_method_symbols)
         }
     }
 

@@ -16,8 +16,8 @@ import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.SoftLayout
 import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
+import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.softkeyboard.*
-import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -40,6 +40,7 @@ class LBoardService: InputMethodService() {
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_common, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_en, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
+        PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_symbols, true)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null)!!]!!
@@ -78,8 +79,13 @@ class LBoardService: InputMethodService() {
         )
 
         val symbols = AlphabetInputMethod(
-                BasicSoftKeyboard(SoftLayout.LAYOUT_10COLS_MOBILE, theme, height),
-                UniversalHardKeyboard(Symbols.LAYOUT_SYMBOLS_A)
+                BasicSoftKeyboard(
+                        BasicSoftKeyboard.LAYOUTS[prefs.getString("method_symbols_soft_layout", null)!!]!!,
+                        theme, height
+                ),
+                UniversalHardKeyboard(
+                        UniversalHardKeyboard.LAYOUTS[prefs.getString("method_symbols_hard_layout", null)!!]!!
+                )
         )
 
         inputMethods += InputMethodSet(methodEn, symbols)

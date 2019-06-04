@@ -5,6 +5,7 @@ import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
+import io.github.lee0701.lboard.layouts.symbols.Symbols
 import org.json.JSONObject
 
 class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
@@ -73,6 +74,9 @@ class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
         }
 
         val LAYOUTS = mapOf<String, UniversalKeyboardLayout>(
+                "symbols-a" to Symbols.LAYOUT_SYMBOLS_A,
+                "symbols-b" to Symbols.LAYOUT_SYMBOLS_B,
+
                 "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
                 "dubeol-standard" to DubeolHangul.LAYOUT_DUBEOL_STANDARD,
                 "sebeol-390" to SebeolHangul.LAYOUT_SEBEOL_390,
