@@ -21,10 +21,6 @@ class AlphabetInputMethod(
         return null
     }
 
-    override fun reset() {
-        super.reset()
-    }
-
     companion object {
         @JvmStatic fun deserialize(json: JSONObject): AlphabetInputMethod? {
             val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard

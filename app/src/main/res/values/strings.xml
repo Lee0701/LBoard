@@ -13,6 +13,7 @@
     <string name="pref_common_soft_theme_summary">Choose a soft keyboard theme.</string>
 
     <string name="pref_common_soft_themes_white">White</string>
+    <string name="pref_common_soft_themes_dark">Dark</string>
 
     <string name="pref_common_soft_height_title">Soft Key Height</string>
     <string name="pref_common_soft_height_summary">Adjust the key height.</string>

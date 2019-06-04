@@ -2,10 +2,12 @@
 <resources>
     <string-array name="common_soft_themes">
         <item>@string/pref_common_soft_themes_white</item>
+        <item>@string/pref_common_soft_themes_dark</item>
     </string-array>
 
     <string-array name="common_soft_theme_ids">
         <item>white</item>
+        <item>dark</item>
     </string-array>
 
     <string-array name="method_soft_layouts">
