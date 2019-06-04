@@ -11,8 +11,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
-import io.github.lee0701.lboard.hardkeyboard.UniversalHardKeyboard
-import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
+import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
 import io.github.lee0701.lboard.softkeyboard.*
@@ -44,12 +44,12 @@ class LBoardService: InputMethodService() {
 
         run {
             val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!
-            val hardLayout = UniversalHardKeyboard.LAYOUTS[prefs.getString("method_en_hard_layout", null)!!]!!
-            val symbolsLayout = UniversalHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
+            val hardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_hard_layout", null)!!]!!
+            val symbolsLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
 
             val methodEn = WordComposingInputMethod(
                     BasicSoftKeyboard(softLayout, theme, height),
-                    UniversalHardKeyboard(symbolsLayout + hardLayout)
+                    CommonHardKeyboard(symbolsLayout + hardLayout)
             )
             inputMethods += methodEn
         }
@@ -58,7 +58,7 @@ class LBoardService: InputMethodService() {
             val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_ko_predefined", null)!!]!!
 
             val softLayout = predefinedMethod.softLayout ?: BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!
-            val symbolsLayout = UniversalHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)!!]!!
+            val symbolsLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)!!]!!
 
             val combinationTable = predefinedMethod.combinationTable
             val virtualJamoTable = predefinedMethod.virtualJamoTable
@@ -69,7 +69,7 @@ class LBoardService: InputMethodService() {
 
             val methodKo = HangulInputMethod(
                     BasicSoftKeyboard(softLayout, theme, height),
-                    UniversalHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
+                    CommonHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
                     converter
             )
             inputMethods += methodKo
@@ -208,7 +208,7 @@ class LBoardService: InputMethodService() {
 
     data class PredefinedMethod(
             val softLayout: Layout?,
-            val hardLayout: UniversalKeyboardLayout,
+            val hardLayout: CommonKeyboardLayout,
             val hangulConverter: PredefinedHangulConverter = PredefinedHangulConverter.NONE,
             val combinationTable: CombinationTable = CombinationTable(mapOf()),
             val virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())

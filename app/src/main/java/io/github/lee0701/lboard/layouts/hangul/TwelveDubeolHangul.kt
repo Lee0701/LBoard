@@ -2,13 +2,13 @@ package io.github.lee0701.lboard.layouts.hangul
 
 import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hangul.VirtualJamoTable
-import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
-import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout.*
+import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 
 object TwelveDubeolHangul {
     
-    val LAYOUT_CHEONJIIN = UniversalKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_CHEONJIIN = CommonKeyboardLayout(LayoutLayer(mapOf(
             0x0201 to LayoutItem(listOf(0x3163)),
             0x0202 to LayoutItem(listOf(0x100318d)),
             0x0203 to LayoutItem(listOf(0x3161)),
@@ -79,7 +79,7 @@ object TwelveDubeolHangul {
             0x10011a2 to 0x2025
     ))
 
-    val LAYOUT_NARATGEUL = UniversalKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_NARATGEUL = CommonKeyboardLayout(LayoutLayer(mapOf(
             0x0201 to LayoutItem(listOf(0x3131)),
             0x0202 to LayoutItem(listOf(0x3134)),
             0x0203 to LayoutItem(listOf(0x314f, 0x3153)),

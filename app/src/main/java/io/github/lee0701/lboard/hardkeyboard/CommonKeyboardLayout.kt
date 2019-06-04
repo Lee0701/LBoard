@@ -1,6 +1,6 @@
 package io.github.lee0701.lboard.hardkeyboard
 
-data class UniversalKeyboardLayout(
+data class CommonKeyboardLayout(
         val layers: Map<Int, LayoutLayer> = mapOf(0 to LayoutLayer()),
         val strokes: List<StrokeTable> = listOf(),
         val labels: Map<Int, String> = mapOf(),
@@ -16,8 +16,8 @@ data class UniversalKeyboardLayout(
 
     operator fun get(i: Int): LayoutLayer? = layers[i]
 
-    operator fun plus(other: UniversalKeyboardLayout): UniversalKeyboardLayout {
-        return UniversalKeyboardLayout(
+    operator fun plus(other: CommonKeyboardLayout): CommonKeyboardLayout {
+        return CommonKeyboardLayout(
                 (this.layers + other.layers).map { it.key to (this[it.key] ?: LayoutLayer(mapOf())) + (other[it.key] ?: LayoutLayer(mapOf())) }.toMap(),
                 other.strokes,
                 this.labels + other.labels,

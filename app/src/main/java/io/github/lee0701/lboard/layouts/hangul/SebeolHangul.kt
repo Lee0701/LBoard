@@ -1,13 +1,13 @@
 package io.github.lee0701.lboard.layouts.hangul
 
 import io.github.lee0701.lboard.hangul.CombinationTable
-import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
-import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout.*
+import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 
 object SebeolHangul {
-    val LAYOUT_SEBEOL_391 = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_SEBEOL_391 = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(LayoutLayer(mapOf(
             68 to LayoutItem(0x002a, 0x203b),
 
             8 to LayoutItem(0x11c2, 0x11a9),
@@ -76,7 +76,7 @@ object SebeolHangul {
             0x116e to 0x1175 to 0x1171	// ㅟ
     ))
 
-    val LAYOUT_SEBEOL_390 = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_SEBEOL_390 = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(LayoutLayer(mapOf(
             8 to LayoutItem(0x11c2, 0x11bd),
             9 to LayoutItem(0x11bb, 0x0040),
             10 to LayoutItem(0x11b8, 0x0023),

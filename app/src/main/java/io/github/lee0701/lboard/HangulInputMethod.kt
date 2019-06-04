@@ -10,10 +10,8 @@ import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hangul.SebeolHangulComposer
-import io.github.lee0701.lboard.hardkeyboard.HangulConverterLinkedHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
-import io.github.lee0701.lboard.hardkeyboard.TwelveKeyHardKeyboard
-import io.github.lee0701.lboard.hardkeyboard.UniversalHardKeyboard
+import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
@@ -51,7 +49,7 @@ class HangulInputMethod(
             }
             KeyEvent.KEYCODE_SPACE -> {
                 // 천지인 등 스페이스로 조합 끊는 자판일 시
-                if(hardKeyboard is TwelveKeyHardKeyboard && hardKeyboard.layout.spaceForSeparation &&
+                if(hardKeyboard is CommonHardKeyboard && hardKeyboard.layout.spaceForSeparation &&
                         (lastState.cho != null || lastState.jung != null || lastState.jong != null)) {
                     states += HangulComposer.State(other = hangulConverter.display(lastState))
                     hardKeyboard.reset()
@@ -106,8 +104,7 @@ class HangulInputMethod(
                 else if(composed.jung != null && composed.jung < 0x01000000) 2
                 else if(composed.cho != null && composed.cho < 0x01000000) 1
                 else 0
-        if(hardKeyboard is HangulConverterLinkedHardKeyboard) hardKeyboard.status = status
-        else if(hardKeyboard is UniversalHardKeyboard) hardKeyboard.status = status
+        if(hardKeyboard is CommonHardKeyboard) hardKeyboard.status = status
     }
 
     override fun reset() {

@@ -8,14 +8,14 @@ import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import org.json.JSONObject
 
-class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
+class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
 
     var status: Int = 0
 
-    private val currentLayer: UniversalKeyboardLayout.LayoutLayer
-        get() = layout[status] ?: layout[0] ?: UniversalKeyboardLayout.LayoutLayer()
+    private val currentLayer: CommonKeyboardLayout.LayoutLayer
+        get() = layout[status] ?: layout[0] ?: CommonKeyboardLayout.LayoutLayer()
 
-    private val altLayer: UniversalKeyboardLayout.LayoutLayer get() = layout[10] ?: currentLayer
+    private val altLayer: CommonKeyboardLayout.LayoutLayer get() = layout[10] ?: currentLayer
 
     var lastCode = 0
     var lastIndex = 0
@@ -79,12 +79,12 @@ class UniversalHardKeyboard(val layout: UniversalKeyboardLayout): HardKeyboard {
         const val MASK_SYSTEM_CODE = 0x70000000
         const val SYSTEM_CODE_STROKE = 0x70000000
 
-        @JvmStatic fun deserialize(json: JSONObject): UniversalHardKeyboard? {
+        @JvmStatic fun deserialize(json: JSONObject): CommonHardKeyboard? {
             val layout = LAYOUTS[json.getString("layout")] ?: return null
-            return UniversalHardKeyboard(layout)
+            return CommonHardKeyboard(layout)
         }
 
-        val LAYOUTS = mapOf<String, UniversalKeyboardLayout>(
+        val LAYOUTS = mapOf<String, CommonKeyboardLayout>(
                 "symbols-a" to Symbols.LAYOUT_SYMBOLS_A,
                 "symbols-b" to Symbols.LAYOUT_SYMBOLS_B,
 

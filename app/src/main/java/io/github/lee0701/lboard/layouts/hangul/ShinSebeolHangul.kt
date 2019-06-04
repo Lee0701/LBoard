@@ -1,9 +1,9 @@
 package io.github.lee0701.lboard.layouts.hangul
 
 import io.github.lee0701.lboard.hangul.CombinationTable
-import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
-import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout.*
+import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 
 object ShinSebeolHangul {
@@ -78,7 +78,7 @@ object ShinSebeolHangul {
             76 to LayoutItem(0x1001169, 0x003f)
     ))
     
-    val LAYOUT_SHIN_ORIGINAL = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(mapOf(0 to LAYOUT_SHIN_ORIGINAL_0_2_3, 1 to LAYOUT_SHIN_ORIGINAL_1))
+    val LAYOUT_SHIN_ORIGINAL = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(mapOf(0 to LAYOUT_SHIN_ORIGINAL_0_2_3, 1 to LAYOUT_SHIN_ORIGINAL_1))
 
     val COMBINATION_SHIN_ORIGINAL = CombinationTable(mapOf(
             0x1100 to 0x1100 to 0x1101,	// ㄲ
@@ -179,6 +179,6 @@ object ShinSebeolHangul {
             76 to LayoutItem(0x1001169, 0x003f)
     ))
 
-    val LAYOUT_SHIN_EDIT = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(mapOf(0 to LAYOUT_SHIN_EDIT_0_2_3, 1 to LAYOUT_SHIN_EDIT_1))
+    val LAYOUT_SHIN_EDIT = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(mapOf(0 to LAYOUT_SHIN_EDIT_0_2_3, 1 to LAYOUT_SHIN_EDIT_1))
 
 }

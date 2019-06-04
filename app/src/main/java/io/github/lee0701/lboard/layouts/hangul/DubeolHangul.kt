@@ -1,14 +1,14 @@
 package io.github.lee0701.lboard.layouts.hangul
 
 import io.github.lee0701.lboard.hangul.CombinationTable
-import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
-import io.github.lee0701.lboard.hardkeyboard.UniversalKeyboardLayout.*
+import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 
 object DubeolHangul {
 
-    val LAYOUT_DUBEOL_STANDARD = Alphabet.LAYOUT_QWERTY + UniversalKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_DUBEOL_STANDARD = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(LayoutLayer(mapOf(
             45 to LayoutItem(0x3142, 0x3143),
             51 to LayoutItem(0x3148, 0x3149),
             33 to LayoutItem(0x3137, 0x3138),
