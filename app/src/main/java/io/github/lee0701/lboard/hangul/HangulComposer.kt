@@ -32,6 +32,12 @@ abstract class HangulComposer(
 
     data class State(val cho: Int? = null, val jung: Int? = null, val jong: Int? = null, val other: String = "") {
 
+        val status: Int get() =
+            if(jong != null && jong < 0x01000000) 3
+            else if(jung != null && jung < 0x01000000) 2
+            else if(cho != null && cho < 0x01000000) 1
+            else 0
+        
         constructor(Int: Int): this(
                 if(isCho(Int)) Int else null,
                 if(isJung(Int)) Int else null,

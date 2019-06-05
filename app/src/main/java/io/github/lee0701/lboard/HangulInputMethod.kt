@@ -99,11 +99,7 @@ class HangulInputMethod(
     }
 
     private fun updateShinStatus(composed: HangulComposer.State) {
-        val status =
-                if(composed.jong != null && composed.jong < 0x01000000) 3
-                else if(composed.jung != null && composed.jung < 0x01000000) 2
-                else if(composed.cho != null && composed.cho < 0x01000000) 1
-                else 0
+        val status = composed.status
         if(hardKeyboard is CommonHardKeyboard) hardKeyboard.status = status
     }
 
