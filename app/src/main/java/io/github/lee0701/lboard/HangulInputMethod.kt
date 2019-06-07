@@ -29,11 +29,6 @@ class HangulInputMethod(
         return softKeyboard.initView(context)
     }
 
-    override fun updateView(context: Context): View? {
-        softKeyboard.setLabels(hardKeyboard.getLabels(shift, alt))
-        return null
-    }
-
     override fun onKeyPress(keyCode: Int): Boolean {
         if(isSystemKey(keyCode)) return false
         when(keyCode) {

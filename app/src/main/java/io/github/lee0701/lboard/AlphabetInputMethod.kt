@@ -16,11 +16,6 @@ class AlphabetInputMethod(
         return softKeyboard.initView(context)
     }
 
-    override fun updateView(context: Context): View? {
-        softKeyboard.setLabels(hardKeyboard.getLabels(shift, alt))
-        return null
-    }
-
     companion object {
         @JvmStatic fun deserialize(json: JSONObject): AlphabetInputMethod? {
             val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard

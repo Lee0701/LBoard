@@ -12,6 +12,14 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
 
     var keyboardView: KeyboardView? = null
 
+    override var shift: Int
+        get() = if(keyboardView?.isShifted ?: false) 1 else 0
+        set(value) {keyboardView?.isShifted = value > 0}
+
+    override var alt: Int
+        get() = 0
+        set(value) {}
+
     override fun initView(context: Context): View? {
         val layout = Keyboard(context, context.resources.getIdentifier(layoutResId, "xml", context.packageName))
         keyboardView = KeyboardView(context, null).apply {

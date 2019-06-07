@@ -19,7 +19,9 @@ data class RowTheme(
 data class KeyboardTheme(
         @DrawableRes val background: Int,
         val rowTheme: Map<Row.Type?, RowTheme> = mapOf(),
-        val keyTheme: Map<Int?, KeyTheme> = mapOf()
+        val keyTheme: Map<Int?, KeyTheme> = mapOf(),
+        val stickyTheme: KeyTheme? = null,
+        val stickyLockedTheme: KeyTheme? = null
 )
 
 data class Layout(

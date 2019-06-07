@@ -22,6 +22,9 @@ class BasicKeyboardView(
         val repeatRate: Int
 ): View(context) {
 
+    var shift: Int = 0
+    var alt: Int = 0
+
     private val rect = Rect()
     private val displayMetrics = DisplayMetrics()
 
@@ -99,7 +102,16 @@ class BasicKeyboardView(
     }
 
     private fun onDrawKeyBackground(canvas: Canvas, key: Key) {
-        val theme = theme.keyTheme[key.keyCode] ?: theme.keyTheme[null] ?: return
+        val keyTheme = theme.keyTheme[key.keyCode] ?: theme.keyTheme[null] ?: return
+        val theme = when(key.keyCode) {
+            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT ->
+                ((if(shift == 1) theme.stickyTheme else if(shift == 2) theme.stickyLockedTheme else null) ?: keyTheme)
+                        .copy(foreground = keyTheme.foreground)
+            KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT ->
+                ((if(alt == 1) theme.stickyTheme else if(alt == 2) theme.stickyLockedTheme else null) ?: keyTheme)
+                        .copy(foreground = keyTheme.foreground)
+            else -> keyTheme
+        }
 
         val widthRatio = 1.0f
 

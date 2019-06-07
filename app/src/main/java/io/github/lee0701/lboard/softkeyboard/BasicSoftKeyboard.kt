@@ -16,6 +16,14 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
 
     var keyboardView: BasicKeyboardView? = null
 
+    override var shift: Int
+        get() = keyboardView?.shift ?: 0
+        set(value) {keyboardView?.shift = value}
+
+    override var alt: Int
+        get() = keyboardView?.alt ?: 0
+        set(value) {keyboardView?.alt = value}
+
     override fun initView(context: Context): View? {
         val keyboardHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyHeight, context.resources.displayMetrics) * layout.rows.size
         keyboardView = BasicKeyboardView(context, layout, theme, this, keyboardHeight.toInt(), 300, 50)

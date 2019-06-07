@@ -21,6 +21,18 @@ object BasicSoftKeyboardTheme {
             Color.parseColor("#dd000000")
     )
 
+    private val WHITE_KEY_STICKY = KeyTheme(
+            R.drawable.keybg_white_sticky,
+            R.drawable.keybg_white_sticky_p,
+            Color.parseColor("#dd000000")
+    )
+
+    private val WHITE_KEY_STICKY_LOCKED = KeyTheme(
+            R.drawable.keybg_white_locked,
+            R.drawable.keybg_white_locked_p,
+            Color.parseColor("#dd000000")
+    )
+
     private val WHITE_KEY_SPACE = WHITE_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_space_black)
     private val WHITE_KEY_SHIFT = WHITE_KEY_MOD.copy(foreground = R.drawable.keyfg_shift_black)
     private val WHITE_KEY_DEL = WHITE_KEY_MOD.copy(foreground = R.drawable.keyfg_del_black)
@@ -47,7 +59,9 @@ object BasicSoftKeyboardTheme {
                     KeyEvent.KEYCODE_ALT_LEFT to WHITE_KEY_MOD,
                     KeyEvent.KEYCODE_ALT_RIGHT to WHITE_KEY_MOD,
                     KeyEvent.KEYCODE_LANGUAGE_SWITCH to WHITE_KEY_LANG
-            )
+            ),
+            WHITE_KEY_STICKY,
+            WHITE_KEY_STICKY_LOCKED
     )
 
     private val DARK_KEY_CHARACTER = KeyTheme(
@@ -59,6 +73,18 @@ object BasicSoftKeyboardTheme {
     private val DARK_KEY_MOD = KeyTheme(
             R.drawable.keybg_dark_mod,
             R.drawable.keybg_dark_p,
+            Color.WHITE
+    )
+
+    private val DARK_KEY_STICKY = KeyTheme(
+            R.drawable.keybg_dark_sticky,
+            R.drawable.keybg_dark_sticky_p,
+            Color.WHITE
+    )
+
+    private val DARK_KEY_STICKY_LOCKED = KeyTheme(
+            R.drawable.keybg_dark_locked,
+            R.drawable.keybg_dark_locked_p,
             Color.WHITE
     )
 
@@ -88,7 +114,9 @@ object BasicSoftKeyboardTheme {
                     KeyEvent.KEYCODE_ALT_LEFT to DARK_KEY_MOD,
                     KeyEvent.KEYCODE_ALT_RIGHT to DARK_KEY_MOD,
                     KeyEvent.KEYCODE_LANGUAGE_SWITCH to DARK_KEY_LANG
-            )
+            ),
+            DARK_KEY_STICKY,
+            DARK_KEY_STICKY_LOCKED
     )
 
 }
