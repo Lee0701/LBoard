@@ -12,7 +12,7 @@ import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
-class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHeight: Float): SoftKeyboard, BasicKeyboardView.OnKeyListener {
+class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHeight: Float, val showLabels: Boolean): SoftKeyboard, BasicKeyboardView.OnKeyListener {
 
     var keyboardView: BasicKeyboardView? = null
 
@@ -25,7 +25,8 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
     override fun setLabels(labels: Map<Int, String>) {
         layout.rows.forEach { row ->
             row.keys.forEach { key ->
-                key.label = labels[key.keyCode] ?: key.label
+                if(showLabels) key.label = labels[key.keyCode] ?: key.label
+                else key.label = ""
             }
         }
     }
@@ -59,6 +60,7 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
             put("layout", REVERSE_LAYOUTS[layout])
             put("theme", REVERSE_THEMES[theme])
             put("height", keyHeight.toInt())
+            put("labels", showLabels)
         }
     }
 
@@ -68,7 +70,8 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
             val layout = LAYOUTS[json.getString("layout")] ?: return null
             val theme = THEMES[json.getString("theme")] ?: return null
             val keyHeight = json.getInt("height").toFloat()
-            return BasicSoftKeyboard(layout, theme, keyHeight)
+            val keyLabels = json.getBoolean("labels")
+            return BasicSoftKeyboard(layout, theme, keyHeight, keyLabels)
         }
 
         val LAYOUTS = mapOf(

@@ -41,6 +41,7 @@ class LBoardService: InputMethodService() {
 
         val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null)!!]!!
         val height = prefs.getInt("common_soft_height", 0).toFloat()
+        val labels = prefs.getBoolean("common_soft_labels", true)
 
         run {
             val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!
@@ -48,7 +49,7 @@ class LBoardService: InputMethodService() {
             val symbolsLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
 
             val methodEn = WordComposingInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height),
+                    BasicSoftKeyboard(softLayout, theme, height, labels),
                     CommonHardKeyboard(symbolsLayout + hardLayout)
             )
             inputMethods += methodEn
@@ -68,7 +69,7 @@ class LBoardService: InputMethodService() {
                     else SebeolHangulComposer(combinationTable, virtualJamoTable)
 
             val methodKo = HangulInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height),
+                    BasicSoftKeyboard(softLayout, theme, height, labels),
                     CommonHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
                     converter
             )

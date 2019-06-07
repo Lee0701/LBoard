@@ -13,5 +13,10 @@
             android:title="@string/pref_common_soft_height_title"
             android:summary="@string/pref_common_soft_height_summary"
             android:defaultValue="50" />
+        <CheckBoxPreference
+            android:key="common_soft_labels"
+            android:title="@string/pref_common_soft_labels_title"
+            android:summary="@string/pref_common_soft_labels_summary"
+            android:defaultValue="true" />
     </PreferenceCategory>
 </PreferenceScreen>

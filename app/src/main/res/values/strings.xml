@@ -18,6 +18,9 @@
     <string name="pref_common_soft_height_title">Soft Key Height</string>
     <string name="pref_common_soft_height_summary">Adjust the key height.</string>
 
+    <string name="pref_common_soft_labels_title">Soft Key Labels</string>
+    <string name="pref_common_soft_labels_summary">Show soft keyboard labels.</string>
+
 
     <string name="pref_method_soft_title">Soft Keyboard</string>
 
