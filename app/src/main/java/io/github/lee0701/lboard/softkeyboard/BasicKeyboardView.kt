@@ -19,7 +19,8 @@ class BasicKeyboardView(
         val onKeyListener: OnKeyListener,
         val keyboardHeight: Int,
         val longClickDelay: Int,
-        val repeatRate: Int
+        val repeatRate: Int,
+        val showLabels: Boolean
 ): View(context) {
 
     var shift: Int = 0
@@ -95,7 +96,7 @@ class BasicKeyboardView(
                 onDrawKeyBackground(canvas, key)
             }
             row.keys.forEach { key ->
-                onDrawKeyForeground(canvas, key)
+                if(showLabels) onDrawKeyForeground(canvas, key)
             }
         }
 
@@ -105,11 +106,9 @@ class BasicKeyboardView(
         val keyTheme = theme.keyTheme[key.keyCode] ?: theme.keyTheme[null] ?: return
         val theme = when(key.keyCode) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT ->
-                ((if(shift == 1) theme.stickyTheme else if(shift == 2) theme.stickyLockedTheme else null) ?: keyTheme)
-                        .copy(foreground = keyTheme.foreground)
+                (if(shift == 1) theme.stickyTheme else if(shift == 2) theme.stickyLockedTheme else null) ?: keyTheme
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT ->
-                ((if(alt == 1) theme.stickyTheme else if(alt == 2) theme.stickyLockedTheme else null) ?: keyTheme)
-                        .copy(foreground = keyTheme.foreground)
+                (if(alt == 1) theme.stickyTheme else if(alt == 2) theme.stickyLockedTheme else null) ?: keyTheme
             else -> keyTheme
         }
 

@@ -26,15 +26,14 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
 
     override fun initView(context: Context): View? {
         val keyboardHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyHeight, context.resources.displayMetrics) * layout.rows.size
-        keyboardView = BasicKeyboardView(context, layout, theme, this, keyboardHeight.toInt(), 300, 50)
+        keyboardView = BasicKeyboardView(context, layout, theme, this, keyboardHeight.toInt(), 300, 50, showLabels)
         return keyboardView
     }
 
     override fun setLabels(labels: Map<Int, String>) {
         layout.rows.forEach { row ->
             row.keys.forEach { key ->
-                if(showLabels) key.label = labels[key.keyCode] ?: key.label
-                else key.label = ""
+                key.label = labels[key.keyCode] ?: key.label
             }
         }
     }
