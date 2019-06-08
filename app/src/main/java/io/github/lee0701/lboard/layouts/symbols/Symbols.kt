@@ -3,8 +3,6 @@ package io.github.lee0701.lboard.layouts.symbols
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
-import io.github.lee0701.lboard.layouts.alphabet.Alphabet
-import io.github.lee0701.lboard.layouts.soft.SoftLayout
 
 object Symbols {
 
@@ -94,6 +92,48 @@ object Symbols {
             41 to LayoutItem(0x0022, 0x300d),
 
             56 to LayoutItem(0x002c)
+    )))
+
+    val LAYOUT_SYMBOLS_BLACKBERRY = CommonKeyboardLayout(10, LayoutLayer(mapOf(
+            8 to LayoutItem(0x0031),
+            9 to LayoutItem(0x0032),
+            10 to LayoutItem(0x0033),
+            11 to LayoutItem(0x0034),
+            12 to LayoutItem(0x0035),
+            13 to LayoutItem(0x0036),
+            14 to LayoutItem(0x0037),
+            15 to LayoutItem(0x0038),
+            16 to LayoutItem(0x0039),
+            7 to LayoutItem(0x0030),
+
+            45 to LayoutItem(0x0023),
+            51 to LayoutItem(0x0031),
+            33 to LayoutItem(0x0032),
+            46 to LayoutItem(0x0033),
+            48 to LayoutItem(0x0028),
+            53 to LayoutItem(0x0029),
+            49 to LayoutItem(0x005f),
+            37 to LayoutItem(0x002d),
+            43 to LayoutItem(0x002b),
+            44 to LayoutItem(0x0040),
+
+            29 to LayoutItem(0x002a),
+            47 to LayoutItem(0x0034),
+            32 to LayoutItem(0x0035),
+            34 to LayoutItem(0x0036),
+            35 to LayoutItem(0x002f),
+            36 to LayoutItem(0x003a),
+            38 to LayoutItem(0x003b),
+            39 to LayoutItem(0x0027),
+            40 to LayoutItem(0x0022),
+
+            54 to LayoutItem(0x0037),
+            52 to LayoutItem(0x0038),
+            31 to LayoutItem(0x0039),
+            50 to LayoutItem(0x003f),
+            30 to LayoutItem(0x0021),
+            42 to LayoutItem(0x002c),
+            41 to LayoutItem(0x002e)
     )))
 
     val LAYOUT_SYMBOLS_GOOGLE = CommonKeyboardLayout(10, LayoutLayer(mapOf(

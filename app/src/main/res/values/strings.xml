@@ -49,6 +49,7 @@
 
     <string name="pref_method_hard_layout_symbols_a">Symbols A</string>
     <string name="pref_method_hard_layout_symbols_b">Symbols B</string>
+    <string name="pref_method_hard_layout_symbols_blackberry">Symbols Blackberry</string>
     <string name="pref_method_hard_layout_alphabet_qwerty">Qwerty</string>
     <string name="pref_method_hard_layout_dubeol_standard">Dubeolsik Standard</string>
     <string name="pref_method_hard_layout_sebeol_390">Sebeolsik 390</string>

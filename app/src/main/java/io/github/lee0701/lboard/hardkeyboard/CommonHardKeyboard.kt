@@ -87,6 +87,7 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
         val LAYOUTS = mapOf<String, CommonKeyboardLayout>(
                 "symbols-a" to Symbols.LAYOUT_SYMBOLS_A,
                 "symbols-b" to Symbols.LAYOUT_SYMBOLS_B,
+                "symbols-blackberry" to Symbols.LAYOUT_SYMBOLS_BLACKBERRY,
 
                 "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
                 "dubeol-standard" to DubeolHangul.LAYOUT_DUBEOL_STANDARD,
