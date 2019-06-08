@@ -7,6 +7,8 @@ class SingleVowelDubeolHangulComposer(
         virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
 ): HangulComposer(combinationTable, virtualJamoTable) {
 
+    val reversedCombinations = combinationTable.combinations.map { it.value to it.key }.toMap()
+
     override fun compose(composing: State, input: Int): State =
         if(isConsonant(input)) consonant(correct(composing), input)
         else if(isVowel(input)) vowel(correct(composing), input)
@@ -30,7 +32,8 @@ class SingleVowelDubeolHangulComposer(
             else composing.copy(cho = toCho(input))
 
     private fun vowel(composing: State, input: Int): State =
-            if(composing.jong != null) State(other = display(composing.copy(jong = null)), cho = ghostLight(composing.jong), jung = toJung(input))
+            // 받침을 통째로 초성으로 올릴 수 없으면(ᆪ 등) 기본 두벌식 오토마타같이 분리해서 올린다.
+            if(composing.jong != null) ghostLight(composing.jong).let { State(other = display(composing.copy(jong = if(it == 0x20) reversedCombinations[composing.jong]?.first else null)), cho = if(it == 0x20) ghostLight(reversedCombinations[composing.jong]?.second ?: composing.jong) else it, jung = toJung(input)) }
             else if(composing.jung != null) combinationTable.combinations[composing.jung to toJung(input)]?.let { composing.copy(jung = it) } ?: State(other = display(composing), jung = toJung(input))
             else composing.copy(jung = toJung(input))
 
