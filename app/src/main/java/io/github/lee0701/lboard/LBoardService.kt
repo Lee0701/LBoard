@@ -158,6 +158,7 @@ class LBoardService: InputMethodService() {
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
         currentMethod.reset()
 
+        val methods = if(physicalKeyboard) physicalInputMethods else softinputMethods
         val last = currentMethodId
 
         val fromOutside = switchedFromOutside
@@ -174,7 +175,7 @@ class LBoardService: InputMethodService() {
                 currentMethodId = lastMethodId
             }
         } else {
-            if(++currentMethodId >= softinputMethods.size) {
+            if(++currentMethodId >= methods.size) {
                 currentMethodId = 0
                 if(switchBetweenApps) {
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)  switchToNextInputMethod(false)
@@ -255,6 +256,10 @@ class LBoardService: InputMethodService() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if(keyCode == KeyEvent.KEYCODE_SPACE && event.isShiftPressed) {
+            switchInputMethod(false)
+            return true
+        }
         return currentMethod.onKeyPress(keyCode) || super.onKeyDown(keyCode, event)
     }
 
