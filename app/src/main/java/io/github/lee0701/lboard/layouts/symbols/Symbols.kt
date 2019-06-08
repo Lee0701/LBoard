@@ -4,6 +4,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
+import io.github.lee0701.lboard.layouts.soft.SoftLayout
 
 object Symbols {
 
@@ -124,5 +125,32 @@ object Symbols {
 
             56 to LayoutItem(0x002c)
     )))
+
+    val LAYOUT_SYMBOLS_7COLS = CommonKeyboardLayout(mapOf(10 to LayoutLayer(mapOf(
+            0x0210 to LayoutItem(0x0021),
+            0x0211 to LayoutItem(0x0022),
+            0x0212 to LayoutItem(0x0027),
+            0x0213 to LayoutItem(0x0037),
+            0x0214 to LayoutItem(0x0038),
+            0x0215 to LayoutItem(0x0039),
+            0x0216 to LayoutItem(0x0029),
+
+            0x0220 to LayoutItem(0x003f),
+            0x0221 to LayoutItem(0x003a),
+            0x0222 to LayoutItem(0x003b),
+            0x0223 to LayoutItem(0x0034),
+            0x0224 to LayoutItem(0x0035),
+            0x0225 to LayoutItem(0x0036),
+            0x0226 to LayoutItem(0x0028),
+
+            0x0230 to LayoutItem(0x002f),
+            0x0231 to LayoutItem(0x002d),
+            0x0232 to LayoutItem(0x0030),
+            0x0233 to LayoutItem(0x0031),
+            0x0234 to LayoutItem(0x0032),
+            0x0235 to LayoutItem(0x0033),
+
+            56 to LayoutItem(0x002c)
+    ))))
 
 }
