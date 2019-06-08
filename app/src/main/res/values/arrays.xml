@@ -66,6 +66,7 @@
         <item>@string/pref_method_hard_layout_sebeol_391</item>
         <item>@string/pref_method_hard_layout_sebeol_shin_original</item>
         <item>@string/pref_method_hard_layout_sebeol_shin_edit</item>
+        <item>@string/pref_method_hard_layout_dubeol_google</item>
         <item>@string/pref_method_hard_layout_dubeol_cheonjiin</item>
         <item>@string/pref_method_hard_layout_dubeol_naratgeul</item>
     </string-array>
@@ -76,6 +77,7 @@
         <item>sebeol-391</item>
         <item>sebeol-shin-original</item>
         <item>sebeol-shin-edit</item>
+        <item>dubeol-google</item>
         <item>dubeol-cheonjiin</item>
         <item>dubeol-naratgeul</item>
     </string-array>
