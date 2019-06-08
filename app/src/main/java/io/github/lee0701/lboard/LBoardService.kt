@@ -178,10 +178,16 @@ class LBoardService: InputMethodService() {
     @Subscribe fun onSoftKeyFlick(event: SoftKeyFlickEvent) {
         when(event.direction) {
             SoftKeyFlickEvent.FlickDirection.UP -> {
-                if(!currentMethod.shift) currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
+                if(!currentMethod.shift) {
+                    currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
+                    currentMethod.onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
+                }
             }
             SoftKeyFlickEvent.FlickDirection.DOWN -> {
-                if(!currentMethod.alt) currentMethod.onKeyPress(KeyEvent.KEYCODE_ALT_LEFT)
+                if(!currentMethod.alt) {
+                    currentMethod.onKeyPress(KeyEvent.KEYCODE_ALT_LEFT)
+                    currentMethod.onKeyRelease(KeyEvent.KEYCODE_ALT_LEFT)
+                }
             }
         }
     }
