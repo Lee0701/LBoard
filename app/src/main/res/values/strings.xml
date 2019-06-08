@@ -52,6 +52,7 @@
     <string name="pref_method_hard_layout_sebeol_391">Sebeolsik Final</string>
     <string name="pref_method_hard_layout_sebeol_shin_original">Shin Sebeolsik Original</string>
     <string name="pref_method_hard_layout_sebeol_shin_edit">Shin Sebeolsik Edit</string>
+    <string name="pref_method_hard_layout_sebeol_mini_shin">Mini Shin Sebeolsik Experimental</string>
     <string name="pref_method_hard_layout_dubeol_google">Dubeolsik Google Danmoeum</string>
     <string name="pref_method_hard_layout_dubeol_cheonjiin">T10 Dubeolsik Cheonjiin</string>
     <string name="pref_method_hard_layout_dubeol_naratgeul">T12 Dubeolsik Naratgeul</string>

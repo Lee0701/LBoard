@@ -4,9 +4,9 @@ import io.github.lee0701.lboard.softkeyboard.Key
 import io.github.lee0701.lboard.softkeyboard.Layout
 import io.github.lee0701.lboard.softkeyboard.Row
 
-object SingleVowelSoftLayout {
+object MiniSoftLayout {
 
-    val LAYOUT_8COLS_GOOGLE = Layout(listOf(Row(listOf(
+    val LAYOUT_MINI_8COLS_GOOGLE = Layout(listOf(Row(listOf(
             Key(45, ""),    // q
             Key(51, ""),    // w
             Key(33, ""),    // e
@@ -39,5 +39,37 @@ object SingleVowelSoftLayout {
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
             Key(keyCode = 66, label = "RETURN", keyWidth = 2/10f)
     ), Row.Type.BOTTOM)), keyWidth = 1/8f)
+
+    val LAYOUT_MINI_7COLS = Layout(listOf(Row(listOf(
+            Key(0x0210),
+            Key(0x0211),
+            Key(0x0212),
+            Key(0x0213),
+            Key(0x0214),
+            Key(0x0215),
+            Key(0x0216)
+    ), Row.Type.ODD), Row(listOf(
+            Key(0x0220),
+            Key(0x0221),
+            Key(0x0222),
+            Key(0x0223),
+            Key(0x0224),
+            Key(0x0225),
+            Key(0x0226)
+    ), Row.Type.EVEN), Row(listOf(
+            Key(0x0230),
+            Key(0x0231),
+            Key(0x0232),
+            Key(0x0233),
+            Key(0x0234),
+            Key(0x0235),
+            Key(67, "DEL", repeatable = true)
+    ), Row.Type.ODD), Row(listOf(
+            Key(keyCode = 57, label = "?12", keyWidth = 1.5f/10f),
+            Key(keyCode = 204, label = "ABC", keyWidth = 1.5f/10f),
+            Key(keyCode = 62, keyWidth = 4/10f),
+            Key(keyCode = 56, label = ".", keyWidth = 1/10f),
+            Key(keyCode = 66, label = "RETURN", keyWidth = 2/10f)
+    ), Row.Type.BOTTOM)), keyWidth = 1/7f)
 
 }
