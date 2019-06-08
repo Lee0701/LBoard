@@ -8,9 +8,6 @@
             android:entries="@array/method_soft_layouts"
             android:entryValues="@array/method_soft_layout_ids"
             android:defaultValue="10cols-mobile-with-num" />
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/pref_method_hard_title">
         <ListPreference
             android:key="method_ko_predefined"
             android:title="@string/pref_method_hard_layout_title"
@@ -30,6 +27,23 @@
             android:title="@string/pref_method_hard_timeout_title"
             android:summary="@string/pref_method_hard_timeout_summary"
             android:defaultValue="200" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_method_hard_title">
+        <ListPreference
+            android:key="method_ko_physical_predefined"
+            android:title="@string/pref_method_physical_hard_layout_title"
+            android:summary="@string/pref_method_physical_hard_layout_summary"
+            android:entries="@array/method_ko_physical_predefined_layouts"
+            android:entryValues="@array/method_ko_physical_predefined_layout_ids"
+            android:defaultValue="dubeol-standard" />
+        <ListPreference
+            android:key="method_ko_physical_symbols_hard_layout"
+            android:title="@string/pref_method_symbols_layout_title"
+            android:summary="@string/pref_method_symbols_layout_summary"
+            android:entries="@array/method_symbols_hard_layouts"
+            android:entryValues="@array/method_symbols_hard_layout_ids"
+            android:defaultValue="symbols-b" />
     </PreferenceCategory>
 
 </PreferenceScreen>

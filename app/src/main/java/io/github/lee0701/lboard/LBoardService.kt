@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
+import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.support.v7.preference.PreferenceManager
@@ -18,15 +19,19 @@ import io.github.lee0701.lboard.layouts.soft.MiniSoftLayout
 import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.softkeyboard.*
+import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class LBoardService: InputMethodService() {
 
-    private val inputMethods: MutableList<InputMethod> = mutableListOf()
+    private val softinputMethods: MutableList<InputMethod> = mutableListOf()
+    private val physicalInputMethods: MutableList<InputMethod> = mutableListOf()
+
+    private var physicalKeyboard: Boolean = false
     private var currentMethodId: Int = 0
-    private var currentModeId: Int = 0
-    private val currentMethod: InputMethod get() = inputMethods[currentMethodId]
+    private val currentMethod: InputMethod get() =
+        if(physicalKeyboard) physicalInputMethods[currentMethodId] else softinputMethods[currentMethodId]
 
     private var lastMethodId: Int = 0
     private var inputAfterSwitch = false
@@ -54,7 +59,8 @@ class LBoardService: InputMethodService() {
                     BasicSoftKeyboard(softLayout, theme, height, labels),
                     CommonHardKeyboard(symbolsLayout + hardLayout)
             )
-            inputMethods += methodEn
+
+            softinputMethods += methodEn
         }
 
         run {
@@ -81,9 +87,52 @@ class LBoardService: InputMethodService() {
                     converter,
                     timeout
             )
-            inputMethods += methodKo
+
+            softinputMethods += methodKo
         }
 
+        run {
+            val hardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_hard_layout", null)!!]!!
+            val symbolsLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
+
+            val methodEn = AlphabetInputMethod(
+                    EmptySoftKeyboard(),
+                    CommonHardKeyboard(symbolsLayout + hardLayout)
+            )
+
+            physicalInputMethods += methodEn
+        }
+
+        run {
+            val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_ko_physical_predefined", null)!!]!!
+            val symbolsLayout = predefinedMethod.symbolLayout ?: CommonHardKeyboard.LAYOUTS[prefs.getString("method_ko_physical_symbols_hard_layout", null)!!]!!
+
+            val combinationTable = predefinedMethod.combinationTable
+            val virtualJamoTable = predefinedMethod.virtualJamoTable
+
+            val converter =
+                    when(predefinedMethod.hangulConverter) {
+                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable)
+                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable)
+                    }
+
+            val methodKo = HangulInputMethod(
+                    EmptySoftKeyboard(),
+                    CommonHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
+                    converter
+            )
+
+            physicalInputMethods += methodKo
+        }
+
+        physicalKeyboard = resources.configuration.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
+
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        physicalKeyboard = newConfig?.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
+        setInputView(onCreateInputView())
     }
 
     override fun onCreateInputView(): View? {
@@ -110,7 +159,6 @@ class LBoardService: InputMethodService() {
         currentMethod.reset()
 
         val last = currentMethodId
-        currentModeId = 0
 
         val fromOutside = switchedFromOutside
         switchedFromOutside = false
@@ -126,7 +174,7 @@ class LBoardService: InputMethodService() {
                 currentMethodId = lastMethodId
             }
         } else {
-            if(++currentMethodId >= inputMethods.size) {
+            if(++currentMethodId >= softinputMethods.size) {
                 currentMethodId = 0
                 if(switchBetweenApps) {
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)  switchToNextInputMethod(false)
@@ -217,6 +265,11 @@ class LBoardService: InputMethodService() {
     override fun onEvaluateInputViewShown(): Boolean {
         super.onEvaluateInputViewShown()
         return true
+    }
+
+    override fun onComputeInsets(outInsets: Insets?) {
+        super.onComputeInsets(outInsets)
+        outInsets?.contentTopInsets = outInsets?.visibleTopInsets
     }
 
     override fun onDestroy() {
