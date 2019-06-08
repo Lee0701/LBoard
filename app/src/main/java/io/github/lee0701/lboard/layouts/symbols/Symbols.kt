@@ -7,7 +7,7 @@ import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 
 object Symbols {
 
-    val LAYOUT_SYMBOLS_A = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(10, LayoutLayer(mapOf(
+    val LAYOUT_SYMBOLS_A = CommonKeyboardLayout(10, LayoutLayer(mapOf(
             8 to LayoutItem(0x0021, 0x2460),
             9 to LayoutItem(0x0040, 0x2461),
             10 to LayoutItem(0x0023, 0x2462),
@@ -46,10 +46,12 @@ object Symbols {
             50 to LayoutItem(0x002b, 0x00d7),
             30 to LayoutItem(0x003f, 0x03c0),
             42 to LayoutItem(0x002d, 0x300c),
-            41 to LayoutItem(0x0022, 0x300d)
+            41 to LayoutItem(0x0022, 0x300d),
+
+            56 to LayoutItem(0x002c)
     )))
 
-    val LAYOUT_SYMBOLS_B = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(10, LayoutLayer(mapOf(
+    val LAYOUT_SYMBOLS_B = CommonKeyboardLayout(10, LayoutLayer(mapOf(
             8 to LayoutItem(0x0031, 0x2460),
             9 to LayoutItem(0x0032, 0x2461),
             10 to LayoutItem(0x0033, 0x2462),
@@ -88,7 +90,39 @@ object Symbols {
             50 to LayoutItem(0x002b, 0x00d7),
             30 to LayoutItem(0x003f, 0x03c0),
             42 to LayoutItem(0x002d, 0x300c),
-            41 to LayoutItem(0x0022, 0x300d)
+            41 to LayoutItem(0x0022, 0x300d),
+
+            56 to LayoutItem(0x002c)
+    )))
+
+    val LAYOUT_SYMBOLS_GOOGLE = CommonKeyboardLayout(10, LayoutLayer(mapOf(
+
+            45 to LayoutItem(0x0032),
+            51 to LayoutItem(0x0033),
+            33 to LayoutItem(0x0034),
+            46 to LayoutItem(0x0035),
+            48 to LayoutItem(0x0036),
+            36 to LayoutItem(0x0037),
+            43 to LayoutItem(0x0038),
+            44 to LayoutItem(0x0039),
+
+            29 to LayoutItem(0x0031),
+            47 to LayoutItem(0x0027),
+            32 to LayoutItem(0x0022),
+            34 to LayoutItem(0x003c),
+            35 to LayoutItem(0x003e),
+            38 to LayoutItem(0x0028),
+            39 to LayoutItem(0x0029),
+            40 to LayoutItem(0x0030),
+
+            54 to LayoutItem(0x002d),
+            52 to LayoutItem(0x0021),
+            31 to LayoutItem(0x003f),
+            50 to LayoutItem(0x003a),
+            42 to LayoutItem(0x003b),
+            41 to LayoutItem(0x002f),
+
+            56 to LayoutItem(0x002c)
     )))
 
 }
