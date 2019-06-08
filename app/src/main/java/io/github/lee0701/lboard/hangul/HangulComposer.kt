@@ -14,6 +14,7 @@ abstract class HangulComposer(
 ): InputMethodModule {
 
     abstract fun compose(composing: State, input: Int): State
+    abstract fun timeout(composing: State): State
 
     fun display(state: State): String {
         val cho = state.cho?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }

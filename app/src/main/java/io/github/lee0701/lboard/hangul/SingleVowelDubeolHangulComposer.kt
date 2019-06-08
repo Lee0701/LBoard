@@ -2,12 +2,10 @@ package io.github.lee0701.lboard.hangul
 
 import org.json.JSONObject
 
-class DubeolHangulComposer(
+class SingleVowelDubeolHangulComposer(
         combinationTable: CombinationTable,
         virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
 ): HangulComposer(combinationTable, virtualJamoTable) {
-
-    val reversedCombinations = combinationTable.combinations.map { it.value to it.key }.toMap()
 
     override fun compose(composing: State, input: Int): State =
         if(isConsonant(input)) consonant(correct(composing), input)
@@ -15,22 +13,24 @@ class DubeolHangulComposer(
         else State(other = display(composing) + input.toChar())
 
     override fun timeout(composing: State): State =
-            composing
-
+            if(composing.jong != null) State(other = display(composing))
+            else composing.copy()
+    
     private fun correct(composing: State): State =
             if(composing.cho != null && isConsonant(composing.cho)) composing.copy(cho = toCho(composing.cho))
             else if(composing.jung != null && isVowel(composing.jung)) composing.copy(jung = toJung(composing.jung))
             else composing
 
     private fun consonant(composing: State, input: Int): State =
-            if(composing.jong != null) combinationTable.combinations[composing.jong to toJong(input)]?.let { composing.copy(jong = it) } ?: State(other = display(composing), cho = toCho(input))
+            if(composing.jong != null) combinationTable.combinations[composing.jong to toJong(input)]?.let { composing.copy(jong = it) }
+                    ?: combinationTable.combinations[ghostLight(composing.jong) to toCho(input)]?.let { State(other = display(composing.copy(jong = null)), cho = it) }
+                    ?: State(other = display(composing), cho = toCho(input))
             else if(composing.cho != null && composing.jung != null) toJong(input).let { if(it == 0x20) State(other = display(composing), cho = toCho(input)) else composing.copy(jong = it) }
             else if(composing.cho != null) combinationTable.combinations[composing.cho to toCho(input)]?.let { composing.copy(cho = it) } ?: State(other = display(composing), cho = toCho(input))
             else composing.copy(cho = toCho(input))
 
     private fun vowel(composing: State, input: Int): State =
-            if(composing.jong != null) reversedCombinations[composing.jong]?.let { State(other = display(composing.copy(jong = it.first)), cho = ghostLight(it.second), jung = toJung(input)) }
-                    ?: State(other = display(composing.copy(jong = null)), cho = ghostLight(composing.jong), jung = toJung(input))
+            if(composing.jong != null) State(other = display(composing.copy(jong = null)), cho = ghostLight(composing.jong), jung = toJung(input))
             else if(composing.jung != null) combinationTable.combinations[composing.jung to toJung(input)]?.let { composing.copy(jung = it) } ?: State(other = display(composing), jung = toJung(input))
             else composing.copy(jung = toJung(input))
 

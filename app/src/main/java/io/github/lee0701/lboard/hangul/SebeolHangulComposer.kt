@@ -13,6 +13,9 @@ open class SebeolHangulComposer(
         else if(isJong(input)) jong(composing, input)
         else State(other = display(composing) + input.toChar())
 
+    override fun timeout(composing: State): State =
+            composing
+
     private fun cho(composing: State, input: Int): State =
             if(composing.cho != null) (if(composing.jung == null) combinationTable.combinations[composing.cho to input]?.let { composing.copy(cho = it) } else null) ?: State(other = display(composing), cho = input) else composing.copy(cho = input)
     private fun jung(composing: State, input: Int): State =

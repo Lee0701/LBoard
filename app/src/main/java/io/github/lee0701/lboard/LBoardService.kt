@@ -59,6 +59,8 @@ class LBoardService: InputMethodService() {
         run {
             val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_ko_predefined", null)!!]!!
 
+            val timeout = prefs.getInt("method_ko_timeout", 0)
+
             val softLayout = predefinedMethod.softLayout ?: BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!
             val symbolsLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)!!]!!
 
@@ -66,13 +68,17 @@ class LBoardService: InputMethodService() {
             val virtualJamoTable = predefinedMethod.virtualJamoTable
 
             val converter =
-                    if(predefinedMethod.hangulConverter == PredefinedHangulConverter.DUBEOL) DubeolHangulComposer(combinationTable, virtualJamoTable)
-                    else SebeolHangulComposer(combinationTable, virtualJamoTable)
+                    when(predefinedMethod.hangulConverter) {
+                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable)
+                        PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL -> SingleVowelDubeolHangulComposer(combinationTable, virtualJamoTable)
+                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable)
+                    }
 
             val methodKo = HangulInputMethod(
                     BasicSoftKeyboard(softLayout, theme, height, labels),
                     CommonHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
-                    converter
+                    converter,
+                    timeout
             )
             inputMethods += methodKo
         }
@@ -212,7 +218,7 @@ class LBoardService: InputMethodService() {
     }
 
     enum class PredefinedHangulConverter() {
-        NONE, DUBEOL, SEBEOL
+        NONE, DUBEOL, DUBEOL_SINGLE_VOWEL, SEBEOL
     }
 
     data class PredefinedMethod(
@@ -231,7 +237,7 @@ class LBoardService: InputMethodService() {
                 "sebeol-391-strict" to PredefinedMethod(null, SebeolHangul.LAYOUT_SEBEOL_391, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_391),
                 "sebeol-shin-original" to PredefinedMethod(null, ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL),
                 "sebeol-shin-edit" to PredefinedMethod(null, ShinSebeolHangul.LAYOUT_SHIN_EDIT, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL),
-                "dubeol-google" to PredefinedMethod(SingleVowelSoftLayout.LAYOUT_8COLS_GOOGLE, DubeolHangul.LAYOUT_DUBEOL_GOOGLE, PredefinedHangulConverter.DUBEOL, DubeolHangul.COMBINATION_DUBEOL_GOOGLE),
+                "dubeol-google" to PredefinedMethod(SingleVowelSoftLayout.LAYOUT_8COLS_GOOGLE, DubeolHangul.LAYOUT_DUBEOL_GOOGLE, PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL, DubeolHangul.COMBINATION_DUBEOL_GOOGLE),
                 "dubeol-cheonjiin" to PredefinedMethod(TwelveSoftLayout.LAYOUT_12KEY_4COLS, TwelveDubeolHangul.LAYOUT_CHEONJIIN, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_CHEONJIIN),
                 "dubeol-naratgeul" to PredefinedMethod(TwelveSoftLayout.LAYOUT_12KEY_4COLS, TwelveDubeolHangul.LAYOUT_NARATGEUL, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_NARATGEUL)
         )

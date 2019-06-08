@@ -10,20 +10,27 @@ import io.github.lee0701.lboard.event.ComposeEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hangul.SebeolHangulComposer
+import io.github.lee0701.lboard.hangul.SingleVowelDubeolHangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
+import java.util.*
+import kotlin.concurrent.timerTask
 
 class HangulInputMethod(
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
-        val hangulConverter: HangulComposer
+        val hangulConverter: HangulComposer,
+        val timeout: Int = 0
 ): CommonInputMethod() {
 
     val states: MutableList<HangulComposer.State> = mutableListOf()
     val lastState: HangulComposer.State get() = if(states.isEmpty()) HangulComposer.State() else states.last()
+
+    private val timer = Timer()
+    private var timeoutTask: TimerTask? = null
 
     override fun initView(context: Context): View? {
         return softKeyboard.initView(context)
@@ -31,6 +38,7 @@ class HangulInputMethod(
 
     override fun onKeyPress(keyCode: Int): Boolean {
         if(isSystemKey(keyCode)) return false
+        timeoutTask?.cancel()
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
@@ -86,6 +94,12 @@ class HangulInputMethod(
                 } else {
                     inputOnAlt = true
                 }
+                timeoutTask = timerTask {
+                    val state = lastState
+                    states.remove(state)
+                    states += hangulConverter.timeout(state)
+                }
+                if(hangulConverter is SingleVowelDubeolHangulComposer && timeout > 0) timer.schedule(timeoutTask, timeout.toLong())
             }
         }
         EventBus.getDefault().post(ComposeEvent(hangulConverter.display(lastState)))
