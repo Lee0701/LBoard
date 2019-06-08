@@ -84,16 +84,7 @@ class HangulInputMethod(
                     states += composed
                     updateShinStatus(composed)
                 }
-                if(shift && !capsLock) {
-                    shift = false
-                } else {
-                    inputOnShift = true
-                }
-                if(alt && !altLock) {
-                    alt = false
-                } else {
-                    inputOnAlt = true
-                }
+                processStickyKeysOnInput()
                 timeoutTask = timerTask {
                     val state = lastState
                     states.remove(state)

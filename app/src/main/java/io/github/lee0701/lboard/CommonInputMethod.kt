@@ -13,6 +13,8 @@ abstract class CommonInputMethod: InputMethod {
 
     override var shift: Boolean = false
     override var alt: Boolean = false
+    var shiftPressing: Boolean = false
+    var altPressing: Boolean = false
 
     var capsLock: Boolean = false
     var altLock: Boolean = false
@@ -53,6 +55,7 @@ abstract class CommonInputMethod: InputMethod {
                 }
                 else if(shift && !inputOnShift) capsLock = true
                 else shift = !shift
+                shiftPressing = true
                 inputOnShift = false
             }
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
@@ -62,6 +65,7 @@ abstract class CommonInputMethod: InputMethod {
                 }
                 else if(alt && !inputOnAlt) altLock = true
                 else alt = !alt
+                altPressing = true
                 inputOnAlt = false
             }
             else -> {
@@ -76,16 +80,7 @@ abstract class CommonInputMethod: InputMethod {
                 } else {
                     EventBus.getDefault().post(CommitStringEvent(converted.resultChar.toChar().toString()))
                 }
-                if(shift && !capsLock) {
-                    shift = false
-                } else {
-                    inputOnShift = true
-                }
-                if(alt && !altLock) {
-                    alt = false
-                } else {
-                    inputOnAlt = true
-                }
+                processStickyKeysOnInput()
             }
         }
         EventBus.getDefault().post(UpdateViewEvent())
@@ -97,9 +92,11 @@ abstract class CommonInputMethod: InputMethod {
         when(keyCode) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
                 if(shift && !capsLock) shift = !inputOnShift
+                shiftPressing = false
             }
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
                 if(alt && !altLock) alt = !inputOnAlt
+                altPressing = false
             }
         }
         return true
@@ -113,6 +110,19 @@ abstract class CommonInputMethod: InputMethod {
 
         hardKeyboard.reset()
         EventBus.getDefault().post(UpdateViewEvent())
+    }
+
+    protected fun processStickyKeysOnInput() {
+        if(shift && !capsLock && !shiftPressing) {
+            shift = false
+        } else {
+            inputOnShift = true
+        }
+        if(alt && !altLock && !altPressing) {
+            alt = false
+        } else {
+            inputOnAlt = true
+        }
     }
 
     fun isSystemKey(keyCode: Int): Boolean = keyCode in 0 .. 6 || keyCode in 24 .. 28 || keyCode in 79 .. 85

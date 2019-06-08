@@ -60,16 +60,7 @@ class WordComposingInputMethod(
                 } else {
                     states += lastState + converted.resultChar.toChar().toString()
                 }
-                if(shift && !capsLock) {
-                    shift = false
-                } else {
-                    inputOnShift = true
-                }
-                if(alt && !altLock) {
-                    alt = false
-                } else {
-                    inputOnAlt = true
-                }
+                processStickyKeysOnInput()
             }
         }
         EventBus.getDefault().post(ComposeEvent(lastState))
