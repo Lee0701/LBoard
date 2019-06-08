@@ -13,7 +13,7 @@ class SingleVowelDubeolHangulComposer(
         else State(other = display(composing) + input.toChar())
 
     override fun timeout(composing: State): State =
-            if(composing.jong != null) State(other = display(composing))
+            if(composing.jong != null) composing.copy(jong = composing.jong or 0x1000000)
             else composing.copy()
     
     private fun correct(composing: State): State =
