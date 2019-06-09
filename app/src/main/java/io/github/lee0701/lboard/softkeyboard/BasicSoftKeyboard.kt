@@ -6,6 +6,7 @@ import android.view.View
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
+import io.github.lee0701.lboard.layouts.soft.MiniSoftLayout
 import io.github.lee0701.lboard.layouts.soft.SoftLayout
 import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
@@ -85,6 +86,8 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
                 "10cols-mobile" to SoftLayout.LAYOUT_10COLS_MOBILE,
                 "10cols-mobile-with-num" to SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
                 "10cols-mod-quote" to SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
+
+                "mini-7cols" to MiniSoftLayout.LAYOUT_MINI_7COLS,
 
                 "12key-4cols" to TwelveSoftLayout.LAYOUT_12KEY_4COLS
         )

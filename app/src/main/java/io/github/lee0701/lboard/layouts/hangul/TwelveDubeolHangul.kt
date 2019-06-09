@@ -19,13 +19,13 @@ object TwelveDubeolHangul {
             0x0208 to LayoutItem(listOf(0x3145, 0x314e, 0x3146)),
             0x0209 to LayoutItem(listOf(0x3148, 0x314a, 0x3149)),
             0x020a to LayoutItem(listOf(0x3147, 0x3141))
-    )), labels = mapOf(
+    ), labels = mapOf(
             0x0204 to "ㄱㅋ",
             0x0206 to "ㄷㅌ",
             0x0207 to "ㅂㅍ",
             0x0208 to "ㅅㅎ",
             0x0209 to "ㅈㅊ"
-    ), spaceForSeparation = true)
+    )), spaceForSeparation = true)
     
     val COMBINATION_CHEONJIIN = CombinationTable(mapOf(
 
@@ -92,6 +92,9 @@ object TwelveDubeolHangul {
             0x020a to LayoutItem(listOf(0x3161)),
             0x020b to LayoutItem(listOf(0x70000000)),
             0x020c to LayoutItem(listOf(0x70000001))
+    ), labels = mapOf(
+            0x020b to "획추가",
+            0x020c to "쌍자음"
     )), listOf(
             StrokeTable(mapOf(
                     0x3131 to 0x314b,   // ㄱ-ㅋ
@@ -116,9 +119,6 @@ object TwelveDubeolHangul {
                     0x3145 to 0x3146,   // ㅆ
                     0x3148 to 0x3149    // ㅉ
             ))
-    ), labels = mapOf(
-            0x020b to "획추가",
-            0x020c to "쌍자음"
     ))
 
     val COMBINATION_NARATGEUL = CombinationTable(mapOf(

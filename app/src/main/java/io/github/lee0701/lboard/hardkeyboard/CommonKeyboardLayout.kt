@@ -3,16 +3,15 @@ package io.github.lee0701.lboard.hardkeyboard
 data class CommonKeyboardLayout(
         val layers: Map<Int, LayoutLayer> = mapOf(0 to LayoutLayer()),
         val strokes: List<StrokeTable> = listOf(),
-        val labels: Map<Int, String> = mapOf(),
         val cycle: Boolean = true,
         val spaceForSeparation: Boolean = false
 ) {
 
-    constructor(layerId: Int, main: LayoutLayer, strokes: List<StrokeTable> = listOf(), labels: Map<Int, String> = mapOf(), cycle: Boolean = true, spaceForSeparation: Boolean = false):
-            this(mapOf(layerId to main), strokes, labels, cycle, spaceForSeparation)
+    constructor(layerId: Int, main: LayoutLayer, strokes: List<StrokeTable> = listOf(), cycle: Boolean = true, spaceForSeparation: Boolean = false):
+            this(mapOf(layerId to main), strokes, cycle, spaceForSeparation)
 
-    constructor(main: LayoutLayer, strokes: List<StrokeTable> = listOf(), labels: Map<Int, String> = mapOf(), cycle: Boolean = true, spaceForSeparation: Boolean = false):
-            this(0, main, strokes, labels, cycle, spaceForSeparation)
+    constructor(main: LayoutLayer, strokes: List<StrokeTable> = listOf(), cycle: Boolean = true, spaceForSeparation: Boolean = false):
+            this(0, main, strokes, cycle, spaceForSeparation)
 
     operator fun get(i: Int): LayoutLayer? = layers[i]
 
@@ -20,18 +19,18 @@ data class CommonKeyboardLayout(
         return CommonKeyboardLayout(
                 (this.layers + other.layers).map { it.key to (this[it.key] ?: LayoutLayer(mapOf())) + (other[it.key] ?: LayoutLayer(mapOf())) }.toMap(),
                 other.strokes,
-                this.labels + other.labels,
                 other.cycle,
                 other.spaceForSeparation
         )
     }
 
     data class LayoutLayer(
-            val layout: Map<Int, LayoutItem> = mapOf()
+            val layout: Map<Int, LayoutItem> = mapOf(),
+            val labels: Map<Int, String> = mapOf()
     ) {
         operator fun get(i: Int): LayoutItem? = layout[i]
         operator fun plus(other: LayoutLayer): LayoutLayer {
-            return LayoutLayer(this.layout + other.layout)
+            return LayoutLayer(this.layout + other.layout, this.labels + other.labels)
         }
     }
 

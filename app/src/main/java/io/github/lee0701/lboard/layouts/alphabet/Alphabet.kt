@@ -1,5 +1,6 @@
 package io.github.lee0701.lboard.layouts.alphabet
 
+import android.view.KeyEvent
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
@@ -58,4 +59,34 @@ object Alphabet {
             56 to LayoutItem(0x002e, 0x003e),
             76 to LayoutItem(0x002f, 0x003f)
     )))
+
+    val LAYOUT_7COLS_WERT = CommonKeyboardLayout(LayoutLayer(mapOf(
+            0x0210 to LayoutItem(listOf(0x0077, 0x0071), listOf(0x0057, 0x0051)),
+            0x0211 to LayoutItem(0x0065, 0x0045),
+            0x0212 to LayoutItem(0x0072, 0x0052),
+            0x0213 to LayoutItem(0x0074, 0x0054),
+            0x0214 to LayoutItem(listOf(0x0075, 0x0079), listOf(0x0055, 0x0059)),
+            0x0215 to LayoutItem(listOf(0x0069, 0x006f), listOf(0x0049, 0x004f)),
+            0x0216 to LayoutItem(0x0070, 0x0050),
+
+            0x0220 to LayoutItem(0x0061, 0x0041),
+            0x0221 to LayoutItem(0x0073, 0x0053),
+            0x0222 to LayoutItem(0x0064, 0x0044),
+            0x0223 to LayoutItem(0x0066, 0x0046),
+            0x0224 to LayoutItem(listOf(0x0067, 0x006a), listOf(0x0047, 0x004a)),
+            0x0225 to LayoutItem(listOf(0x0068, 0x006b), listOf(0x0048, 0x004b)),
+            0x0226 to LayoutItem(0x006c, 0x004c),
+
+            0x0230 to LayoutItem(0x60000000 or KeyEvent.KEYCODE_SHIFT_LEFT),
+            0x0231 to LayoutItem(listOf(0x007a, 0x0078), listOf(0x005a, 0x0058)),
+            0x0232 to LayoutItem(listOf(0x0063, 0x0076), listOf(0x0043, 0x0056)),
+            0x0233 to LayoutItem(0x0062, 0x0042),
+            0x0234 to LayoutItem(0x006e, 0x004e),
+            0x0235 to LayoutItem(0x006d, 0x004d),
+
+            56 to LayoutItem(listOf(0x002e, 0x002c), listOf(0x003f, 0x0021))
+    ), labels = mapOf(
+            0x0230 to "aA"
+    )), cycle = false)
+
 }

@@ -14,6 +14,7 @@ import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
+import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.MiniSoftLayout
 import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
@@ -51,9 +52,11 @@ class LBoardService: InputMethodService() {
         val labels = prefs.getBoolean("common_soft_labels", true)
 
         run {
-            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!
-            val hardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_hard_layout", null)!!]!!
-            val symbolsLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
+            val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_en_predefined", null)!!]!!
+
+            val softLayout = predefinedMethod.softLayout ?: BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!
+            val symbolsLayout = predefinedMethod.symbolLayout ?: CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
+            val hardLayout = predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
                     BasicSoftKeyboard(softLayout, theme, height, labels),
@@ -297,6 +300,9 @@ class LBoardService: InputMethodService() {
 
     companion object {
         val PREDEFINED_METHODS = mapOf<String, PredefinedMethod>(
+                "alphabet-qwerty" to PredefinedMethod(null, Alphabet.LAYOUT_QWERTY),
+                "alphabet-7cols-wert" to PredefinedMethod(MiniSoftLayout.LAYOUT_MINI_7COLS, Alphabet.LAYOUT_7COLS_WERT, symbolLayout = Symbols.LAYOUT_SYMBOLS_7COLS),
+
                 "dubeol-standard" to PredefinedMethod(null, DubeolHangul.LAYOUT_DUBEOL_STANDARD, PredefinedHangulConverter.DUBEOL, DubeolHangul.COMBINATION_DUBEOL_STANDARD),
                 "sebeol-390" to PredefinedMethod(null, SebeolHangul.LAYOUT_SEBEOL_390, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),
                 "sebeol-391" to PredefinedMethod(null, SebeolHangul.LAYOUT_SEBEOL_391, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),

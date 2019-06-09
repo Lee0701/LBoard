@@ -75,8 +75,9 @@ class HangulInputMethod(
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
                     reset()
-                    EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
-                            .get(keyCode, 0).toChar().toString()))
+                    if(converted.defaultChar)
+                        EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
+                                .get(keyCode, 0).toChar().toString()))
                 } else if(converted.resultChar == 0) {
                     reset()
                 } else {
@@ -85,6 +86,9 @@ class HangulInputMethod(
                     updateShinStatus(composed)
                 }
                 processStickyKeysOnInput()
+                converted.shift?.let { shift = it }
+                converted.alt?.let { alt = it }
+                
                 timeoutTask = timerTask {
                     val state = lastState
                     states.remove(state)
