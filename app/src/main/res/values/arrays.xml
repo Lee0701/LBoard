@@ -50,6 +50,16 @@
         <item>alphabet-qwerty</item>
     </string-array>
 
+    <string-array name="method_en_predefined_layouts">
+        <item>@string/pref_method_hard_layout_alphabet_qwerty</item>
+        <item>@string/pref_method_hard_layout_alphabet_7cols_wert</item>
+    </string-array>
+
+    <string-array name="method_en_predefined_layout_ids">
+        <item>alphabet-qwerty</item>
+        <item>alphabet-7cols-wert</item>
+    </string-array>
+
     <string-array name="method_ko_hard_layouts">
         <item>@string/pref_method_hard_layout_dubeol_standard</item>
         <item>@string/pref_method_hard_layout_sebeol_390</item>

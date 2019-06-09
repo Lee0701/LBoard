@@ -14,7 +14,8 @@ interface HardKeyboard: InputMethodModule {
             val resultChar: Int?,
             val backspace: Boolean = false,
             val shift: Boolean? = null,
-            val alt: Boolean? = null
+            val alt: Boolean? = null,
+            val defaultChar: Boolean = false
     )
 
 }

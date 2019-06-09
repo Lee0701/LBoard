@@ -71,18 +71,19 @@ abstract class CommonInputMethod: InputMethod {
             else -> {
                 val converted = hardKeyboard.convert(keyCode, shift, alt)
                 if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
-                converted.shift?.let { shift = it }
-                converted.alt?.let { alt = it }
                 if(converted.resultChar == null) {
                     reset()
-                    EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
-                            .get(keyCode, 0).toChar().toString()))
+                    if(converted.defaultChar)
+                        EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
+                                .get(keyCode, 0).toChar().toString()))
                 } else if(converted.resultChar == 0) {
                     reset()
                 } else {
                     EventBus.getDefault().post(CommitStringEvent(converted.resultChar.toChar().toString()))
                 }
                 processStickyKeysOnInput()
+                converted.shift?.let { shift = it }
+                converted.alt?.let { alt = it }
             }
         }
         EventBus.getDefault().post(UpdateViewEvent())

@@ -27,7 +27,7 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
 
     override fun convert(keyCode: Int, shift: Boolean, alt: Boolean): HardKeyboard.ConvertResult {
         val codes = (if(alt) altLayer else currentLayer)[keyCode]
-                ?.let { if(shift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null)
+                ?.let { if(shift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null, defaultChar = true)
         var backspace = false
         if(lastCode == keyCode && lastShift == shift && lastAlt == lastAlt) {
             if(++lastIndex >= codes.size) lastIndex = 0
@@ -47,7 +47,7 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
                 result = layout.strokes[strokeTableIndex][lastChar] ?: lastChar
                 backspace = true
             }
-            SystemCode.KEYPRESS-> when(result and 0x0000ffff) {
+            SystemCode.KEYPRESS -> when(result and 0x0000ffff) {
                 KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT ->
                     return HardKeyboard.ConvertResult(null, shift = !shift)
                 KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT ->
@@ -99,6 +99,7 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
                 "symbols-blackberry" to Symbols.LAYOUT_SYMBOLS_BLACKBERRY,
 
                 "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
+                "alphabet-7cols-wert" to Alphabet.LAYOUT_7COLS_WERT,
                 "dubeol-standard" to DubeolHangul.LAYOUT_DUBEOL_STANDARD,
                 "sebeol-390" to SebeolHangul.LAYOUT_SEBEOL_390,
                 "sebeol-391" to SebeolHangul.LAYOUT_SEBEOL_391,
