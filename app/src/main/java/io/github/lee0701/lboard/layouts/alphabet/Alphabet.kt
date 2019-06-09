@@ -85,8 +85,8 @@ object Alphabet {
             0x0235 to LayoutItem(0x006d, 0x004d),
 
             56 to LayoutItem(listOf(0x002e, 0x002c), listOf(0x003f, 0x0021))
-    )), labels = mapOf(
+    ), labels = mapOf(
             0x0230 to "aA"
-    ), cycle = false)
+    )), cycle = false)
 
 }

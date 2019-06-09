@@ -75,7 +75,7 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
     override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> {
         return (if(alt) altLayer else currentLayer).layout.map { item ->
             item.key to (if(shift) item.value.shift else item.value.normal).map { it.toChar() }.joinToString("")
-        }.toMap() + layout.labels
+        }.toMap() + (if(alt) altLayer else currentLayer).labels
     }
 
     override fun serialize(): JSONObject {
