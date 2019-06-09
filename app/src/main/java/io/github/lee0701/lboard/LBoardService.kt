@@ -133,7 +133,12 @@ class LBoardService: InputMethodService() {
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         physicalKeyboard = newConfig?.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
-        setInputView(onCreateInputView())
+        try {
+            setInputView(currentMethod.initView(this))
+        } catch(ex: IndexOutOfBoundsException) {
+            currentMethodId = 0
+            setInputView(currentMethod.initView(this))
+        }
     }
 
     override fun onCreateInputView(): View? {
