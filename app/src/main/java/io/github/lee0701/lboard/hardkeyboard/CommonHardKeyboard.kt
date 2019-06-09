@@ -42,17 +42,17 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
         var result = codes[lastIndex]
 
         when(result and MASK_SYSTEM_CODE) {
-            SYSTEM_CODE_STROKE -> {
+            SystemCode.STROKE -> {
                 val strokeTableIndex = result and 0xff
                 result = layout.strokes[strokeTableIndex][lastChar] ?: lastChar
                 backspace = true
             }
-            SYSTEM_CODE_KEYPRESS -> when(result and 0x0000ffff) {
+            SystemCode.KEYPRESS-> when(result and 0x0000ffff) {
                 KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT ->
                     return HardKeyboard.ConvertResult(null, shift = !shift)
                 KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT ->
                     return HardKeyboard.ConvertResult(null, alt = !alt)
-                else -> return convert(result and 0x0000ffff, result and SYSTEM_CODE_KEYPRESS_SHIFT != 0, result  and SYSTEM_CODE_KEYPRESS_ALT != 0)
+                else -> return convert(result and 0x0000ffff, result and SystemCode.KEYPRESS_SHIFT != 0, result  and SystemCode.KEYPRESS_ALT!= 0)
             }
         }
 
@@ -87,10 +87,6 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
     companion object {
 
         const val MASK_SYSTEM_CODE = 0x70000000
-        const val SYSTEM_CODE_STROKE = 0x70000000
-        const val SYSTEM_CODE_KEYPRESS = 0x60000000
-        const val SYSTEM_CODE_KEYPRESS_SHIFT = 0x00010000
-        const val SYSTEM_CODE_KEYPRESS_ALT = 0x00020000
 
         @JvmStatic fun deserialize(json: JSONObject): CommonHardKeyboard? {
             val layout = LAYOUTS[json.getString("layout")] ?: return null
