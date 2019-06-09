@@ -92,8 +92,8 @@ class LBoardService: InputMethodService() {
         }
 
         run {
-            val hardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_hard_layout", null)!!]!!
-            val symbolsLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
+            val hardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_physical_hard_layout", null)!!]!!
+            val symbolsLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_physical_symbols_hard_layout", null)!!]!!
 
             val methodEn = AlphabetInputMethod(
                     EmptySoftKeyboard(),
