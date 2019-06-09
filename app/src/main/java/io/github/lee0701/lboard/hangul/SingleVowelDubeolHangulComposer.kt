@@ -7,7 +7,8 @@ class SingleVowelDubeolHangulComposer(
         virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
 ): HangulComposer(combinationTable, virtualJamoTable) {
 
-    val reversedCombinations = combinationTable.combinations.map { it.value to it.key }.toMap()
+    private val reversedCombinations = combinationTable.combinations.map { it.value to it.key }.toMap()
+    private val timeoutJongs = combinationTable.combinations.filterKeys { it.first == it.second }.map { it.key.first }
 
     override fun compose(composing: State, input: Int): State =
         if(isConsonant(input)) consonant(correct(composing), input)
@@ -15,7 +16,9 @@ class SingleVowelDubeolHangulComposer(
         else State(other = display(composing) + input.toChar())
 
     override fun timeout(composing: State): State =
-            if(composing.jong != null) composing.copy(jong = composing.jong or 0x1000000)
+            if(composing.jong != null &&
+                    (timeoutJongs.contains(composing.jong) || timeoutJongs.contains(ghostLight(composing.jong))))
+                composing.copy(jong = composing.jong or 0x1000000)
             else composing.copy()
     
     private fun correct(composing: State): State =
