@@ -10,6 +10,11 @@ interface HardKeyboard: InputMethodModule {
 
     fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String>
 
-    data class ConvertResult(val resultChar: Int?, val backspace: Boolean = false)
+    data class ConvertResult(
+            val resultChar: Int?,
+            val backspace: Boolean = false,
+            val shift: Boolean? = null,
+            val alt: Boolean? = null
+    )
 
 }

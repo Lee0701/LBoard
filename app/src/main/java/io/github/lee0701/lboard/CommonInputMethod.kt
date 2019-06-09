@@ -71,6 +71,8 @@ abstract class CommonInputMethod: InputMethod {
             else -> {
                 val converted = hardKeyboard.convert(keyCode, shift, alt)
                 if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
+                converted.shift?.let { shift = it }
+                converted.alt?.let { alt = it }
                 if(converted.resultChar == null) {
                     reset()
                     EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
