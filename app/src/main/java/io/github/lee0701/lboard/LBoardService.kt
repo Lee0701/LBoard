@@ -34,9 +34,7 @@ class LBoardService: InputMethodService() {
     private val currentMethod: InputMethod get() =
         if(physicalKeyboard) physicalInputMethods[currentMethodId] else softinputMethods[currentMethodId]
 
-    private var lastMethodId: Int = 0
-    private var inputAfterSwitch = false
-    private var switchedFromOutside = true
+    var inputAfterSwitch: Boolean = false
 
     override fun onCreate() {
         super.onCreate()
@@ -149,44 +147,28 @@ class LBoardService: InputMethodService() {
 
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
-        if(finishingInput) switchedFromOutside = true
     }
 
     private fun reset() {
         currentMethodId = 0
-        lastMethodId = 0
-        inputAfterSwitch = false
     }
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
         currentMethod.reset()
 
         val methods = if(physicalKeyboard) physicalInputMethods else softinputMethods
-        val last = currentMethodId
-
-        val fromOutside = switchedFromOutside
-        switchedFromOutside = false
 
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val token = window.window.attributes.token
 
-        if(inputAfterSwitch && (currentMethodId != lastMethodId || fromOutside)) {
-            if(fromOutside) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) switchToPreviousInputMethod()
-                else imm.switchToLastInputMethod(token)
-            } else {
-                currentMethodId = lastMethodId
-            }
-        } else {
-            if(++currentMethodId >= methods.size) {
-                currentMethodId = 0
-                if(switchBetweenApps) {
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)  switchToNextInputMethod(false)
-                    else imm.switchToNextInputMethod(token, false)
-                }
+        if(++currentMethodId >= methods.size) {
+            currentMethodId = 0
+            if(!inputAfterSwitch && switchBetweenApps) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)  switchToNextInputMethod(false)
+                else imm.switchToNextInputMethod(token, false)
             }
         }
-        if(inputAfterSwitch) lastMethodId = last
+
         inputAfterSwitch = false
         setInputView(currentMethod.initView(this))
     }
