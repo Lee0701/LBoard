@@ -14,12 +14,14 @@
         <item>@string/pref_method_soft_layout_10cols_mobile</item>
         <item>@string/pref_method_soft_layout_10cols_mobile_with_num</item>
         <item>@string/pref_method_soft_layout_10cols_mod_quote</item>
+        <item>@string/pref_method_soft_layout_10cols_mod_quote_with_num</item>
     </string-array>
 
     <string-array name="method_soft_layout_ids">
         <item>10cols-mobile</item>
         <item>10cols-mobile-with-num</item>
         <item>10cols-mod-quote</item>
+        <item>10cols-mod-quote-with-num</item>
     </string-array>
 
     <string-array name="method_symbols_hard_layouts">

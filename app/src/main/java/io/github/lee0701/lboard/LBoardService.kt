@@ -249,16 +249,16 @@ class LBoardService: InputMethodService() {
     }
 
     @Subscribe fun onCompose(event: ComposeEvent) {
-        currentInputConnection.setComposingText(event.composing, 1)
+        currentInputConnection?.setComposingText(event.composing, 1)
     }
 
     @Subscribe fun onCommitComposing(event: CommitComposingEvent) {
-        currentInputConnection.finishComposingText()
+        currentInputConnection?.finishComposingText()
     }
 
     @Subscribe fun onCommitString(event: CommitStringEvent) {
-        currentInputConnection.finishComposingText()
-        currentInputConnection.commitText(event.string, 1)
+        currentInputConnection?.finishComposingText()
+        currentInputConnection?.commitText(event.string, 1)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -310,15 +310,17 @@ class LBoardService: InputMethodService() {
         val SOFT_LAYOUT_UNIVERSAL = listOf(
                 SoftLayout.LAYOUT_10COLS_MOBILE,
                 SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
-                SoftLayout.LAYOUT_10COLS_MOD_QUOTE
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
         )
 
         val SOFT_LAYOUT_SEBEOL_GONG = listOf(
-                SoftLayout.LAYOUT_10COLS_MOD_QUOTE
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
         )
 
         val SOFT_LAYOUT_SEBEOL_SHIN = listOf(
-                SoftLayout.LAYOUT_10COLS_MOD_QUOTE
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
         )
 
         val SOFT_LAYOUT_MINI_7COLS = listOf(

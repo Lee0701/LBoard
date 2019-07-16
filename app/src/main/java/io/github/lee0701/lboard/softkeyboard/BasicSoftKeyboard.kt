@@ -87,6 +87,7 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
                 SoftLayout.LAYOUT_10COLS_MOBILE,
                 SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
                 MiniSoftLayout.LAYOUT_MINI_7COLS,
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
                 TwelveSoftLayout.LAYOUT_12KEY_4COLS
