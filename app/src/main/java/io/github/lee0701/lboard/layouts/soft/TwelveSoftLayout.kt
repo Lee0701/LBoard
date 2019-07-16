@@ -1,5 +1,6 @@
 package io.github.lee0701.lboard.layouts.soft
 
+import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.softkeyboard.Key
 import io.github.lee0701.lboard.softkeyboard.Layout
 import io.github.lee0701.lboard.softkeyboard.Row
@@ -27,6 +28,6 @@ object TwelveSoftLayout {
             Key(0x020a, "0"),
             Key(0x020c, "#"),
             Key(66, "RET")
-    ), Row.Type.EVEN)), keyWidth = 0.25f)
+    ), Row.Type.EVEN)), keyWidth = 0.25f, key = "12key-4cols", nameStringKey = R.string.pref_method_soft_layout_12key_4cols)
 
 }

@@ -30,6 +30,8 @@
     <string name="pref_method_soft_layout_10cols_mobile">10 Columns Mobile</string>
     <string name="pref_method_soft_layout_10cols_mobile_with_num">10 Columns Mobile With Numbers</string>
     <string name="pref_method_soft_layout_10cols_mod_quote">10 Columns Mod. Quote</string>
+    <string name="pref_method_soft_layout_mini_7cols">Mini 7 Columns</string>
+    <string name="pref_method_soft_layout_mini_8cols">Mini 8 Columns</string>
     <string name="pref_method_soft_layout_12key_4cols">12 Key 4 Columns</string>
 
 

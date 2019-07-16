@@ -1,5 +1,6 @@
 package io.github.lee0701.lboard.layouts.soft
 
+import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.softkeyboard.Key
 import io.github.lee0701.lboard.softkeyboard.Layout
 import io.github.lee0701.lboard.softkeyboard.Row
@@ -38,7 +39,7 @@ object MiniSoftLayout {
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
             Key(keyCode = 66, label = "RETURN", keyWidth = 2/10f)
-    ), Row.Type.BOTTOM)), keyWidth = 1/8f)
+    ), Row.Type.BOTTOM)), keyWidth = 1/8f, key = "mini-7cols", nameStringKey = R.string.pref_method_soft_layout_mini_7cols)
 
     val LAYOUT_MINI_7COLS = Layout(listOf(Row(listOf(
             Key(0x0210),
@@ -70,6 +71,6 @@ object MiniSoftLayout {
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
             Key(keyCode = 66, label = "RETURN", keyWidth = 2/10f)
-    ), Row.Type.BOTTOM)), keyWidth = 1/7f)
+    ), Row.Type.BOTTOM)), keyWidth = 1/7f, key = "mini-8cols", nameStringKey = R.string.pref_method_soft_layout_mini_7cols)
 
 }

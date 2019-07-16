@@ -17,6 +17,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.MiniSoftLayout
+import io.github.lee0701.lboard.layouts.soft.SoftLayout
 import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.softkeyboard.*
@@ -43,6 +44,17 @@ class LBoardService: InputMethodService() {
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_common, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_en, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
+
+        reloadPreferences()
+
+        physicalKeyboard = resources.configuration.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
+
+    }
+
+    private fun reloadPreferences() {
+        softinputMethods.clear()
+        physicalInputMethods.clear()
+
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null)!!]!!
@@ -52,7 +64,7 @@ class LBoardService: InputMethodService() {
         run {
             val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_en_predefined", null)!!]!!
 
-            val softLayout = predefinedMethod.softLayout ?: BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!
+            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!
             val symbolsLayout = predefinedMethod.symbolLayout ?: CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
             val hardLayout = predefinedMethod.hardLayout
 
@@ -69,7 +81,7 @@ class LBoardService: InputMethodService() {
 
             val timeout = prefs.getInt("method_ko_timeout", 0)
 
-            val softLayout = predefinedMethod.softLayout ?: BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!
+            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!
             val symbolsLayout = predefinedMethod.symbolLayout ?: CommonHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)!!]!!
 
             val combinationTable = predefinedMethod.combinationTable
@@ -126,8 +138,6 @@ class LBoardService: InputMethodService() {
             physicalInputMethods += methodKo
         }
 
-        physicalKeyboard = resources.configuration.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
-
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -176,6 +186,12 @@ class LBoardService: InputMethodService() {
 
         inputAfterSwitch = false
         setInputView(currentMethod.initView(this))
+    }
+
+    @Subscribe fun onResetView(event: ResetViewEvent) {
+        reloadPreferences()
+        reset()
+        setInputView(onCreateInputView())
     }
 
     @Subscribe fun onUpdateView(event: UpdateViewEvent) {
@@ -277,7 +293,7 @@ class LBoardService: InputMethodService() {
     }
 
     data class PredefinedMethod(
-            val softLayout: Layout?,
+            val softLayouts: List<Layout>,
             val hardLayout: CommonKeyboardLayout,
             val hangulConverter: PredefinedHangulConverter = PredefinedHangulConverter.NONE,
             val combinationTable: CombinationTable = CombinationTable(mapOf()),
@@ -286,20 +302,47 @@ class LBoardService: InputMethodService() {
     )
 
     companion object {
-        val PREDEFINED_METHODS = mapOf<String, PredefinedMethod>(
-                "alphabet-qwerty" to PredefinedMethod(null, Alphabet.LAYOUT_QWERTY),
-                "alphabet-7cols-wert" to PredefinedMethod(MiniSoftLayout.LAYOUT_MINI_7COLS, Alphabet.LAYOUT_7COLS_WERT, symbolLayout = Symbols.LAYOUT_SYMBOLS_7COLS),
 
-                "dubeol-standard" to PredefinedMethod(null, DubeolHangul.LAYOUT_DUBEOL_STANDARD, PredefinedHangulConverter.DUBEOL, DubeolHangul.COMBINATION_DUBEOL_STANDARD),
-                "sebeol-390" to PredefinedMethod(null, SebeolHangul.LAYOUT_SEBEOL_390, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),
-                "sebeol-391" to PredefinedMethod(null, SebeolHangul.LAYOUT_SEBEOL_391, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),
-                "sebeol-391-strict" to PredefinedMethod(null, SebeolHangul.LAYOUT_SEBEOL_391, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_391),
-                "sebeol-shin-original" to PredefinedMethod(null, ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL),
-                "sebeol-shin-edit" to PredefinedMethod(null, ShinSebeolHangul.LAYOUT_SHIN_EDIT, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL),
-                "sebeol-mini-shin" to PredefinedMethod(MiniSoftLayout.LAYOUT_MINI_7COLS, ShinSebeolHangul.LAYOUT_MINI_SHIN_EXPERIMENTAL, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_MINI_SHIN_EXPERIMENTAL, symbolLayout = Symbols.LAYOUT_SYMBOLS_7COLS),
-                "dubeol-google" to PredefinedMethod(MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE, DubeolHangul.LAYOUT_DUBEOL_GOOGLE, PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL, DubeolHangul.COMBINATION_DUBEOL_GOOGLE, symbolLayout = Symbols.LAYOUT_SYMBOLS_GOOGLE),
-                "dubeol-cheonjiin" to PredefinedMethod(TwelveSoftLayout.LAYOUT_12KEY_4COLS, TwelveDubeolHangul.LAYOUT_CHEONJIIN, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_CHEONJIIN),
-                "dubeol-naratgeul" to PredefinedMethod(TwelveSoftLayout.LAYOUT_12KEY_4COLS, TwelveDubeolHangul.LAYOUT_NARATGEUL, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_NARATGEUL)
+        val SOFT_LAYOUT_12KEY = listOf(
+                TwelveSoftLayout.LAYOUT_12KEY_4COLS
+        )
+
+        val SOFT_LAYOUT_UNIVERSAL = listOf(
+                SoftLayout.LAYOUT_10COLS_MOBILE,
+                SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE
+        )
+
+        val SOFT_LAYOUT_SEBEOL_GONG = listOf(
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE
+        )
+
+        val SOFT_LAYOUT_SEBEOL_SHIN = listOf(
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE
+        )
+
+        val SOFT_LAYOUT_MINI_7COLS = listOf(
+                MiniSoftLayout.LAYOUT_MINI_7COLS
+        )
+
+        val SOFT_LAYOUT_MINI_8COLS = listOf(
+                MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE
+        )
+
+        val PREDEFINED_METHODS = mapOf<String, PredefinedMethod>(
+                "alphabet-qwerty" to PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, Alphabet.LAYOUT_QWERTY),
+                "alphabet-7cols-wert" to PredefinedMethod(SOFT_LAYOUT_MINI_7COLS, Alphabet.LAYOUT_7COLS_WERT, symbolLayout = Symbols.LAYOUT_SYMBOLS_7COLS),
+
+                "dubeol-standard" to PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, DubeolHangul.LAYOUT_DUBEOL_STANDARD, PredefinedHangulConverter.DUBEOL, DubeolHangul.COMBINATION_DUBEOL_STANDARD),
+                "sebeol-390" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_GONG, SebeolHangul.LAYOUT_SEBEOL_390, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),
+                "sebeol-391" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_GONG, SebeolHangul.LAYOUT_SEBEOL_391, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),
+                "sebeol-391-strict" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_GONG, SebeolHangul.LAYOUT_SEBEOL_391, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_391),
+                "sebeol-shin-original" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_SHIN, ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL),
+                "sebeol-shin-edit" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_SHIN, ShinSebeolHangul.LAYOUT_SHIN_EDIT, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL),
+                "sebeol-mini-shin" to PredefinedMethod(SOFT_LAYOUT_MINI_7COLS, ShinSebeolHangul.LAYOUT_MINI_SHIN_EXPERIMENTAL, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_MINI_SHIN_EXPERIMENTAL, symbolLayout = Symbols.LAYOUT_SYMBOLS_7COLS),
+                "dubeol-google" to PredefinedMethod(SOFT_LAYOUT_MINI_8COLS, DubeolHangul.LAYOUT_DUBEOL_GOOGLE, PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL, DubeolHangul.COMBINATION_DUBEOL_GOOGLE, symbolLayout = Symbols.LAYOUT_SYMBOLS_GOOGLE),
+                "dubeol-cheonjiin" to PredefinedMethod(SOFT_LAYOUT_12KEY, TwelveDubeolHangul.LAYOUT_CHEONJIIN, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_CHEONJIIN),
+                "dubeol-naratgeul" to PredefinedMethod(SOFT_LAYOUT_12KEY, TwelveDubeolHangul.LAYOUT_NARATGEUL, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_NARATGEUL)
         )
     }
 

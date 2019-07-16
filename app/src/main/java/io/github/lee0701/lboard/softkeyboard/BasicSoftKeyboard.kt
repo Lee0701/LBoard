@@ -3,6 +3,7 @@ package io.github.lee0701.lboard.softkeyboard
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
+import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
@@ -65,7 +66,7 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
 
     override fun serialize(): JSONObject {
         return super.serialize().apply {
-            put("layout", REVERSE_LAYOUTS[layout])
+            put("layout", layout.key)
             put("theme", REVERSE_THEMES[theme])
             put("height", keyHeight.toInt())
             put("labels", showLabels)
@@ -82,16 +83,14 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
             return BasicSoftKeyboard(layout, theme, keyHeight, keyLabels)
         }
 
-        val LAYOUTS = mapOf(
-                "10cols-mobile" to SoftLayout.LAYOUT_10COLS_MOBILE,
-                "10cols-mobile-with-num" to SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
-                "10cols-mod-quote" to SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
-
-                "mini-7cols" to MiniSoftLayout.LAYOUT_MINI_7COLS,
-
-                "12key-4cols" to TwelveSoftLayout.LAYOUT_12KEY_4COLS
-        )
-        val REVERSE_LAYOUTS = LAYOUTS.map { it.value to it.key }.toMap()
+        val LAYOUTS = listOf(
+                SoftLayout.LAYOUT_10COLS_MOBILE,
+                SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
+                MiniSoftLayout.LAYOUT_MINI_7COLS,
+                MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
+                TwelveSoftLayout.LAYOUT_12KEY_4COLS
+        ).map { it.key to it }.toMap()
 
         val THEMES = mapOf(
                 "white" to BasicSoftKeyboardTheme.WHITE,

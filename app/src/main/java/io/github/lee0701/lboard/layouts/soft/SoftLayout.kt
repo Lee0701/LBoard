@@ -1,5 +1,6 @@
 package io.github.lee0701.lboard.layouts.soft
 
+import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.softkeyboard.Key
 import io.github.lee0701.lboard.softkeyboard.Layout
 import io.github.lee0701.lboard.softkeyboard.Row
@@ -43,7 +44,7 @@ object SoftLayout {
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
             Key(keyCode = 66, label = "RETURN", keyWidth = 2/10f)
-    ), Row.Type.BOTTOM)))
+    ), Row.Type.BOTTOM)), key = "10cols-mobile", nameStringKey = R.string.pref_method_soft_layout_10cols_mobile)
 
     val LAYOUT_10COLS_MOBILE_WITH_NUM = Layout(listOf(Row(listOf(
             Key(8, "1"),
@@ -93,7 +94,7 @@ object SoftLayout {
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
             Key(keyCode = 66, label = "RETURN", keyWidth = 2/10f)
-    ), Row.Type.BOTTOM)))
+    ), Row.Type.BOTTOM)), key = "10cols-mobile-with-num", nameStringKey = R.string.pref_method_soft_layout_10cols_mobile_with_num)
 
     val LAYOUT_10COLS_MOD_QUOTE = Layout(listOf(Row(listOf(
             Key(8, "1"),
@@ -146,6 +147,6 @@ object SoftLayout {
             Key(keyCode = 62, keyWidth = 0.4f),
             Key(keyCode = 76, label = "/", keyWidth = 0.1f),
             Key(keyCode = 66, label = "RETURN", keyWidth = 0.15f)
-    ), Row.Type.BOTTOM)))
+    ), Row.Type.BOTTOM)), key = "10cols-mod-quote", nameStringKey = R.string.pref_method_soft_layout_10cols_mod_quote)
 
 }
