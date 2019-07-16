@@ -142,7 +142,7 @@ class BasicKeyboardView(
             val boundString = key.label.map { "W" }.joinToString("")
             paint.textSize = key.textSize
             paint.textSize = key.textSize * (if(key.width > key.height) key.height else key.width) / paint.measureText(boundString) / 3 * 2
-            canvas.drawText(key.label, (key.x + key.width/2).toFloat(), (key.y + key.height/4*3).toFloat(), paint)
+            canvas.drawText(key.label, (key.x + key.width/2).toFloat(), (key.y + key.height/2 - (paint.descent() + paint.ascent())/2).toFloat(), paint)
         }
     }
 
