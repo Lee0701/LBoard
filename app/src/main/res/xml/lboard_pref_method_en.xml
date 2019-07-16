@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/pref_method_soft_title">
-        <ListPreference
+        <io.github.lee0701.lboard.settings.SoftKeyboardListPreference
             android:key="method_en_soft_layout"
             android:title="@string/pref_method_soft_layout_title"
             android:summary="@string/pref_method_soft_layout_summary"
             android:entries="@array/method_soft_layouts"
             android:entryValues="@array/method_soft_layout_ids"
-            android:defaultValue="10cols-mobile-with-num" />
-        <ListPreference
+            android:defaultValue="10cols-mobile-with-num"
+            predefinedMethodKey="method_en_predefined" />
+        <io.github.lee0701.lboard.settings.PredefinedMethodListPreference
             android:key="method_en_predefined"
             android:title="@string/pref_method_hard_layout_title"
             android:summary="@string/pref_method_hard_layout_summary"
             android:entries="@array/method_en_predefined_layouts"
             android:entryValues="@array/method_en_predefined_layout_ids"
-            android:defaultValue="alphabet-qwerty" />
+            android:defaultValue="alphabet-qwerty"
+            softLayoutKey="method_en_soft_layout" />
         <ListPreference
             android:key="method_en_symbols_hard_layout"
             android:title="@string/pref_method_symbols_layout_title"
