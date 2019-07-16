@@ -314,6 +314,11 @@ class LBoardService: InputMethodService() {
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
         )
 
+        val SOFT_LAYOUT_DVORAK = listOf(
+                SoftLayout.LAYOUT_10COLS_DVORAK,
+                SoftLayout.LAYOUT_10COLS_DVORAK_WITH_NUM
+        )
+
         val SOFT_LAYOUT_SEBEOL_GONG = listOf(
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
         )
