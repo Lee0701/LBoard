@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
@@ -25,7 +26,7 @@ import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class LBoardService: InputMethodService() {
+class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val softinputMethods: MutableList<InputMethod> = mutableListOf()
     private val physicalInputMethods: MutableList<InputMethod> = mutableListOf()
@@ -40,6 +41,8 @@ class LBoardService: InputMethodService() {
     override fun onCreate() {
         super.onCreate()
         EventBus.getDefault().register(this)
+
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this)
 
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_common, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_en, true)
@@ -298,6 +301,12 @@ class LBoardService: InputMethodService() {
     override fun onComputeInsets(outInsets: Insets?) {
         super.onComputeInsets(outInsets)
         outInsets?.contentTopInsets = outInsets?.visibleTopInsets
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        reloadPreferences()
+        reset()
+        setInputView(onCreateInputView())
     }
 
     override fun onDestroy() {
