@@ -49,7 +49,7 @@
     <string name="pref_method_physical_hard_layout_summary">Choose a keyboard layout to be used on physical keyboards.</string>
 
     <string name="pref_method_hard_timeout_title">Composition Timeout</string>
-    <string name="pref_method_hard_timeout_summary">Set composition timeout for danmodum layouts in milliseconds.</string>
+    <string name="pref_method_hard_timeout_summary">Set composition timeout for danmoeum layouts in milliseconds.</string>
 
     <string name="pref_method_symbols_layout_title">Symbols Layout</string>
     <string name="pref_method_symbols_layout_summary">Choose a symbols keyboard layout.</string>
