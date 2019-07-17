@@ -18,5 +18,15 @@
             android:title="@string/pref_common_soft_labels_title"
             android:summary="@string/pref_common_soft_labels_summary"
             android:defaultValue="true" />
+        <io.github.lee0701.lboard.settings.IntEditTextPreference
+            android:key="common_soft_repeat_rate"
+            android:title="@string/pref_common_repeat_rate_title"
+            android:summary="@string/pref_common_repeat_rate_summary"
+            android:defaultValue="50" />
+        <io.github.lee0701.lboard.settings.IntEditTextPreference
+            android:key="common_soft_long_click_delay"
+            android:title="@string/pref_common_long_click_delay_title"
+            android:summary="@string/pref_common_long_click_delay_summary"
+            android:defaultValue="300" />
     </PreferenceCategory>
 </PreferenceScreen>

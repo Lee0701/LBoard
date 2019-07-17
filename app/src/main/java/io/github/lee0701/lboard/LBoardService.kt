@@ -60,6 +60,8 @@ class LBoardService: InputMethodService() {
         val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null)!!]!!
         val height = prefs.getInt("common_soft_height", 0).toFloat()
         val labels = prefs.getBoolean("common_soft_labels", true)
+        val repeatRate = prefs.getInt("common_soft_repeat_rate", 0)
+        val longClickDelay = prefs.getInt("common_soft_long_click_delay", 0)
 
         run {
             val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_en_predefined", null)!!]!!
@@ -69,7 +71,7 @@ class LBoardService: InputMethodService() {
             val hardLayout = predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels),
+                    BasicSoftKeyboard(softLayout, theme, height, labels, repeatRate, longClickDelay),
                     CommonHardKeyboard(symbolsLayout + hardLayout)
             )
 
@@ -95,7 +97,7 @@ class LBoardService: InputMethodService() {
                     }
 
             val methodKo = HangulInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels),
+                    BasicSoftKeyboard(softLayout, theme, height, labels, repeatRate, longClickDelay),
                     CommonHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
                     converter,
                     timeout

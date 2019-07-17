@@ -18,9 +18,9 @@ class BasicKeyboardView(
         val theme: KeyboardTheme,
         val onKeyListener: OnKeyListener,
         val keyboardHeight: Int,
-        val longClickDelay: Int,
+        val showLabels: Boolean,
         val repeatRate: Int,
-        val showLabels: Boolean
+        val longClickDelay: Int
 ): View(context) {
 
     var shift: Int = 0

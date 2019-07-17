@@ -15,7 +15,14 @@ import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
-class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHeight: Float, val showLabels: Boolean): SoftKeyboard, BasicKeyboardView.OnKeyListener {
+class BasicSoftKeyboard(
+        val layout: Layout,
+        val theme: KeyboardTheme,
+        val keyHeight: Float,
+        val showLabels: Boolean,
+        val repeatRate: Int,
+        val longClickDelay: Int
+): SoftKeyboard, BasicKeyboardView.OnKeyListener {
 
     var keyboardView: BasicKeyboardView? = null
 
@@ -29,7 +36,7 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
 
     override fun initView(context: Context): View? {
         val keyboardHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyHeight, context.resources.displayMetrics) * layout.rows.size
-        keyboardView = BasicKeyboardView(context, layout, theme, this, keyboardHeight.toInt(), 300, 50, showLabels)
+        keyboardView = BasicKeyboardView(context, layout, theme, this, keyboardHeight.toInt(), showLabels, repeatRate, longClickDelay)
         return keyboardView
     }
 
@@ -87,6 +94,8 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
             put("theme", REVERSE_THEMES[theme])
             put("height", keyHeight.toInt())
             put("labels", showLabels)
+            put("repeatRate", repeatRate)
+            put("longClickDelay", longClickDelay)
         }
     }
 
@@ -97,7 +106,9 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
             val theme = THEMES[json.getString("theme")] ?: return null
             val keyHeight = json.getInt("height").toFloat()
             val keyLabels = json.getBoolean("labels")
-            return BasicSoftKeyboard(layout, theme, keyHeight, keyLabels)
+            val repeatRate = json.getInt("repeatRate")
+            val longClickDelay = json.getInt("longPressDelay")
+            return BasicSoftKeyboard(layout, theme, keyHeight, keyLabels, repeatRate, longClickDelay)
         }
 
         val LAYOUTS = listOf(
