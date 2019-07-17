@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/pref_method_soft_title">
+    <PreferenceCategory android:title="@string/pref_method_virtual_title">
         <io.github.lee0701.lboard.settings.SoftKeyboardListPreference
             android:key="method_en_soft_layout"
             android:title="@string/pref_method_soft_layout_title"
@@ -26,7 +26,7 @@
             android:defaultValue="symbols-b" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_method_hard_title">
+    <PreferenceCategory android:title="@string/pref_method_physical_title">
         <ListPreference
             android:key="method_en_physical_hard_layout"
             android:title="@string/pref_method_physical_hard_layout_title"

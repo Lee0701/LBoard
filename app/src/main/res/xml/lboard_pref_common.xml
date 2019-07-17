@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/pref_method_soft_title">
+    <PreferenceCategory android:title="@string/pref_method_virtual_title">
         <ListPreference
             android:key="common_soft_theme"
             android:title="@string/pref_common_soft_theme_title"

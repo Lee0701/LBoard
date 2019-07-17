@@ -24,7 +24,7 @@
     <string name="pref_common_soft_labels_summary">Show soft keyboard labels.</string>
 
 
-    <string name="pref_method_soft_title">Soft Keyboard</string>
+    <string name="pref_method_virtual_title">Virtual Keyboard</string>
 
     <string name="pref_method_soft_layout_title">Soft Keyboard Layout</string>
     <string name="pref_method_soft_layout_summary">Choose a soft keyboard layout.</string>
@@ -40,13 +40,8 @@
     <string name="pref_method_soft_layout_12key_4cols">12 Key 4 Columns</string>
 
 
-    <string name="pref_method_hard_title">Hard Keyboard</string>
-
     <string name="pref_method_hard_layout_title">Keyboard Layout</string>
     <string name="pref_method_hard_layout_summary">Choose a keyboard layout.</string>
-
-    <string name="pref_method_physical_hard_layout_title">Physical Keyboard Layout</string>
-    <string name="pref_method_physical_hard_layout_summary">Choose a keyboard layout to be used on physical keyboards.</string>
 
     <string name="pref_method_hard_timeout_title">Composition Timeout</string>
     <string name="pref_method_hard_timeout_summary">Set composition timeout for danmoeum layouts in milliseconds.</string>
@@ -71,16 +66,11 @@
     <string name="pref_method_hard_layout_dubeol_naratgeul">T12 Dubeolsik Naratgeul</string>
 
 
-    <string name="pref_method_hangul_title">Hangul Converter</string>
+    <string name="pref_method_physical_title">Physical Keyboard</string>
 
-    <string name="pref_method_hangul_type_title">Hangul Converter Type</string>
-    <string name="pref_method_hangul_type_summary">Choose the hangul converter type.</string>
+    <string name="pref_method_physical_hard_layout_title">Physical Keyboard Layout</string>
+    <string name="pref_method_physical_hard_layout_summary">Choose a keyboard layout to be used on physical keyboards.</string>
 
-    <string name="pref_method_hangul_converter_dubeol">Dubeolsik Hangul Converter</string>
-    <string name="pref_method_hangul_converter_sebeol">Sebeolsik Hangul Converter</string>
-
-    <string name="pref_method_hangul_combination_title">Combination Table</string>
-    <string name="pref_method_hangul_combination_summary">Choose a combination table.</string>
 
     <string name="pref_activation_enabler_title">Enable / Disable input methods</string>
     <string name="pref_activation_enabler_summary">Please enable \'LBoard\'.</string>

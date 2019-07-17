@@ -70,26 +70,6 @@
         <item>alphabet-7cols-wert</item>
     </string-array>
 
-    <string-array name="method_ko_hard_layouts">
-        <item>@string/pref_method_hard_layout_dubeol_standard</item>
-        <item>@string/pref_method_hard_layout_sebeol_390</item>
-        <item>@string/pref_method_hard_layout_sebeol_391</item>
-        <item>@string/pref_method_hard_layout_sebeol_shin_original</item>
-        <item>@string/pref_method_hard_layout_sebeol_shin_edit</item>
-        <item>@string/pref_method_hard_layout_dubeol_cheonjiin</item>
-        <item>@string/pref_method_hard_layout_dubeol_naratgeul</item>
-    </string-array>
-
-    <string-array name="method_ko_hard_layout_ids">
-        <item>dubeol-standard</item>
-        <item>sebeol-390</item>
-        <item>sebeol-391</item>
-        <item>sebeol-shin-original</item>
-        <item>sebeol-shin-edit</item>
-        <item>dubeol-cheonjiin</item>
-        <item>dubeol-naratgeul</item>
-    </string-array>
-
     <string-array name="method_ko_predefined_layouts">
         <item>@string/pref_method_hard_layout_dubeol_standard</item>
         <item>@string/pref_method_hard_layout_sebeol_390</item>
@@ -128,32 +108,6 @@
         <item>sebeol-391</item>
         <item>sebeol-shin-original</item>
         <item>sebeol-shin-edit</item>
-    </string-array>
-
-    <string-array name="method_ko_converters">
-        <item>@string/pref_method_hangul_converter_dubeol</item>
-        <item>@string/pref_method_hangul_converter_sebeol</item>
-    </string-array>
-
-    <string-array name="method_ko_converter_ids">
-        <item>dubeol</item>
-        <item>sebeol</item>
-    </string-array>
-
-    <string-array name="method_ko_combinations">
-        <item>@string/pref_method_hard_layout_dubeol_standard</item>
-        <item>@string/pref_method_hard_layout_sebeol_390</item>
-        <item>@string/pref_method_hard_layout_sebeol_391</item>
-        <item>@string/pref_method_hard_layout_dubeol_cheonjiin</item>
-        <item>@string/pref_method_hard_layout_dubeol_naratgeul</item>
-    </string-array>
-
-    <string-array name="method_ko_combination_ids">
-        <item>dubeol-standard</item>
-        <item>sebeol-390</item>
-        <item>sebeol-391</item>
-        <item>dubeol-cheonjiin</item>
-        <item>dubeol-naratgeul</item>
     </string-array>
 
 </resources>
