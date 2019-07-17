@@ -187,10 +187,12 @@ class BasicKeyboardView(
                     pointer.pressure = pressure
 
                     if(abs(pointer.dy) > abs((pointer.dx))) {
-                        if(pointer.y > pointer.key.y + pointer.key.height && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.DOWN) {
+                        if((pointer.y > pointer.key.y + pointer.key.height || pointer.y > pointer.initialY + pointer.key.height/2)
+                                && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.DOWN) {
                             onKeyListener.onKeyFlickDown(pointer.key.keyCode)
                             pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.DOWN
-                        } else if(pointer.y < pointer.key.y && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.UP) {
+                        } else if((pointer.y < pointer.key.y || pointer.y < pointer.initialY - pointer.key.height/2)
+                                && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.UP) {
                             onKeyListener.onKeyFlickUp(pointer.key.keyCode)
                             pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.UP
                         }
