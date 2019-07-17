@@ -6,4 +6,5 @@
 
     <color name="keybg_mod">#C5CCD6</color>
     <color name="keybg_enter">#007AFF</color>
+    <color name="keybg_enter_p">#0050e6</color>
 </resources>
