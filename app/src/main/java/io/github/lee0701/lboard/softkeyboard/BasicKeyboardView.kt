@@ -20,7 +20,10 @@ class BasicKeyboardView(
         val keyboardHeight: Int,
         val showLabels: Boolean,
         val repeatRate: Int,
-        val longClickDelay: Int
+        val longClickDelay: Int,
+        val marginLeft: Int,
+        val marginRight: Int,
+        val marginBottom: Int
 ): View(context) {
 
     var shift: Int = 0
@@ -39,17 +42,17 @@ class BasicKeyboardView(
         paint.textAlign = Paint.Align.CENTER
         paint.isAntiAlias = true
 
-        this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, keyboardHeight)
+        this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, keyboardHeight + marginBottom)
 
         val rows = layout.rows
 
         (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
 
-        val keyboardWidth = displayMetrics.widthPixels
+        val keyboardWidth = displayMetrics.widthPixels - (marginLeft + marginRight)
         val keyHeight = keyboardHeight / rows.size
 
         rows.forEachIndexed { j, row ->
-            var x = (row.paddingLeft * keyboardWidth).toInt()
+            var x = (row.marginLeft * keyboardWidth).toInt() + marginLeft
             row.y = j * keyHeight
             row.height = keyHeight
 
@@ -237,7 +240,7 @@ class BasicKeyboardView(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(measuredWidth, keyboardHeight)
+        setMeasuredDimension(measuredWidth, keyboardHeight + marginBottom)
     }
 
     data class TouchPointer(

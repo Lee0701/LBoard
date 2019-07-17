@@ -35,8 +35,8 @@ data class Row(
         val keys: List<Key>,
         val type: Type? = null,
         val keyWidth: Float = 0f,
-        val paddingLeft: Float = 0f,
-        val paddingRight: Float = 0f
+        val marginLeft: Float = 0f,
+        val marginRight: Float = 0f
 ) {
     var y: Int = 0
     var height: Int = 0

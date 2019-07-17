@@ -74,7 +74,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val hardLayout = predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels, repeatRate, longClickDelay),
+                    BasicSoftKeyboard(softLayout, theme, height, labels, repeatRate, longClickDelay, 5, 5, 15),
                     CommonHardKeyboard(symbolsLayout + hardLayout)
             )
 
@@ -100,7 +100,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     }
 
             val methodKo = HangulInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels, repeatRate, longClickDelay),
+                    BasicSoftKeyboard(softLayout, theme, height, labels, repeatRate, longClickDelay, 5, 5, 15),
                     CommonHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
                     converter,
                     timeout

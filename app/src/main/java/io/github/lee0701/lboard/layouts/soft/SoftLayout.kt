@@ -28,7 +28,7 @@ object SoftLayout {
             Key(38, "j"),
             Key(39, "k"),
             Key(40, "l")
-    ), Row.Type.EVEN, paddingLeft = 0.05f, paddingRight = 0.05f), Row(listOf(
+    ), Row.Type.EVEN, marginLeft = 0.05f, marginRight = 0.05f), Row(listOf(
             Key(59, "SFT", keyWidth = 0.15f),
             Key(54, "z"),
             Key(52, "x"),
@@ -78,7 +78,7 @@ object SoftLayout {
             Key(38, "j"),
             Key(39, "k"),
             Key(40, "l")
-    ), Row.Type.EVEN, paddingLeft = 0.05f, paddingRight = 0.05f), Row(listOf(
+    ), Row.Type.EVEN, marginLeft = 0.05f, marginRight = 0.05f), Row(listOf(
             Key(59, "SFT", keyWidth = 0.15f),
             Key(54, "z"),
             Key(52, "x"),

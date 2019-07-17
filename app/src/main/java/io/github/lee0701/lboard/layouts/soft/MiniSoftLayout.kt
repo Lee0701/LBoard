@@ -33,7 +33,7 @@ object MiniSoftLayout {
             Key(42, ""),    // n
             Key(41, ""),    // m
             Key(67, "DEL", repeatable = true, keyWidth = 0.15f)
-    ), Row.Type.ODD, paddingLeft = 0.1f), Row(listOf(
+    ), Row.Type.ODD, marginLeft = 0.1f), Row(listOf(
             Key(keyCode = 57, label = "?12", keyWidth = 1.5f/10f),
             Key(keyCode = 204, label = "ABC", keyWidth = 1.5f/10f),
             Key(keyCode = 62, keyWidth = 4/10f),
