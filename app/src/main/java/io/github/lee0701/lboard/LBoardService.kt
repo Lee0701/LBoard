@@ -345,7 +345,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
                 TabletSoftLayout.LAYOUT_11COLS_TABLET,
-                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_NUM
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM
         )
 
         val SOFT_LAYOUT_DVORAK = listOf(
@@ -354,12 +356,15 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         )
 
         val SOFT_LAYOUT_SEBEOL_GONG = listOf(
-                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM
         )
 
         val SOFT_LAYOUT_SEBEOL_SHIN = listOf(
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
-                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM
         )
 
         val SOFT_LAYOUT_MINI_7COLS = listOf(

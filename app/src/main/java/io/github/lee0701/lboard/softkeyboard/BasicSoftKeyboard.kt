@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
-import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
@@ -136,6 +135,8 @@ class BasicSoftKeyboard(
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
                 TabletSoftLayout.LAYOUT_11COLS_TABLET,
                 TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
                 MiniSoftLayout.LAYOUT_MINI_7COLS,
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
                 TwelveSoftLayout.LAYOUT_12KEY_4COLS
