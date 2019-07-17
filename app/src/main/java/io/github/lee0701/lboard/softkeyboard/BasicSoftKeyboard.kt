@@ -10,6 +10,7 @@ import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
 import io.github.lee0701.lboard.layouts.soft.MiniSoftLayout
 import io.github.lee0701.lboard.layouts.soft.SoftLayout
+import io.github.lee0701.lboard.layouts.soft.TabletSoftLayout
 import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
@@ -133,6 +134,8 @@ class BasicSoftKeyboard(
                 SoftLayout.LAYOUT_10COLS_DVORAK_WITH_NUM,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_NUM,
                 MiniSoftLayout.LAYOUT_MINI_7COLS,
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
                 TwelveSoftLayout.LAYOUT_12KEY_4COLS

@@ -19,6 +19,7 @@ import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.MiniSoftLayout
 import io.github.lee0701.lboard.layouts.soft.SoftLayout
+import io.github.lee0701.lboard.layouts.soft.TabletSoftLayout
 import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.softkeyboard.*
@@ -342,7 +343,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 SoftLayout.LAYOUT_10COLS_MOBILE,
                 SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
-                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_NUM
         )
 
         val SOFT_LAYOUT_DVORAK = listOf(

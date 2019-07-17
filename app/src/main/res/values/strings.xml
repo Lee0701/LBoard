@@ -47,6 +47,8 @@
     <string name="pref_method_soft_layout_10cols_dvorak_with_num">10 Columns Dvorak With Numbers</string>
     <string name="pref_method_soft_layout_10cols_mod_quote">10 Columns Mod. Quote</string>
     <string name="pref_method_soft_layout_10cols_mod_quote_with_num">10 Columns Mod. Quote With Numbers</string>
+    <string name="pref_method_soft_layout_11cols_tablet">11 Columns Tablet</string>
+    <string name="pref_method_soft_layout_11cols_tablet_with_num">11 Columns Tablet With Numbers</string>
     <string name="pref_method_soft_layout_mini_7cols">Mini 7 Columns</string>
     <string name="pref_method_soft_layout_mini_8cols">Mini 8 Columns</string>
     <string name="pref_method_soft_layout_12key_4cols">12 Key 4 Columns</string>
