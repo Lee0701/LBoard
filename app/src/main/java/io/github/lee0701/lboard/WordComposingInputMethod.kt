@@ -37,7 +37,12 @@ class WordComposingInputMethod(
                 }
             }
             KeyEvent.KEYCODE_SPACE -> {
-                return super.onKeyPress(keyCode)
+                EventBus.getDefault().post(CommitComposingEvent())
+                states.clear()
+                hardKeyboard.reset()
+                EventBus.getDefault().post(UpdateViewEvent())
+                EventBus.getDefault().post(CommitStringEvent(" "))
+                return true
             }
             KeyEvent.KEYCODE_ENTER -> {
                 return super.onKeyPress(keyCode)

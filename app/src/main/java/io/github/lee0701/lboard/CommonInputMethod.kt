@@ -41,7 +41,7 @@ abstract class CommonInputMethod: InputMethod {
                 return false
             }
             KeyEvent.KEYCODE_SPACE -> {
-                reset()
+                hardKeyboard.reset()
                 EventBus.getDefault().post(CommitStringEvent(" "))
             }
             KeyEvent.KEYCODE_ENTER -> {
