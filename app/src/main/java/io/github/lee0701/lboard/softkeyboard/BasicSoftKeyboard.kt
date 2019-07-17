@@ -2,6 +2,7 @@ package io.github.lee0701.lboard.softkeyboard
 
 import android.content.Context
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.View
 import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
@@ -40,8 +41,24 @@ class BasicSoftKeyboard(val layout: Layout, val theme: KeyboardTheme, val keyHei
         }
     }
 
-    override fun onKey(keyCode: Int, x: Int, y: Int) {
-        EventBus.getDefault().post(SoftKeyClickEvent(keyCode))
+    override fun onKeyDown(keyCode: Int, x: Int, y: Int) {
+        when(keyCode) {
+            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
+            KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
+                EventBus.getDefault().post(SoftKeyClickEvent(keyCode, SoftKeyClickEvent.State.DOWN))
+            }
+        }
+    }
+
+    override fun onKeyUp(keyCode: Int, x: Int, y: Int) {
+        when(keyCode) {
+            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
+            KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {}
+            else -> {
+                EventBus.getDefault().post(SoftKeyClickEvent(keyCode, SoftKeyClickEvent.State.DOWN))
+            }
+        }
+        EventBus.getDefault().post(SoftKeyClickEvent(keyCode, SoftKeyClickEvent.State.UP))
     }
 
     override fun onKeyLongClick(keyCode: Int) {

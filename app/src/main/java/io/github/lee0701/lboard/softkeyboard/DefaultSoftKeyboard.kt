@@ -30,7 +30,8 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
     }
 
     override fun onKey(primaryCode: Int, keyCodes: IntArray) {
-        EventBus.getDefault().post(SoftKeyClickEvent(primaryCode))
+        EventBus.getDefault().post(SoftKeyClickEvent(primaryCode, SoftKeyClickEvent.State.DOWN))
+        EventBus.getDefault().post(SoftKeyClickEvent(primaryCode, SoftKeyClickEvent.State.UP))
     }
 
     override fun setLabels(labels: Map<Int, String>) {

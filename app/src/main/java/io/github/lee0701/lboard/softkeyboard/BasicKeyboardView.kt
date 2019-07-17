@@ -157,15 +157,26 @@ class BasicKeyboardView(
                 key.onPressed { invalidate() }
 
                 val onLongClick = if(key.repeatable) timerTask {
-                    onKeyListener.onKey(key.keyCode, x.toInt(), y.toInt())
+                    onKeyListener.onKeyDown(key.keyCode, x.toInt(), y.toInt())
+                    onKeyListener.onKeyUp(key.keyCode, x.toInt(), y.toInt())
                 } else timerTask {
                     onKeyListener.onKeyLongClick(key.keyCode)
                 }
 
-                if(key.keyCode == KeyEvent.KEYCODE_DEL) timer.scheduleAtFixedRate(onLongClick, longClickDelay.toLong(), repeatRate.toLong())
-                else timer.schedule(onLongClick, longClickDelay.toLong())
+                val pointer = TouchPointer(x.toInt(), y.toInt(), pressure, key, onLongClick)
+                pointers += pointerId to pointer
 
-                pointers += pointerId to TouchPointer(x.toInt(), y.toInt(), pressure, key, onLongClick)
+                when(pointer.key.keyCode) {
+                    KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
+                    KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {}
+                    else -> {
+                        if(key.repeatable) timer.scheduleAtFixedRate(onLongClick, longClickDelay.toLong(), repeatRate.toLong())
+                        else timer.schedule(onLongClick, longClickDelay.toLong())
+                    }
+                }
+
+                onKeyListener.onKeyDown(pointer.key.keyCode, pointer.x, pointer.y)
+
                 return true
             }
 
@@ -203,7 +214,7 @@ class BasicKeyboardView(
                     pointer.longClickHandler.cancel()
                     pointer.key.onReleased { invalidate() }
 
-                    onKeyListener.onKey(pointer.key.keyCode, pointer.x, pointer.y)
+                    onKeyListener.onKeyUp(pointer.key.keyCode, pointer.x, pointer.y)
                 }
                 return true
             }
@@ -245,7 +256,8 @@ class BasicKeyboardView(
     }
 
     interface OnKeyListener {
-        fun onKey(keyCode: Int, x: Int, y: Int)
+        fun onKeyDown(keyCode: Int, x: Int, y: Int)
+        fun onKeyUp(keyCode: Int, x: Int, y: Int)
         fun onKeyLongClick(keyCode: Int)
         fun onKeyFlickLeft(keyCode: Int)
         fun onKeyFlickRight(keyCode: Int)

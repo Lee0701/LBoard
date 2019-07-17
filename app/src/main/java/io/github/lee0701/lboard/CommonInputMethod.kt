@@ -102,6 +102,7 @@ abstract class CommonInputMethod: InputMethod {
                 altPressing = false
             }
         }
+        EventBus.getDefault().post(UpdateViewEvent())
         return true
     }
 

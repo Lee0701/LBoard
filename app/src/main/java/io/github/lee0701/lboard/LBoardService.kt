@@ -201,6 +201,13 @@ class LBoardService: InputMethodService() {
     }
 
     @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
+        when(event.state) {
+            SoftKeyClickEvent.State.DOWN -> onSoftKeyDown(event)
+            SoftKeyClickEvent.State.UP -> onSoftKeyUp(event)
+        }
+    }
+
+    private fun onSoftKeyDown(event: SoftKeyClickEvent) {
         when(event.keyCode) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
                 switchInputMethod(true)
@@ -208,7 +215,9 @@ class LBoardService: InputMethodService() {
             }
         }
         inputAfterSwitch = true
-        if(!currentMethod.onKeyPress(event.keyCode)) when(event.keyCode) {
+        val result = currentMethod.onKeyPress(event.keyCode)
+        // 입력 이벤트 처리가 되었으면 Release 이벤트 전송, 처리되지 않았으면 기본 처리를 수행.
+        if(!result) when(event.keyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 if(currentInputConnection.getSelectedText(0) != null) currentInputConnection.commitText("", 1)
                 else currentInputConnection.deleteSurroundingText(1, 0)
@@ -223,8 +232,14 @@ class LBoardService: InputMethodService() {
                     }
                 }
             }
-            else -> sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.FULL).get(event.keyCode, 0).toChar())
-        } else currentMethod.onKeyRelease(event.keyCode)
+            else -> {
+                sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.FULL).get(event.keyCode, 0).toChar())
+            }
+        }
+    }
+
+    private fun onSoftKeyUp(event: SoftKeyClickEvent) {
+        currentMethod.onKeyRelease(event.keyCode)
     }
 
     @Subscribe fun onSoftKeyLongClick(event: SoftKeyLongClickEvent) {
