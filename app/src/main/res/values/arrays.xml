@@ -4,12 +4,14 @@
         <item>@string/pref_common_soft_themes_white</item>
         <item>@string/pref_common_soft_themes_dark</item>
         <item>@string/pref_common_soft_themes_flatwhite</item>
+        <item>@string/pref_common_soft_themes_flatdark</item>
     </string-array>
 
     <string-array name="common_soft_theme_ids">
         <item>white</item>
         <item>dark</item>
         <item>flatwhite</item>
+        <item>flatdark</item>
     </string-array>
 
     <string-array name="method_soft_layouts">

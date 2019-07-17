@@ -170,4 +170,55 @@ object BasicSoftKeyboardTheme {
             FLATWHITE_KEY_STICKY_LOCKED
     )
 
+    private val FLATDARK_KEY_CHARACTER = KeyTheme(
+            R.drawable.keybg_flatdark,
+            R.drawable.keybg_flatdark_p,
+            Color.parseColor("#ffffffff")
+    )
+
+    private val FLATDARK_KEY_STICKY = KeyTheme(
+            R.drawable.keybg_flatdark_sticky,
+            R.drawable.keybg_flatdark_sticky_p,
+            Color.parseColor("#ffffffff")
+    )
+
+    private val FLATDARK_KEY_STICKY_LOCKED = KeyTheme(
+            R.drawable.keybg_flatdark_locked,
+            R.drawable.keybg_flatdark_locked_p,
+            Color.parseColor("#ffffffff")
+    )
+
+    private val FLATDARK_KEY_SPACE = KeyTheme(
+            R.drawable.keybg_flatdark_space,
+            R.drawable.keybg_flatdark_space_p,
+            Color.parseColor("#ffffffff")
+    )
+
+    private val FLATDARK_KEY_SHIFT = FLATDARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_shift_white)
+    private val FLATDARK_KEY_DEL = FLATDARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_del_white)
+    private val FLATDARK_KEY_LANG = FLATDARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_lang_white)
+
+    val FLATDARK = KeyboardTheme(
+            R.drawable.keybg_flatdark_bg,
+            mapOf(
+                    null to RowTheme()
+            ),
+            mapOf(
+                    null to FLATDARK_KEY_CHARACTER,
+                    KeyEvent.KEYCODE_SPACE to FLATDARK_KEY_SPACE,
+                    KeyEvent.KEYCODE_ENTER to KeyTheme(
+                            R.drawable.keybg_flatdark_enter,
+                            R.drawable.keybg_flatdark_enter_p,
+                            Color.parseColor("#ffffffff"),
+                            R.drawable.keyfg_enter_white
+                    ),
+                    KeyEvent.KEYCODE_SHIFT_LEFT to FLATDARK_KEY_SHIFT,
+                    KeyEvent.KEYCODE_SHIFT_RIGHT to FLATDARK_KEY_SHIFT,
+                    KeyEvent.KEYCODE_DEL to FLATDARK_KEY_DEL,
+                    KeyEvent.KEYCODE_LANGUAGE_SWITCH to FLATDARK_KEY_LANG
+            ),
+            FLATDARK_KEY_STICKY,
+            FLATDARK_KEY_STICKY_LOCKED
+    )
+
 }
