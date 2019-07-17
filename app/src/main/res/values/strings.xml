@@ -29,6 +29,12 @@
     <string name="pref_common_long_click_delay_title">Soft Key Long Press Delay</string>
     <string name="pref_common_long_click_delay_summary">Adjust soft key long-press delay.</string>
 
+    <string name="pref_common_margin_horizontal_title">Soft Key Horizontal Margin</string>
+    <string name="pref_common_margin_horizontal_summary">Adjust soft keyboard margin on left and right.</string>
+
+    <string name="pref_common_margin_bottom_title">Soft Key Bottom Margin</string>
+    <string name="pref_common_margin_bottom_summary">Adjust soft keyboard margin on bottom.</string>
+
 
     <string name="pref_method_virtual_title">Virtual Keyboard</string>
 
