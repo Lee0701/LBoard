@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard.settings
 
 import android.content.Context
+import android.os.Handler
 import android.support.v7.preference.ListPreference
 import android.support.v7.preference.PreferenceManager
 import android.util.AttributeSet
@@ -11,10 +12,11 @@ import org.greenrobot.eventbus.EventBus
 class SoftKeyboardListPreference(context: Context, attrs: AttributeSet): ListPreference(context, attrs) {
 
     private val predefinedMethodKey: String = attrs.getAttributeValue(null, "predefinedMethodKey")
+    private val handler: Handler = Handler()
 
     init {
-        setOnPreferenceChangeListener { pref, newValue ->
-            EventBus.getDefault().post(ResetViewEvent())
+        setOnPreferenceChangeListener { _, _ ->
+            handler.post { EventBus.getDefault().post(ResetViewEvent()) }
             true
         }
         reloadEntries()
