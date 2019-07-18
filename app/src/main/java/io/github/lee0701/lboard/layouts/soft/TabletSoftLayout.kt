@@ -30,7 +30,7 @@ object TabletSoftLayout {
             Key(39, "k"),
             Key(40, "l"),
             Key(66, "RETURN", keyWidth = 1.5f/11f)
-    ), Row.Type.EVEN, paddingLeft = 1/2f/11f), Row(listOf(
+    ), Row.Type.EVEN, marginLeft = 1/2f/11f), Row(listOf(
             Key(59, "SFT"),
             Key(54, "z"),
             Key(52, "x"),
@@ -85,7 +85,7 @@ object TabletSoftLayout {
             Key(39, "k"),
             Key(40, "l"),
             Key(66, "RETURN", keyWidth = 1.5f/11f)
-    ), Row.Type.EVEN, paddingLeft = 1/2f/11f), Row(listOf(
+    ), Row.Type.EVEN, marginLeft = 1/2f/11f), Row(listOf(
             Key(59, "SFT"),
             Key(54, "z"),
             Key(52, "x"),
@@ -129,7 +129,7 @@ object TabletSoftLayout {
             Key(40, "l"),
             Key(74, ";"),
             Key(75, "'", keyWidth = 1/2f/11f)
-    ), Row.Type.EVEN, paddingLeft = 1/2f/11f), Row(listOf(
+    ), Row.Type.EVEN, marginLeft = 1/2f/11f), Row(listOf(
             Key(59, "SFT"),
             Key(54, "z"),
             Key(52, "x"),
@@ -147,7 +147,7 @@ object TabletSoftLayout {
             Key(keyCode = 62, keyWidth = 5/11f),
             Key(keyCode = 76, label = "/", keyWidth = 1/11f),
             Key(66, "RETURN", keyWidth = 2/11f)
-    ), Row.Type.BOTTOM)), keyWidth = 1/11f, key = "11cols-tablet-with-quote", nameStringKey = R.string.pref_method_soft_layout_11cols_tablet)
+    ), Row.Type.BOTTOM)), keyWidth = 1/11f, key = "11cols-tablet-with-quote", nameStringKey = R.string.pref_method_soft_layout_11cols_tablet_with_quote)
 
     val LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM = Layout(listOf(Row(listOf(
             Key(8, "1"),
@@ -185,7 +185,7 @@ object TabletSoftLayout {
             Key(40, "l"),
             Key(74, ";"),
             Key(75, "'", keyWidth = 1/2f/11f)
-    ), Row.Type.EVEN, paddingLeft = 1/2f/11f), Row(listOf(
+    ), Row.Type.EVEN, marginLeft = 1/2f/11f), Row(listOf(
             Key(59, "SFT"),
             Key(54, "z"),
             Key(52, "x"),
@@ -203,6 +203,6 @@ object TabletSoftLayout {
             Key(keyCode = 62, keyWidth = 5/11f),
             Key(keyCode = 76, label = "/", keyWidth = 1/11f),
             Key(66, "RETURN", keyWidth = 2/11f)
-    ), Row.Type.BOTTOM)), keyWidth = 1/11f, key = "11cols-tablet-with-quote-num", nameStringKey = R.string.pref_method_soft_layout_11cols_tablet_with_num)
+    ), Row.Type.BOTTOM)), keyWidth = 1/11f, key = "11cols-tablet-with-quote-num", nameStringKey = R.string.pref_method_soft_layout_11cols_tablet_with_quote_num)
 
 }
