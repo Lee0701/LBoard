@@ -70,6 +70,7 @@
     <string name="pref_method_hard_layout_dubeol_standard">Dubeolsik Standard</string>
     <string name="pref_method_hard_layout_sebeol_390">Sebeolsik 390</string>
     <string name="pref_method_hard_layout_sebeol_391">Sebeolsik Final</string>
+    <string name="pref_method_hard_layout_sebeol_391_strict">Sebeolsik Final (Strict)</string>
     <string name="pref_method_hard_layout_sebeol_shin_original">Shin Sebeolsik Original</string>
     <string name="pref_method_hard_layout_sebeol_shin_edit">Shin Sebeolsik Edit</string>
     <string name="pref_method_hard_layout_sebeol_mini_shin">Mini Shin Sebeolsik Experimental</string>
