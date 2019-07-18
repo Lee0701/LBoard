@@ -64,6 +64,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null)!!]!!
         val height = prefs.getInt("common_soft_height", 0).toFloat()
         val labels = prefs.getBoolean("common_soft_labels", true)
+        val compatibleLabels = prefs.getBoolean("common_soft_labels_compatible", true)
         val marginHorizontal = prefs.getInt("common_soft_margin_horizontal", 0)
         val marginBottom = prefs.getInt("common_soft_margin_bottom", 0)
 
@@ -78,7 +79,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val hardLayout = predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels,
+                    BasicSoftKeyboard(softLayout, theme, height, labels, compatibleLabels,
                             repeatRate, longClickDelay, marginHorizontal, marginHorizontal, marginBottom),
                     CommonHardKeyboard(symbolsLayout + hardLayout)
             )
@@ -105,7 +106,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     }
 
             val methodKo = HangulInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels,
+                    BasicSoftKeyboard(softLayout, theme, height, labels, compatibleLabels,
                             repeatRate, longClickDelay, marginHorizontal, marginHorizontal, marginBottom),
                     CommonHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
                     converter,

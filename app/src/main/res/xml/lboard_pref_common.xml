@@ -18,6 +18,11 @@
             android:title="@string/pref_common_soft_labels_title"
             android:summary="@string/pref_common_soft_labels_summary"
             android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="common_soft_labels_compatible"
+            android:title="@string/pref_common_soft_labels_compatible_title"
+            android:summary="@string/pref_common_soft_labels_compatible_summary"
+            android:defaultValue="true" />
         <io.github.lee0701.lboard.settings.IntEditTextPreference
             android:key="common_soft_margin_horizontal"
             android:title="@string/pref_common_margin_horizontal_title"
