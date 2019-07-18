@@ -9,6 +9,9 @@
     <string name="pref_method_ko_title">Korean Input Method</string>
 
 
+    <string name="pref_common_soft_mode_default">mobile</string>
+
+
     <string name="pref_common_soft_theme_title">Soft Keyboard Theme</string>
     <string name="pref_common_soft_theme_summary">Choose a soft keyboard theme.</string>
 
@@ -17,8 +20,15 @@
     <string name="pref_common_soft_themes_flatwhite">Flat White</string>
     <string name="pref_common_soft_themes_flatdark">Flat Dark</string>
 
+    <string name="pref_common_soft_mode_mobile">Mobile</string>
+    <string name="pref_common_soft_mode_tablet">Tablet</string>
+    <string name="pref_common_soft_mode_full">Full</string>
+
     <string name="pref_common_soft_height_title">Soft Key Height</string>
     <string name="pref_common_soft_height_summary">Adjust the key height.</string>
+
+    <string name="pref_common_soft_mode_title">Soft Keyboard Mode</string>
+    <string name="pref_common_soft_mode_summary">Choose mode between Mobile, Tablet, or Full.</string>
 
     <string name="pref_common_soft_labels_title">Soft Key Labels</string>
     <string name="pref_common_soft_labels_summary">Show soft keyboard labels.</string>
@@ -27,7 +37,7 @@
     <string name="pref_common_soft_labels_compatible_summary">Use compatible hangul jamo for soft keyboard labels.</string>
 
     <string name="pref_common_repeat_rate_title">Soft Key Repeat Rate</string>
-    <string name="pref_common_repeat_rate_summary">Adjust soft key repeat rate of repeatable keys (like delete).</string>
+    <string name="pref_common_repeat_rate_summary">Adjust soft key repeat rate of repeatable keys (delete, etc.).</string>
 
     <string name="pref_common_long_click_delay_title">Soft Key Long Press Delay</string>
     <string name="pref_common_long_click_delay_summary">Adjust soft key long-press delay.</string>

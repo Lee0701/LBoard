@@ -13,6 +13,13 @@
             android:title="@string/pref_common_soft_height_title"
             android:summary="@string/pref_common_soft_height_summary"
             android:defaultValue="50" />
+        <ListPreference
+            android:key="common_soft_mode"
+            android:title="@string/pref_common_soft_mode_title"
+            android:summary="@string/pref_common_soft_mode_summary"
+            android:entries="@array/common_soft_modes"
+            android:entryValues="@array/common_soft_mode_ids"
+            android:defaultValue="@string/pref_common_soft_mode_default" />
         <CheckBoxPreference
             android:key="common_soft_labels"
             android:title="@string/pref_common_soft_labels_title"
