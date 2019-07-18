@@ -106,4 +106,6 @@
     <string name="pref_activation_enabler_summary">Please enable \'LBoard\'.</string>
     <string name="pref_activation_picker_title">Show input method picker</string>
 
+    <string name="msg_unsupported_layout_for_mode">This layout is not supported for %s mode.</string>
+
 </resources>
