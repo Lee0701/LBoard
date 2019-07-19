@@ -253,7 +253,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     @Subscribe fun onSoftKeyLongClick(event: SoftKeyLongClickEvent) {
-        if(!currentMethod.shift) currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
+        if(!currentMethod.shift) {
+            currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
+            currentMethod.onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
+        }
     }
 
     @Subscribe fun onSoftKeyFlick(event: SoftKeyFlickEvent) {
