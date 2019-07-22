@@ -14,6 +14,18 @@
         <item>flatdark</item>
     </string-array>
 
+    <string-array name="common_soft_modes">
+        <item>@string/pref_common_soft_mode_mobile</item>
+        <item>@string/pref_common_soft_mode_tablet</item>
+        <item>@string/pref_common_soft_mode_full</item>
+    </string-array>
+
+    <string-array name="common_soft_mode_ids">
+        <item>mobile</item>
+        <item>tablet</item>
+        <item>full</item>
+    </string-array>
+
     <string-array name="method_soft_layouts">
         <item>@string/pref_method_soft_layout_10cols_mobile</item>
         <item>@string/pref_method_soft_layout_10cols_mobile_with_num</item>

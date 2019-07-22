@@ -17,9 +17,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
-import io.github.lee0701.lboard.layouts.soft.MiniSoftLayout
-import io.github.lee0701.lboard.layouts.soft.SoftLayout
-import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
+import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
@@ -63,6 +61,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null)!!]!!
         val height = prefs.getInt("common_soft_height", 0).toFloat()
         val labels = prefs.getBoolean("common_soft_labels", true)
+        val compatibleLabels = prefs.getBoolean("common_soft_labels_compatible", true)
         val marginHorizontal = prefs.getInt("common_soft_margin_horizontal", 0)
         val marginBottom = prefs.getInt("common_soft_margin_bottom", 0)
 
@@ -77,7 +76,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val hardLayout = predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels,
+                    BasicSoftKeyboard(softLayout, theme, height, labels, compatibleLabels,
                             repeatRate, longClickDelay, marginHorizontal, marginHorizontal, marginBottom),
                     CommonHardKeyboard(symbolsLayout + hardLayout)
             )
@@ -104,7 +103,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     }
 
             val methodKo = HangulInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels,
+                    BasicSoftKeyboard(softLayout, theme, height, labels, compatibleLabels,
                             repeatRate, longClickDelay, marginHorizontal, marginHorizontal, marginBottom),
                     CommonHardKeyboard(symbolsLayout + predefinedMethod.hardLayout),
                     converter,
@@ -337,6 +336,29 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     companion object {
 
+        val SOFT_LAYOUT_MODE_MOBILE = listOf(
+                TwelveSoftLayout.LAYOUT_12KEY_4COLS,
+                MiniSoftLayout.LAYOUT_MINI_7COLS,
+                MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
+                SoftLayout.LAYOUT_10COLS_MOBILE,
+                SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                SoftLayout.LAYOUT_10COLS_DVORAK,
+                SoftLayout.LAYOUT_10COLS_DVORAK_WITH_NUM
+        )
+
+        val SOFT_LAYOUT_MODE_TABLET = listOf(
+                TabletSoftLayout.LAYOUT_11COLS_TABLET,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM
+        )
+
+        val SOFT_LAYOUT_MODE_FULL = listOf<Layout>(
+                FullSoftLayout.LAYOUT_FULL
+        )
+
         val SOFT_LAYOUT_12KEY = listOf(
                 TwelveSoftLayout.LAYOUT_12KEY_4COLS
         )
@@ -345,21 +367,34 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 SoftLayout.LAYOUT_10COLS_MOBILE,
                 SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
-                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL
         )
 
         val SOFT_LAYOUT_DVORAK = listOf(
                 SoftLayout.LAYOUT_10COLS_DVORAK,
-                SoftLayout.LAYOUT_10COLS_DVORAK_WITH_NUM
+                SoftLayout.LAYOUT_10COLS_DVORAK_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL
         )
 
         val SOFT_LAYOUT_SEBEOL_GONG = listOf(
-                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL
         )
 
         val SOFT_LAYOUT_SEBEOL_SHIN = listOf(
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
-                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL
         )
 
         val SOFT_LAYOUT_MINI_7COLS = listOf(
@@ -386,6 +421,16 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 "dubeol-cheonjiin" to PredefinedMethod(SOFT_LAYOUT_12KEY, TwelveDubeolHangul.LAYOUT_CHEONJIIN, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_CHEONJIIN),
                 "dubeol-naratgeul" to PredefinedMethod(SOFT_LAYOUT_12KEY, TwelveDubeolHangul.LAYOUT_NARATGEUL, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_NARATGEUL)
         )
+
+        fun getMode(modeName: String): List<Layout> {
+            return when(modeName) {
+                "mobile" -> SOFT_LAYOUT_MODE_MOBILE
+                "tablet" -> SOFT_LAYOUT_MODE_TABLET
+                "full" -> SOFT_LAYOUT_MODE_FULL
+                else -> listOf()
+            }
+        }
+
     }
 
 }

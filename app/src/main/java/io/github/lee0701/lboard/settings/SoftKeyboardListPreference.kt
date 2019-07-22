@@ -9,23 +9,30 @@ import io.github.lee0701.lboard.LBoardService
 class SoftKeyboardListPreference(context: Context, attrs: AttributeSet): ListPreference(context, attrs) {
 
     private val predefinedMethodKey: String = attrs.getAttributeValue(null, "predefinedMethodKey")
+    private val pref = PreferenceManager.getDefaultSharedPreferences(context)
 
     init {
         reloadEntries()
     }
 
-    fun reloadEntries(predefinedMethodName: String) {
+    fun reloadEntries(predefinedMethodName: String, modeName: String) {
         val predefinedMethod = LBoardService.PREDEFINED_METHODS[predefinedMethodName]
+        val mode = LBoardService.getMode(modeName)
         predefinedMethod?.let { method ->
-            val softLayoutKeys = method.softLayouts.map { it.key }
-            val softLayoutStrings = method.softLayouts.map { context?.resources?.getString(it.nameStringKey) }
+            val softLayouts = method.softLayouts.filter { mode.contains(it) }
+            val softLayoutKeys = softLayouts.map { it.key }
+            val softLayoutStrings = softLayouts.map { context?.resources?.getString(it.nameStringKey) }
             entries = softLayoutStrings.toTypedArray()
             entryValues = softLayoutKeys.toTypedArray()
         }
     }
 
+    fun reloadEntries(predefinedMethodName: String) {
+        val modeName = pref.getString("common_soft_mode", null) ?: "mobile"
+        reloadEntries(predefinedMethodName, modeName)
+    }
+
     fun reloadEntries() {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
         val predefinedMethodName = pref.getString(predefinedMethodKey, "") ?: ""
         reloadEntries(predefinedMethodName)
     }

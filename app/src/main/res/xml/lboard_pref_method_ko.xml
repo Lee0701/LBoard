@@ -23,7 +23,7 @@
             android:summary="@string/pref_method_symbols_layout_summary"
             android:entries="@array/method_symbols_hard_layouts"
             android:entryValues="@array/method_symbols_hard_layout_ids"
-            android:defaultValue="symbols-b" />
+            android:defaultValue="symbols-a" />
         <io.github.lee0701.lboard.settings.IntEditTextPreference
             android:key="method_ko_timeout"
             android:title="@string/pref_method_hard_timeout_title"

@@ -4,13 +4,11 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
-import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
-import io.github.lee0701.lboard.layouts.soft.MiniSoftLayout
-import io.github.lee0701.lboard.layouts.soft.SoftLayout
-import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
+import io.github.lee0701.lboard.hangul.HangulComposer
+import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
@@ -20,6 +18,7 @@ class BasicSoftKeyboard(
         val theme: KeyboardTheme,
         val keyHeight: Float,
         val showLabels: Boolean,
+        val compatibleLabels: Boolean,
         val repeatRate: Int,
         val longClickDelay: Int,
         val marginLeft: Int,
@@ -52,8 +51,19 @@ class BasicSoftKeyboard(
         layout.rows.forEach { row ->
             row.keys.forEach { key ->
                 key.label = labels[key.keyCode] ?: key.label
+                if(compatibleLabels) key.label = convertToCompatible(key.label)
             }
         }
+    }
+
+    private fun convertToCompatible(label: String): String {
+        return label.map { c ->
+            if(c == ' ') c
+            else if(HangulComposer.isCho(c.toInt())) HangulComposer.COMPAT_CHO[HangulComposer.CONVERT_CHO.indexOf(c)]
+            else if(HangulComposer.isJung(c.toInt())) HangulComposer.COMPAT_JUNG[HangulComposer.STD_JUNG.indexOf(c)]
+            else if(HangulComposer.isJong(c.toInt())) HangulComposer.COMPAT_CHO[HangulComposer.CONVERT_JONG.indexOf(c)]
+            else c
+        }.joinToString("")
     }
 
     override fun onKeyDown(keyCode: Int, x: Int, y: Int) {
@@ -102,6 +112,7 @@ class BasicSoftKeyboard(
             put("theme", REVERSE_THEMES[theme])
             put("height", keyHeight.toInt())
             put("labels", showLabels)
+            put("compatibleLabels", compatibleLabels)
             put("repeatRate", repeatRate)
             put("longClickDelay", longClickDelay)
             put("marginLeft", marginLeft)
@@ -117,13 +128,14 @@ class BasicSoftKeyboard(
             val theme = THEMES[json.getString("theme")] ?: return null
             val keyHeight = json.getInt("height").toFloat()
             val keyLabels = json.optBoolean("labels", true)
+            val compatibleLabels = json.optBoolean("compatibleLabels", true)
             val repeatRate = json.optInt("repeatRate", 50)
             val longClickDelay = json.optInt("longPressDelay", 300)
             val marginLeft = json.optInt("marginLeft")
             val marginRight = json.optInt("marginRight")
             val marginBottom = json.optInt("marginBottom")
             return BasicSoftKeyboard(layout, theme, keyHeight,
-                    keyLabels, repeatRate, longClickDelay, marginLeft, marginRight, marginBottom)
+                    keyLabels, compatibleLabels, repeatRate, longClickDelay, marginLeft, marginRight, marginBottom)
         }
 
         val LAYOUTS = listOf(
@@ -133,6 +145,11 @@ class BasicSoftKeyboard(
                 SoftLayout.LAYOUT_10COLS_DVORAK_WITH_NUM,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL,
                 MiniSoftLayout.LAYOUT_MINI_7COLS,
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
                 TwelveSoftLayout.LAYOUT_12KEY_4COLS
