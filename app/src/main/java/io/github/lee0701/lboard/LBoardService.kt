@@ -17,10 +17,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
-import io.github.lee0701.lboard.layouts.soft.MiniSoftLayout
-import io.github.lee0701.lboard.layouts.soft.SoftLayout
-import io.github.lee0701.lboard.layouts.soft.TabletSoftLayout
-import io.github.lee0701.lboard.layouts.soft.TwelveSoftLayout
+import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
@@ -356,7 +353,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         )
 
         val SOFT_LAYOUT_MODE_FULL = listOf<Layout>(
-
+                FullSoftLayout.LAYOUT_FULL
         )
 
         val SOFT_LAYOUT_12KEY = listOf(
@@ -371,26 +368,30 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 TabletSoftLayout.LAYOUT_11COLS_TABLET,
                 TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_NUM,
                 TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
-                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL
         )
 
         val SOFT_LAYOUT_DVORAK = listOf(
                 SoftLayout.LAYOUT_10COLS_DVORAK,
                 SoftLayout.LAYOUT_10COLS_DVORAK_WITH_NUM,
                 TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
-                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL
         )
 
         val SOFT_LAYOUT_SEBEOL_GONG = listOf(
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
-                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL
         )
 
         val SOFT_LAYOUT_SEBEOL_SHIN = listOf(
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
                 TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
-                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL
         )
 
         val SOFT_LAYOUT_MINI_7COLS = listOf(

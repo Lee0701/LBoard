@@ -64,6 +64,7 @@
     <string name="pref_method_soft_layout_11cols_tablet_with_num">11 Columns Tablet with Numbers</string>
     <string name="pref_method_soft_layout_11cols_tablet_with_quote">11 Columns Tablet with Quote</string>
     <string name="pref_method_soft_layout_11cols_tablet_with_quote_num">11 Columns Tablet with Quote and Numbers</string>
+    <string name="pref_method_soft_layout_full_pc">Full PC</string>
     <string name="pref_method_soft_layout_mini_7cols">Mini 7 Columns</string>
     <string name="pref_method_soft_layout_mini_8cols">Mini 8 Columns</string>
     <string name="pref_method_soft_layout_12key_4cols">12 Key 4 Columns</string>
