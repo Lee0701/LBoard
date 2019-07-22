@@ -71,7 +71,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         run {
             val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_en_predefined", null)!!]!!
 
-            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!
+            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!.clone()
             val symbolsLayout = predefinedMethod.symbolLayout ?: CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
             val hardLayout = predefinedMethod.hardLayout
 
@@ -89,7 +89,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val timeout = prefs.getInt("method_ko_timeout", 0)
 
-            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!
+            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!.clone()
             val symbolsLayout = predefinedMethod.symbolLayout ?: CommonHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)!!]!!
 
             val combinationTable = predefinedMethod.combinationTable

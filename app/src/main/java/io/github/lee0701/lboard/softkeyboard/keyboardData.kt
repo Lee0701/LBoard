@@ -29,7 +29,9 @@ data class Layout(
         val keyWidth: Float = 0.1f,
         val key: String,
         val nameStringKey: Int
-)
+): Cloneable {
+    override public fun clone() = Layout(rows.map { it.clone() }, keyWidth, key, nameStringKey)
+}
 
 data class Row(
         val keys: List<Key>,
@@ -37,9 +39,12 @@ data class Row(
         val keyWidth: Float = 0f,
         val marginLeft: Float = 0f,
         val marginRight: Float = 0f
-) {
+): Cloneable {
     var y: Int = 0
     var height: Int = 0
+
+    override public fun clone() = Row(keys.map { it.clone() }, type, keyWidth, marginLeft, marginRight)
+
     enum class Type {
         ODD, EVEN, NUMBER, BOTTOM
     }
@@ -50,7 +55,7 @@ data class Key (
         var label: String = "",
         val repeatable: Boolean = false,
         val keyWidth: Float = 0f
-) {
+): Cloneable {
     var x: Int = 0
     var y: Int = 0
     var width: Int = 0
@@ -85,5 +90,7 @@ data class Key (
             this.start()
         }
     }
+
+    override public fun clone() = Key(keyCode, label, repeatable, keyWidth)
 
 }
