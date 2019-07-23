@@ -42,28 +42,28 @@ object MiniSoftLayout {
     ), Row.Type.BOTTOM)), keyWidth = 1/8f, key = "mini-7cols", nameStringKey = R.string.pref_method_soft_layout_mini_7cols)
 
     val LAYOUT_MINI_7COLS = Layout(listOf(Row(listOf(
-            Key(0x0210),
-            Key(0x0211),
-            Key(0x0212),
-            Key(0x0213),
-            Key(0x0214),
-            Key(0x0215),
-            Key(0x0216)
+            Key(0x2010),
+            Key(0x2011),
+            Key(0x2012),
+            Key(0x2013),
+            Key(0x2014),
+            Key(0x2015),
+            Key(0x2016)
     ), Row.Type.ODD), Row(listOf(
-            Key(0x0220),
-            Key(0x0221),
-            Key(0x0222),
-            Key(0x0223),
-            Key(0x0224),
-            Key(0x0225),
-            Key(0x0226)
+            Key(0x2020),
+            Key(0x2021),
+            Key(0x2022),
+            Key(0x2023),
+            Key(0x2024),
+            Key(0x2025),
+            Key(0x2026)
     ), Row.Type.EVEN), Row(listOf(
-            Key(0x0230),
-            Key(0x0231),
-            Key(0x0232),
-            Key(0x0233),
-            Key(0x0234),
-            Key(0x0235),
+            Key(0x2030),
+            Key(0x2031),
+            Key(0x2032),
+            Key(0x2033),
+            Key(0x2034),
+            Key(0x2035),
             Key(67, "DEL", repeatable = true)
     ), Row.Type.ODD), Row(listOf(
             Key(keyCode = 57, label = "?12", keyWidth = 1.5f/10f),

@@ -9,22 +9,22 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 object TwelveDubeolHangul {
     
     val LAYOUT_CHEONJIIN = CommonKeyboardLayout(LayoutLayer(mapOf(
-            0x0201 to LayoutItem(listOf(0x3163)),
-            0x0202 to LayoutItem(listOf(0x100318d)),
-            0x0203 to LayoutItem(listOf(0x3161)),
-            0x0204 to LayoutItem(listOf(0x3131, 0x314b, 0x3132)),
-            0x0205 to LayoutItem(listOf(0x3134, 0x3139)),
-            0x0206 to LayoutItem(listOf(0x3137, 0x314c, 0x3138)),
-            0x0207 to LayoutItem(listOf(0x3142, 0x314d, 0x3143)),
-            0x0208 to LayoutItem(listOf(0x3145, 0x314e, 0x3146)),
-            0x0209 to LayoutItem(listOf(0x3148, 0x314a, 0x3149)),
-            0x020a to LayoutItem(listOf(0x3147, 0x3141))
+            0x2001 to LayoutItem(listOf(0x3163)),
+            0x2002 to LayoutItem(listOf(0x100318d)),
+            0x2003 to LayoutItem(listOf(0x3161)),
+            0x2004 to LayoutItem(listOf(0x3131, 0x314b, 0x3132)),
+            0x2005 to LayoutItem(listOf(0x3134, 0x3139)),
+            0x2006 to LayoutItem(listOf(0x3137, 0x314c, 0x3138)),
+            0x2007 to LayoutItem(listOf(0x3142, 0x314d, 0x3143)),
+            0x2008 to LayoutItem(listOf(0x3145, 0x314e, 0x3146)),
+            0x2009 to LayoutItem(listOf(0x3148, 0x314a, 0x3149)),
+            0x200a to LayoutItem(listOf(0x3147, 0x3141))
     ), labels = mapOf(
-            0x0204 to "ㄱㅋ",
-            0x0206 to "ㄷㅌ",
-            0x0207 to "ㅂㅍ",
-            0x0208 to "ㅅㅎ",
-            0x0209 to "ㅈㅊ"
+            0x2004 to "ㄱㅋ",
+            0x2006 to "ㄷㅌ",
+            0x2007 to "ㅂㅍ",
+            0x2008 to "ㅅㅎ",
+            0x2009 to "ㅈㅊ"
     )), spaceForSeparation = true)
     
     val COMBINATION_CHEONJIIN = CombinationTable(mapOf(
@@ -80,21 +80,21 @@ object TwelveDubeolHangul {
     ))
 
     val LAYOUT_NARATGEUL = CommonKeyboardLayout(LayoutLayer(mapOf(
-            0x0201 to LayoutItem(listOf(0x3131)),
-            0x0202 to LayoutItem(listOf(0x3134)),
-            0x0203 to LayoutItem(listOf(0x314f, 0x3153)),
-            0x0204 to LayoutItem(listOf(0x3139)),
-            0x0205 to LayoutItem(listOf(0x3141)),
-            0x0206 to LayoutItem(listOf(0x3157, 0x315c)),
-            0x0207 to LayoutItem(listOf(0x3145)),
-            0x0208 to LayoutItem(listOf(0x3147)),
-            0x0209 to LayoutItem(listOf(0x3163)),
-            0x020a to LayoutItem(listOf(0x3161)),
-            0x020b to LayoutItem(listOf(0x70000000)),
-            0x020c to LayoutItem(listOf(0x70000001))
+            0x2001 to LayoutItem(listOf(0x3131)),
+            0x2002 to LayoutItem(listOf(0x3134)),
+            0x2003 to LayoutItem(listOf(0x314f, 0x3153)),
+            0x2004 to LayoutItem(listOf(0x3139)),
+            0x2005 to LayoutItem(listOf(0x3141)),
+            0x2006 to LayoutItem(listOf(0x3157, 0x315c)),
+            0x2007 to LayoutItem(listOf(0x3145)),
+            0x2008 to LayoutItem(listOf(0x3147)),
+            0x2009 to LayoutItem(listOf(0x3163)),
+            0x200a to LayoutItem(listOf(0x3161)),
+            0x200b to LayoutItem(listOf(0x70000000)),
+            0x200c to LayoutItem(listOf(0x70000001))
     ), labels = mapOf(
-            0x020b to "획추가",
-            0x020c to "쌍자음"
+            0x200b to "획추가",
+            0x200c to "쌍자음"
     )), listOf(
             StrokeTable(mapOf(
                     0x3131 to 0x314b,   // ㄱ-ㅋ

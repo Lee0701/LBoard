@@ -6,6 +6,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 
 object Alphabet {
+
     val LAYOUT_QWERTY = CommonKeyboardLayout(LayoutLayer(mapOf(
             68 to LayoutItem(0x0060, 0x007e),
 
