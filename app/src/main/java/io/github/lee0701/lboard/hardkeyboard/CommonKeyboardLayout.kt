@@ -17,7 +17,7 @@ data class CommonKeyboardLayout(
 
     operator fun plus(other: CommonKeyboardLayout): CommonKeyboardLayout {
         return CommonKeyboardLayout(
-                (this.layers + other.layers).map { it.key to (this[it.key] ?: LayoutLayer(mapOf())) + (other[it.key] ?: LayoutLayer(mapOf())) }.toMap(),
+                (this.layers + other.layers).map { it.key to (this[it.key] ?: this[0] ?: LayoutLayer(mapOf())) + (other[it.key] ?: LayoutLayer(mapOf())) }.toMap(),
                 other.strokes,
                 other.cycle,
                 other.spaceForSeparation
