@@ -200,10 +200,12 @@ class BasicKeyboardView(
                             pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.UP
                         }
                     } else {
-                        if(pointer.x > pointer.key.x + pointer.key.width && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.RIGHT) {
+                        if((pointer.x > pointer.key.x + pointer.key.width || pointer.x > pointer.initialX + pointer.key.width/2)
+                                && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.RIGHT) {
                             onKeyListener.onKeyFlickRight(pointer.key.keyCode)
                             pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.RIGHT
-                        } else if(pointer.x < pointer.key.x && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.LEFT) {
+                        } else if((pointer.x < pointer.key.x || pointer.x < pointer.initialX - pointer.key.width/2)
+                                        && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.LEFT) {
                             onKeyListener.onKeyFlickLeft(pointer.key.keyCode)
                             pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.LEFT
                         }

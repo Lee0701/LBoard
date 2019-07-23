@@ -35,6 +35,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         if(physicalKeyboard) physicalInputMethods[currentMethodId] else softinputMethods[currentMethodId]
 
     var inputAfterSwitch: Boolean = false
+    var ignoreNextInput: Boolean = false
 
     override fun onCreate() {
         super.onCreate()
@@ -223,7 +224,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 return
             }
         }
+
         inputAfterSwitch = true
+        if(ignoreNextInput) return
+
         val result = currentMethod.onKeyPress(event.keyCode)
         // 입력 이벤트 처리가 되었으면 Release 이벤트 전송, 처리되지 않았으면 기본 처리를 수행.
         if(!result) when(event.keyCode) {
@@ -248,7 +252,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     private fun onSoftKeyUp(event: SoftKeyClickEvent) {
-        currentMethod.onKeyRelease(event.keyCode)
+        if(!ignoreNextInput) currentMethod.onKeyRelease(event.keyCode)
+        ignoreNextInput = false
     }
 
     @Subscribe fun onSoftKeyLongClick(event: SoftKeyLongClickEvent) {
@@ -259,6 +264,19 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     @Subscribe fun onSoftKeyFlick(event: SoftKeyFlickEvent) {
+        if((event.keyCode and 0x2000) != 0) {
+            val code = event.keyCode or when(event.direction) {
+                SoftKeyFlickEvent.FlickDirection.UP -> 0x0100
+                SoftKeyFlickEvent.FlickDirection.DOWN -> 0x0200
+                SoftKeyFlickEvent.FlickDirection.LEFT -> 0x0400
+                SoftKeyFlickEvent.FlickDirection.RIGHT -> 0x0500
+            }
+            val result = currentMethod.onKeyPress(code)
+            if(result && currentMethod.onKeyRelease(code)) {
+                ignoreNextInput = true
+                return
+            }
+        }
         when(event.direction) {
             SoftKeyFlickEvent.FlickDirection.UP -> {
                 if(!currentMethod.shift) {

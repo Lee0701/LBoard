@@ -18,7 +18,17 @@ object TwelveDubeolHangul {
             0x2007 to LayoutItem(listOf(0x3142, 0x314d, 0x3143)),
             0x2008 to LayoutItem(listOf(0x3145, 0x314e, 0x3146)),
             0x2009 to LayoutItem(listOf(0x3148, 0x314a, 0x3149)),
-            0x200a to LayoutItem(listOf(0x3147, 0x3141))
+            0x200a to LayoutItem(listOf(0x3147, 0x3141)),
+
+            // Flick codes
+            0x2401 to LayoutItem(0x3153),   // ㅓ
+            0x2501 to LayoutItem(0x314f),   // ㅏ
+            0x2103 to LayoutItem(0x3157),   // ㅗ
+            0x2203 to LayoutItem(0x315c),   // ㅜ
+            0x2102 to LayoutItem(0x315b),   // ㅛ
+            0x2202 to LayoutItem(0x3160),   // ㅠ
+            0x2402 to LayoutItem(0x3155),   // ㅕ
+            0x2502 to LayoutItem(0x3151)    // ㅑ
     ), labels = mapOf(
             0x2004 to "ㄱㅋ",
             0x2006 to "ㄷㅌ",
