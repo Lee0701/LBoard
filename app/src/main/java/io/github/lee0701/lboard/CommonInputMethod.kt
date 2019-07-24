@@ -81,7 +81,7 @@ abstract class CommonInputMethod: InputMethod {
                 } else {
                     EventBus.getDefault().post(CommitStringEvent(converted.resultChar.toChar().toString()))
                 }
-                processStickyKeysOnInput()
+                processStickyKeysOnInput(converted.resultChar ?: 0)
                 converted.shift?.let { shift = it }
                 converted.alt?.let { alt = it }
             }
@@ -116,18 +116,20 @@ abstract class CommonInputMethod: InputMethod {
         EventBus.getDefault().post(UpdateViewEvent())
     }
 
-    protected fun processStickyKeysOnInput() {
+    protected fun processStickyKeysOnInput(resultChar: Int) {
         if(shift && !capsLock && !shiftPressing) {
             shift = false
         } else {
             inputOnShift = true
         }
         if(alt && !altLock && !altPressing) {
-            alt = false
+            if(!isNumber(resultChar)) alt = false
         } else {
             inputOnAlt = true
         }
     }
+
+    fun isNumber(charCode: Int): Boolean = charCode in 0x30 .. 0x39
 
     fun isSystemKey(keyCode: Int): Boolean = keyCode in 0 .. 6 || keyCode in 24 .. 28 || keyCode in 79 .. 85
 

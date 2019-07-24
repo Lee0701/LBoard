@@ -66,7 +66,7 @@ class WordComposingInputMethod(
                 } else {
                     states += lastState + converted.resultChar.toChar().toString()
                 }
-                processStickyKeysOnInput()
+                processStickyKeysOnInput(converted.resultChar ?: 0)
                 converted.shift?.let { shift = it }
                 converted.alt?.let { alt = it }
             }

@@ -85,7 +85,7 @@ class HangulInputMethod(
                     states += composed
                     updateShinStatus(composed)
                 }
-                processStickyKeysOnInput()
+                processStickyKeysOnInput(converted.resultChar ?: 0)
                 converted.shift?.let { shift = it }
                 converted.alt?.let { alt = it }
                 
