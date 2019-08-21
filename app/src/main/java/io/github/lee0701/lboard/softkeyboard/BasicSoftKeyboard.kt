@@ -47,6 +47,10 @@ class BasicSoftKeyboard(
         return keyboardView
     }
 
+    override fun getView(): View? {
+        return keyboardView
+    }
+
     override fun setLabels(labels: Map<Int, String>) {
         layout.rows.forEach { row ->
             row.keys.forEach { key ->
@@ -54,6 +58,7 @@ class BasicSoftKeyboard(
                 if(compatibleLabels) key.label = convertToCompatible(key.label)
             }
         }
+        keyboardView?.invalidate()
     }
 
     private fun convertToCompatible(label: String): String {

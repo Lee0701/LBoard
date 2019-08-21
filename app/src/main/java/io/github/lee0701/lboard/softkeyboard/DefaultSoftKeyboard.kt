@@ -29,6 +29,10 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
         return keyboardView
     }
 
+    override fun getView(): View? {
+        return keyboardView
+    }
+
     override fun onKey(primaryCode: Int, keyCodes: IntArray) {
         EventBus.getDefault().post(SoftKeyClickEvent(primaryCode, SoftKeyClickEvent.State.DOWN))
         EventBus.getDefault().post(SoftKeyClickEvent(primaryCode, SoftKeyClickEvent.State.UP))

@@ -18,11 +18,11 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
-import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -30,12 +30,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private val physicalInputMethods: MutableList<InputMethod> = mutableListOf()
     private val symbolInputMethods: MutableList<InputMethod> = mutableListOf()
 
-    private var physicalKeyboard: Boolean = false
-    private var symbolKeyboard: Boolean = false
+    private var physicalKeyboardMode: Boolean = false
+    private var symbolKeyboardMode: Boolean = false
     private var currentMethodId: Int = 0
     private val currentMethod: InputMethod get() =
-        if(physicalKeyboard) physicalInputMethods[currentMethodId]
-        else if(symbolKeyboard) symbolInputMethods[currentMethodId]
+        if(symbolKeyboardMode) symbolInputMethods[currentMethodId]
+        else if(physicalKeyboardMode) physicalInputMethods[currentMethodId]
         else softInputMethods[currentMethodId]
 
     var inputAfterSwitch: Boolean = false
@@ -53,7 +53,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
         reloadPreferences()
 
-        physicalKeyboard = resources.configuration.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
+        physicalKeyboardMode = resources.configuration.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
 
     }
 
@@ -170,7 +170,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        physicalKeyboard = newConfig?.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
+        physicalKeyboardMode = newConfig?.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
         try {
             setInputView(currentMethod.initView(this))
         } catch(ex: IndexOutOfBoundsException) {
@@ -194,12 +194,14 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     private fun reset() {
         currentMethodId = 0
+        symbolKeyboardMode = false
     }
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
         currentMethod.reset()
+        symbolKeyboardMode = false
 
-        val methods = if(physicalKeyboard) physicalInputMethods else softInputMethods
+        val methods = if(physicalKeyboardMode) physicalInputMethods else softInputMethods
 
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val token = window.window.attributes.token
@@ -222,10 +224,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         setInputView(onCreateInputView())
     }
 
-    @Subscribe fun onUpdateView(event: UpdateViewEvent) {
-        currentMethod.updateView(this)?.let {
-            setInputView(it)
-        }
+    @Subscribe(threadMode = ThreadMode.MAIN) fun onUpdateView(event: UpdateViewEvent) {
+        currentMethod.updateView(this)
     }
 
     @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
@@ -242,13 +242,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 return
             }
             KeyEvent.KEYCODE_SYM -> {
-                symbolKeyboard = !symbolKeyboard
-                try {
-                    setInputView(currentMethod.initView(this))
-                } catch(ex: IndexOutOfBoundsException) {
-                    currentMethodId = 0
-                    setInputView(currentMethod.initView(this))
-                }
+                setSymbolMode(!symbolKeyboardMode)
                 return
             }
         }
@@ -312,12 +306,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     currentMethod.onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
                 }
             }
-            SoftKeyFlickEvent.FlickDirection.DOWN -> {
-                if(!currentMethod.alt) {
-                    currentMethod.onKeyPress(KeyEvent.KEYCODE_ALT_LEFT)
-                    currentMethod.onKeyRelease(KeyEvent.KEYCODE_ALT_LEFT)
-                }
-            }
         }
     }
 
@@ -339,11 +327,27 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             switchInputMethod(false)
             return true
         }
+        when(keyCode) {
+            KeyEvent.KEYCODE_SYM -> {
+                setSymbolMode(!symbolKeyboardMode)
+                return true
+            }
+        }
         return currentMethod.onKeyPress(keyCode) || super.onKeyDown(keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         return currentMethod.onKeyRelease(keyCode) || super.onKeyUp(keyCode, event)
+    }
+
+    private fun setSymbolMode(symbolMode: Boolean) {
+        symbolKeyboardMode = symbolMode
+        try {
+            setInputView(currentMethod.initView(this))
+        } catch(ex: IndexOutOfBoundsException) {
+            currentMethodId = 0
+            setInputView(currentMethod.initView(this))
+        }
     }
 
     override fun onEvaluateInputViewShown(): Boolean {

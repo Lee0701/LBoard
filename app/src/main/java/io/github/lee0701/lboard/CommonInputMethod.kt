@@ -31,7 +31,7 @@ abstract class CommonInputMethod: InputMethod {
         softKeyboard.shift = if(capsLock) 2 else if(shift) 1 else 0
         softKeyboard.alt = if(altLock) 2 else if(alt) 1 else 0
         softKeyboard.setLabels(hardKeyboard.getLabels(shift, alt))
-        return null
+        return softKeyboard.getView()
     }
 
     override fun onKeyPress(keyCode: Int): Boolean {

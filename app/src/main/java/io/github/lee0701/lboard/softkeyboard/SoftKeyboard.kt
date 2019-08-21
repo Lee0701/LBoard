@@ -10,6 +10,7 @@ interface SoftKeyboard: InputMethodModule {
     var alt: Int
 
     fun initView(context: Context): View?
+    fun getView(): View?
 
     fun setLabels(labels: Map<Int, String>)
 
