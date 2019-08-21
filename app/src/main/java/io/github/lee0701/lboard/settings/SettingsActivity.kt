@@ -24,6 +24,7 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        setTitle(R.string.settings_name)
         setSupportActionBar(toolbar)
 
         supportActionBar?.apply {
