@@ -219,6 +219,17 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         setInputView(currentMethod.initView(this))
     }
 
+    private fun setSymbolMode(symbolMode: Boolean) {
+        currentMethod.reset()
+        symbolKeyboardMode = symbolMode
+        try {
+            setInputView(currentMethod.initView(this))
+        } catch(ex: IndexOutOfBoundsException) {
+            currentMethodId = 0
+            setInputView(currentMethod.initView(this))
+        }
+    }
+
     @Subscribe fun onResetView(event: ResetViewEvent) {
         reloadPreferences()
         reset()
@@ -339,16 +350,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         return currentMethod.onKeyRelease(keyCode) || super.onKeyUp(keyCode, event)
-    }
-
-    private fun setSymbolMode(symbolMode: Boolean) {
-        symbolKeyboardMode = symbolMode
-        try {
-            setInputView(currentMethod.initView(this))
-        } catch(ex: IndexOutOfBoundsException) {
-            currentMethodId = 0
-            setInputView(currentMethod.initView(this))
-        }
     }
 
     override fun onEvaluateInputViewShown(): Boolean {
