@@ -62,7 +62,7 @@ object FullSoftLayout {
             Key(keyCode = 76, label = "/"),
             Key(60, "SFT", keyWidth = 2/13f)
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 57, label = "?12", keyWidth = 2/13f),
+            Key(keyCode = 63, label = "?12", keyWidth = 2/13f),
             Key(keyCode = 204, label = "ABC", keyWidth = 1/13f),
             Key(keyCode = 68, label = "`", keyWidth = 1/13f),
             Key(keyCode = 62, keyWidth = 6/13f),

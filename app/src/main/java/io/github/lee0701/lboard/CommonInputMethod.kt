@@ -6,6 +6,7 @@ import android.view.KeyEvent
 import android.view.View
 import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
+import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
@@ -69,21 +70,20 @@ abstract class CommonInputMethod: InputMethod {
                 inputOnAlt = false
             }
             else -> {
-                val converted = hardKeyboard.convert(keyCode, shift, alt)
+                val converted = convert(keyCode, shift, alt)
                 if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
                 if(converted.resultChar == null) {
                     reset()
                     if(converted.defaultChar)
-                        EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
-                                .get(keyCode, 0).toChar().toString()))
+                        EventBus.getDefault().post(CommitStringEvent(getDefaultChar(keyCode, shift, alt).toChar().toString()))
                 } else if(converted.resultChar == 0) {
                     reset()
                 } else {
                     EventBus.getDefault().post(CommitStringEvent(converted.resultChar.toChar().toString()))
                 }
                 processStickyKeysOnInput(converted.resultChar ?: 0)
-                converted.shift?.let { shift = it }
-                converted.alt?.let { alt = it }
+                converted.shiftOn?.let { shift = it }
+                converted.altOn?.let { alt = it }
             }
         }
         EventBus.getDefault().post(UpdateViewEvent())
@@ -114,6 +114,16 @@ abstract class CommonInputMethod: InputMethod {
 
         hardKeyboard.reset()
         EventBus.getDefault().post(UpdateViewEvent())
+    }
+
+    protected fun convert(keyCode: Int, shift: Boolean, alt: Boolean): HardKeyboard.ConvertResult {
+        if(alt) return HardKeyboard.ConvertResult(KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD).get(keyCode, KeyEvent.META_ALT_ON))
+        else return hardKeyboard.convert(keyCode, shift, alt)
+    }
+
+    protected fun getDefaultChar(keyCode: Int, shift: Boolean, alt: Boolean): Int {
+        return KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD)
+                .get(keyCode, if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0)
     }
 
     protected fun processStickyKeysOnInput(resultChar: Int) {

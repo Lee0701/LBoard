@@ -17,7 +17,7 @@ object TwelveSoftLayout {
             Key(0x2005, "5"),
             Key(0x2006, "6"),
             Key(204, "ABC", keyWidth = 0.125f),
-            Key(57, "123", keyWidth = 0.125f)
+            Key(63, "123", keyWidth = 0.125f)
     ), Row.Type.EVEN), Row(listOf(
             Key(0x2007, "7"),
             Key(0x2008, "8"),

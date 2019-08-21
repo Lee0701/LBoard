@@ -16,8 +16,6 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
     private val currentLayer: CommonKeyboardLayout.LayoutLayer
         get() = layout[status] ?: layout[0] ?: CommonKeyboardLayout.LayoutLayer()
 
-    private val altLayer: CommonKeyboardLayout.LayoutLayer get() = layout[10] ?: currentLayer
-
     var lastCode = 0
     var lastIndex = 0
     var lastShift = false
@@ -26,8 +24,7 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
     var lastChar = 0
 
     override fun convert(keyCode: Int, shift: Boolean, alt: Boolean): HardKeyboard.ConvertResult {
-        val codes = (if(alt) altLayer else currentLayer)[keyCode]
-                ?.let { if(shift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null, defaultChar = true)
+        val codes = currentLayer[keyCode]?.let { if(shift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null, defaultChar = true)
         var backspace = false
         if(lastCode == keyCode && lastShift == shift && lastAlt == lastAlt) {
             if(++lastIndex >= codes.size) lastIndex = 0
@@ -49,9 +46,9 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
             }
             SystemCode.KEYPRESS -> when(result and 0x0000ffff) {
                 KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT ->
-                    return HardKeyboard.ConvertResult(null, shift = !shift)
+                    return HardKeyboard.ConvertResult(null, shiftOn = !shift)
                 KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT ->
-                    return HardKeyboard.ConvertResult(null, alt = !alt)
+                    return HardKeyboard.ConvertResult(null, altOn = !alt)
                 else -> return convert(result and 0x0000ffff, result and SystemCode.KEYPRESS_SHIFT != 0, result  and SystemCode.KEYPRESS_ALT!= 0)
             }
         }
@@ -73,9 +70,9 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
     }
 
     override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> {
-        return (if(alt) altLayer else currentLayer).layout.map { item ->
+        return currentLayer.layout.map { item ->
             item.key to (if(shift) item.value.shift else item.value.normal).map { it.toChar() }.joinToString("")
-        }.toMap() + (if(alt) altLayer else currentLayer).labels
+        }.toMap() + currentLayer.labels
     }
 
     override fun serialize(): JSONObject {

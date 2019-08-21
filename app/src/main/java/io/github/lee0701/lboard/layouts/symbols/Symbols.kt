@@ -6,7 +6,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 
 object Symbols {
 
-    val LAYOUT_SYMBOLS_A = CommonKeyboardLayout(10, LayoutLayer(mapOf(
+    val LAYOUT_SYMBOLS_A = CommonKeyboardLayout(LayoutLayer(mapOf(
             8 to LayoutItem(0x0021, 0x2460),
             9 to LayoutItem(0x0040, 0x2461),
             10 to LayoutItem(0x0023, 0x2462),
@@ -50,7 +50,7 @@ object Symbols {
             56 to LayoutItem(0x002c)
     )))
 
-    val LAYOUT_SYMBOLS_B = CommonKeyboardLayout(10, LayoutLayer(mapOf(
+    val LAYOUT_SYMBOLS_B = CommonKeyboardLayout(LayoutLayer(mapOf(
             8 to LayoutItem(0x0031, 0x2460),
             9 to LayoutItem(0x0032, 0x2461),
             10 to LayoutItem(0x0033, 0x2462),
@@ -94,7 +94,7 @@ object Symbols {
             56 to LayoutItem(0x002c)
     )))
 
-    val LAYOUT_SYMBOLS_BLACKBERRY = CommonKeyboardLayout(10, LayoutLayer(mapOf(
+    val LAYOUT_SYMBOLS_BLACKBERRY = CommonKeyboardLayout(LayoutLayer(mapOf(
             8 to LayoutItem(0x0031),
             9 to LayoutItem(0x0032),
             10 to LayoutItem(0x0033),
@@ -136,7 +136,7 @@ object Symbols {
             41 to LayoutItem(0x002e)
     )))
 
-    val LAYOUT_SYMBOLS_GOOGLE = CommonKeyboardLayout(10, LayoutLayer(mapOf(
+    val LAYOUT_SYMBOLS_GOOGLE = CommonKeyboardLayout(LayoutLayer(mapOf(
 
             45 to LayoutItem(0x0032),
             51 to LayoutItem(0x0033),

@@ -76,6 +76,9 @@
     <string name="pref_method_hard_timeout_title">Composition Timeout</string>
     <string name="pref_method_hard_timeout_summary">Set composition timeout for danmoeum layouts in milliseconds.</string>
 
+    <string name="pref_method_symbols_soft_layout_title">Symbols Soft Layout</string>
+    <string name="pref_method_symbols_soft_layout_summary">Choose a symbols soft keyboard layout.</string>
+
     <string name="pref_method_symbols_layout_title">Symbols Layout</string>
     <string name="pref_method_symbols_layout_summary">Choose a symbols keyboard layout.</string>
 

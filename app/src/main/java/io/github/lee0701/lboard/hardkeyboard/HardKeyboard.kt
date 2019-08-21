@@ -13,8 +13,8 @@ interface HardKeyboard: InputMethodModule {
     data class ConvertResult(
             val resultChar: Int?,
             val backspace: Boolean = false,
-            val shift: Boolean? = null,
-            val alt: Boolean? = null,
+            val shiftOn: Boolean? = null,
+            val altOn: Boolean? = null,
             val defaultChar: Boolean = false
     )
 

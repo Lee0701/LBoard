@@ -66,7 +66,7 @@ object MiniSoftLayout {
             Key(0x2035),
             Key(67, "DEL", repeatable = true)
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 57, label = "?12", keyWidth = 1.5f/10f),
+            Key(keyCode = 63, label = "?12", keyWidth = 1.5f/10f),
             Key(keyCode = 204, label = "ABC", keyWidth = 1.5f/10f),
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),

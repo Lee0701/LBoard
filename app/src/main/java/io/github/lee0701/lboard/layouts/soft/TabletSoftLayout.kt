@@ -43,11 +43,11 @@ object TabletSoftLayout {
             Key(56, "."),
             Key(60, "SFT")
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 57, label = "?12", keyWidth = 2/11f),
+            Key(keyCode = 63, label = "?12", keyWidth = 2/11f),
             Key(keyCode = 204, label = "ABC", keyWidth = 1/11f),
             Key(keyCode = 62, keyWidth = 5/11f),
             Key(keyCode = 76, label = "/", keyWidth = 1/11f),
-            Key(keyCode = 57, label = "?12", keyWidth = 2/11f)
+            Key(keyCode = 63, label = "?12", keyWidth = 2/11f)
     ), Row.Type.BOTTOM)), keyWidth = 1/11f, key = "11cols-tablet", nameStringKey = R.string.pref_method_soft_layout_11cols_tablet)
 
     val LAYOUT_11COLS_TABLET_WITH_NUM = Layout(listOf(Row(listOf(
@@ -98,11 +98,11 @@ object TabletSoftLayout {
             Key(56, "."),
             Key(60, "SFT")
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 57, label = "?12", keyWidth = 2/11f),
+            Key(keyCode = 63, label = "?12", keyWidth = 2/11f),
             Key(keyCode = 204, label = "ABC", keyWidth = 1/11f),
             Key(keyCode = 62, keyWidth = 5/11f),
             Key(keyCode = 76, label = "/", keyWidth = 1/11f),
-            Key(keyCode = 57, label = "?12", keyWidth = 2/11f)
+            Key(keyCode = 63, label = "?12", keyWidth = 2/11f)
     ), Row.Type.BOTTOM)), keyWidth = 1/11f, key = "11cols-tablet-with-num", nameStringKey = R.string.pref_method_soft_layout_11cols_tablet_with_num)
 
     val LAYOUT_11COLS_TABLET_WITH_QUOTE = Layout(listOf(Row(listOf(
@@ -142,7 +142,7 @@ object TabletSoftLayout {
             Key(56, "."),
             Key(60, "SFT")
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 57, label = "?12", keyWidth = 2/11f),
+            Key(keyCode = 63, label = "?12", keyWidth = 2/11f),
             Key(keyCode = 204, label = "ABC", keyWidth = 1/11f),
             Key(keyCode = 62, keyWidth = 5/11f),
             Key(keyCode = 76, label = "/", keyWidth = 1/11f),
@@ -198,7 +198,7 @@ object TabletSoftLayout {
             Key(56, "."),
             Key(60, "SFT")
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 57, label = "?12", keyWidth = 2/11f),
+            Key(keyCode = 63, label = "?12", keyWidth = 2/11f),
             Key(keyCode = 204, label = "ABC", keyWidth = 1/11f),
             Key(keyCode = 62, keyWidth = 5/11f),
             Key(keyCode = 76, label = "/", keyWidth = 1/11f),

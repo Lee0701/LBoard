@@ -18,6 +18,13 @@
             android:defaultValue="alphabet-qwerty"
             softLayoutKey="method_en_soft_layout" />
         <ListPreference
+            android:key="method_en_symbols_soft_layout"
+            android:title="@string/pref_method_symbols_soft_layout_title"
+            android:summary="@string/pref_method_symbols_soft_layout_summary"
+            android:entries="@array/method_soft_layouts"
+            android:entryValues="@array/method_soft_layout_ids"
+            android:defaultValue="10cols-mobile-with-num" />
+        <ListPreference
             android:key="method_en_symbols_hard_layout"
             android:title="@string/pref_method_symbols_layout_title"
             android:summary="@string/pref_method_symbols_layout_summary"
@@ -34,12 +41,5 @@
             android:entries="@array/method_en_physical_hard_layouts"
             android:entryValues="@array/method_en_physical_hard_layout_ids"
             android:defaultValue="alphabet-qwerty" />
-        <ListPreference
-            android:key="method_en_physical_symbols_hard_layout"
-            android:title="@string/pref_method_symbols_layout_title"
-            android:summary="@string/pref_method_symbols_layout_summary"
-            android:entries="@array/method_symbols_hard_layouts"
-            android:entryValues="@array/method_symbols_hard_layout_ids"
-            android:defaultValue="symbols-b" />
     </PreferenceCategory>
 </PreferenceScreen>

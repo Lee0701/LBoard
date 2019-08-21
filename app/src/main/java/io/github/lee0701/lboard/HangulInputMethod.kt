@@ -71,13 +71,12 @@ class HangulInputMethod(
                 return super.onKeyPress(keyCode)
             }
             else -> {
-                val converted = hardKeyboard.convert(keyCode, shift, alt)
+                val converted = convert(keyCode, shift, alt)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
                     reset()
                     if(converted.defaultChar)
-                        EventBus.getDefault().post(CommitStringEvent(KeyCharacterMap.load(KeyCharacterMap.FULL)
-                                .get(keyCode, 0).toChar().toString()))
+                        EventBus.getDefault().post(CommitStringEvent(getDefaultChar(keyCode, shift, alt).toChar().toString()))
                 } else if(converted.resultChar == 0) {
                     reset()
                 } else {
@@ -86,8 +85,8 @@ class HangulInputMethod(
                     updateShinStatus(composed)
                 }
                 processStickyKeysOnInput(converted.resultChar ?: 0)
-                converted.shift?.let { shift = it }
-                converted.alt?.let { alt = it }
+                converted.shiftOn?.let { shift = it }
+                converted.altOn?.let { alt = it }
                 
                 timeoutTask = timerTask {
                     val state = lastState
