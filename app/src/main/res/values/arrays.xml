@@ -29,27 +29,25 @@
     <string-array name="method_soft_layouts">
         <item>@string/pref_method_soft_layout_10cols_mobile</item>
         <item>@string/pref_method_soft_layout_10cols_mobile_with_num</item>
-        <item>@string/pref_method_soft_layout_10cols_mod_quote</item>
-        <item>@string/pref_method_soft_layout_10cols_mod_quote_with_num</item>
+        <item>@string/pref_method_soft_layout_11cols_tablet</item>
+        <item>@string/pref_method_soft_layout_11cols_tablet_with_num</item>
     </string-array>
 
     <string-array name="method_soft_layout_ids">
         <item>10cols-mobile</item>
         <item>10cols-mobile-with-num</item>
-        <item>10cols-mod-quote</item>
-        <item>10cols-mod-quote-with-num</item>
+        <item>11cols-tablet</item>
+        <item>11cols-tablet-with-num</item>
     </string-array>
 
     <string-array name="method_symbols_hard_layouts">
         <item>@string/pref_method_hard_layout_symbols_a</item>
         <item>@string/pref_method_hard_layout_symbols_b</item>
-        <item>@string/pref_method_hard_layout_symbols_blackberry</item>
     </string-array>
 
     <string-array name="method_symbols_hard_layout_ids">
         <item>symbols-a</item>
         <item>symbols-b</item>
-        <item>symbols-blackberry</item>
     </string-array>
 
     <string-array name="method_en_hard_layouts">

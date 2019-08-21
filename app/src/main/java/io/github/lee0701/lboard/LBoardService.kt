@@ -59,6 +59,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     private fun reloadPreferences() {
         softInputMethods.clear()
+        symbolInputMethods.clear()
         physicalInputMethods.clear()
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
