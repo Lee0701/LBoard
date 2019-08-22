@@ -47,7 +47,8 @@ object Symbols {
             42 to LayoutItem(0x002d, 0x300c),
             41 to LayoutItem(0x0022, 0x300d),
 
-            56 to LayoutItem(0x002c)
+            55 to LayoutItem(0x002c),
+            56 to LayoutItem(0x002e)
     )))
 
     val LAYOUT_SYMBOLS_B = CommonKeyboardLayout(LayoutLayer(mapOf(
@@ -91,7 +92,8 @@ object Symbols {
             42 to LayoutItem(0x002d, 0x300c),
             41 to LayoutItem(0x0022, 0x300d),
 
-            56 to LayoutItem(0x002c)
+            55 to LayoutItem(0x002c),
+            56 to LayoutItem(0x002e)
     )))
 
     val LAYOUT_SYMBOLS_BLACKBERRY = CommonKeyboardLayout(LayoutLayer(mapOf(
@@ -163,7 +165,8 @@ object Symbols {
             42 to LayoutItem(0x003b),
             41 to LayoutItem(0x002f),
 
-            56 to LayoutItem(0x002c)
+            55 to LayoutItem(0x002c),
+            56 to LayoutItem(0x002e)
     )))
 
     val LAYOUT_SYMBOLS_7COLS = CommonKeyboardLayout(mapOf(10 to LayoutLayer(mapOf(
@@ -190,7 +193,8 @@ object Symbols {
             0x2034 to LayoutItem(0x0032),
             0x2035 to LayoutItem(0x0033),
 
-            56 to LayoutItem(0x002c)
+            55 to LayoutItem(0x002c),
+            56 to LayoutItem(0x002e)
     ))))
 
 }

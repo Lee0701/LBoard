@@ -39,11 +39,12 @@ object SoftLayout {
             Key(41, "m"),
             Key(67, "DEL", repeatable = true, keyWidth = 0.15f)
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 63, label = "?12", keyWidth = 1.5f/10f),
-            Key(keyCode = 204, label = "ABC", keyWidth = 1.5f/10f),
+            Key(keyCode = 63, label = "?12", keyWidth = 0.125f),
+            Key(keyCode = 55, label = ",", keyWidth = 0.1f),
+            Key(keyCode = 204, label = "ABC", keyWidth = 0.125f),
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
-            Key(keyCode = 66, label = "RETURN", keyWidth = 2/10f)
+            Key(keyCode = 66, label = "RETURN", keyWidth = 0.15f)
     ), Row.Type.BOTTOM)), key = "10cols-mobile", nameStringKey = R.string.pref_method_soft_layout_10cols_mobile)
 
     val LAYOUT_10COLS_MOBILE_WITH_NUM = Layout(listOf(Row(listOf(
@@ -89,11 +90,12 @@ object SoftLayout {
             Key(41, "m"),
             Key(67, "DEL", repeatable = true, keyWidth = 0.15f)
     ), Row.Type.ODD), Row(listOf(
-            Key(keyCode = 63, label = "?12", keyWidth = 1.5f/10f),
-            Key(keyCode = 204, label = "ABC", keyWidth = 1.5f/10f),
+            Key(keyCode = 63, label = "?12", keyWidth = 0.125f),
+            Key(keyCode = 55, label = ",", keyWidth = 0.1f),
+            Key(keyCode = 204, label = "ABC", keyWidth = 0.125f),
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
-            Key(keyCode = 66, label = "RETURN", keyWidth = 2/10f)
+            Key(keyCode = 66, label = "RETURN", keyWidth = 0.15f)
     ), Row.Type.BOTTOM)), key = "10cols-mobile-with-num", nameStringKey = R.string.pref_method_soft_layout_10cols_mobile_with_num)
 
     val LAYOUT_10COLS_DVORAK = Layout(listOf(Row(listOf(
