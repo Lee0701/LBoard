@@ -42,8 +42,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         else if(physicalKeyboardMode) physicalInputMethods[currentMethodId]
         else softInputMethods[currentMethodId]
 
-    var inputAfterSwitch: Boolean = false
-    var ignoreNextInput: Boolean = false
+    private var switchBetweenApps: Boolean = true
+
+    private var inputAfterSwitch: Boolean = false
+    private var ignoreNextInput: Boolean = false
 
     override fun onCreate() {
         super.onCreate()
@@ -67,6 +69,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         physicalInputMethods.clear()
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+        switchBetweenApps = prefs.getBoolean("common_soft_switch_between_methods", switchBetweenApps)
 
         val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null) ?: ""] ?: BasicSoftKeyboardTheme.WHITE
         val height = prefs.getInt("common_soft_height", 0).toFloat()
@@ -271,7 +275,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private fun onSoftKeyDown(event: SoftKeyClickEvent) {
         when(event.keyCode) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
-                if(!ignoreNextInput) switchInputMethod(true)
+                if(!ignoreNextInput) switchInputMethod(this.switchBetweenApps)
                 return
             }
             KeyEvent.KEYCODE_SYM -> {

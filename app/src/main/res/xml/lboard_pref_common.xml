@@ -50,5 +50,10 @@
             android:title="@string/pref_common_long_click_delay_title"
             android:summary="@string/pref_common_long_click_delay_summary"
             android:defaultValue="300" />
+        <CheckBoxPreference
+            android:key="common_soft_switch_between_methods"
+            android:title="@string/pref_common_soft_switch_between_methods_title"
+            android:summary="@string/pref_common_soft_switch_between_methods_summary"
+            android:defaultValue="true" />
     </PreferenceCategory>
 </PreferenceScreen>
