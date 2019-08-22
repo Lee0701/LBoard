@@ -4,10 +4,7 @@ import android.content.Context
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
-import io.github.lee0701.lboard.event.CommitComposingEvent
-import io.github.lee0701.lboard.event.CommitStringEvent
-import io.github.lee0701.lboard.event.ComposeEvent
-import io.github.lee0701.lboard.event.UpdateViewEvent
+import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hangul.SebeolHangulComposer
 import io.github.lee0701.lboard.hangul.SingleVowelDubeolHangulComposer
@@ -58,6 +55,7 @@ class HangulInputMethod(
                     hardKeyboard.reset()
                 } else {
                     reset()
+                    EventBus.getDefault().post(SetSymbolModeEvent(false))
                     EventBus.getDefault().post(CommitStringEvent(" "))
                 }
             }

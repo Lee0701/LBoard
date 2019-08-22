@@ -5,6 +5,7 @@ import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
 import io.github.lee0701.lboard.event.CommitStringEvent
+import io.github.lee0701.lboard.event.SetSymbolModeEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import org.greenrobot.eventbus.EventBus
@@ -43,10 +44,12 @@ abstract class CommonInputMethod: InputMethod {
             }
             KeyEvent.KEYCODE_SPACE -> {
                 hardKeyboard.reset()
+                EventBus.getDefault().post(SetSymbolModeEvent(false))
                 EventBus.getDefault().post(CommitStringEvent(" "))
             }
             KeyEvent.KEYCODE_ENTER -> {
                 reset()
+                EventBus.getDefault().post(SetSymbolModeEvent(false))
                 return false
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {

@@ -4,10 +4,7 @@ import android.content.Context
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
-import io.github.lee0701.lboard.event.CommitComposingEvent
-import io.github.lee0701.lboard.event.CommitStringEvent
-import io.github.lee0701.lboard.event.ComposeEvent
-import io.github.lee0701.lboard.event.UpdateViewEvent
+import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
@@ -41,6 +38,7 @@ class WordComposingInputMethod(
                 states.clear()
                 hardKeyboard.reset()
                 EventBus.getDefault().post(UpdateViewEvent())
+                EventBus.getDefault().post(SetSymbolModeEvent(false))
                 EventBus.getDefault().post(CommitStringEvent(" "))
                 return true
             }

@@ -220,6 +220,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     private fun setSymbolMode(symbolMode: Boolean) {
+        if(symbolKeyboardMode == symbolMode) return
         currentMethod.reset()
         symbolKeyboardMode = symbolMode
         try {
@@ -238,6 +239,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     @Subscribe(threadMode = ThreadMode.MAIN) fun onUpdateView(event: UpdateViewEvent) {
         currentMethod.updateView(this)
+    }
+
+    @Subscribe fun onSetSymbolMode(event: SetSymbolModeEvent) {
+        setSymbolMode(event.symbolMode)
     }
 
     @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
