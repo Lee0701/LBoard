@@ -313,8 +313,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     @Subscribe fun onSoftKeyLongClick(event: SoftKeyLongClickEvent) {
         when(event.keyCode) {
+            KeyEvent.KEYCODE_SYM -> {}
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> showInputMethodPicker()
             KeyEvent.KEYCODE_COMMA -> showSettingsApp()
+            KeyEvent.KEYCODE_SPACE -> {}
+            KeyEvent.KEYCODE_ENTER -> {}
+            KeyEvent.KEYCODE_DEL -> {}
             else -> {
                 if(!currentMethod.shift) {
                     currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
@@ -327,6 +331,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     @Subscribe fun onSoftKeyFlick(event: SoftKeyFlickEvent) {
+        if(listOf(KeyEvent.KEYCODE_SYM, KeyEvent.KEYCODE_LANGUAGE_SWITCH, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DEL)
+                        .contains(event.keyCode)) return
+
         if((event.keyCode and 0x2000) != 0) {
             val code = event.keyCode or when(event.direction) {
                 SoftKeyFlickEvent.FlickDirection.UP -> 0x0100
@@ -340,6 +347,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 return
             }
         }
+
         when(event.direction) {
             SoftKeyFlickEvent.FlickDirection.UP -> {
                 if(!currentMethod.shift) {
