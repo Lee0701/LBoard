@@ -78,7 +78,7 @@ object ShinSebeolHangul {
             76 to LayoutItem(0x1001169, 0x003f)
     ))
     
-    val LAYOUT_SHIN_ORIGINAL = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(mapOf(0 to LAYOUT_SHIN_ORIGINAL_0_2_3, 1 to LAYOUT_SHIN_ORIGINAL_1))
+    val LAYOUT_SHIN_ORIGINAL = Alphabet.LAYOUT_QWERTY * CommonKeyboardLayout(mapOf(0 to LAYOUT_SHIN_ORIGINAL_0_2_3, 1 to LAYOUT_SHIN_ORIGINAL_1))
 
     val COMBINATION_SHIN_ORIGINAL = CombinationTable(mapOf(
             0x1100 to 0x1100 to 0x1101,	// ㄲ
@@ -179,7 +179,7 @@ object ShinSebeolHangul {
             76 to LayoutItem(0x1001169, 0x003f)
     ))
 
-    val LAYOUT_SHIN_EDIT = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(mapOf(0 to LAYOUT_SHIN_EDIT_0_2_3, 1 to LAYOUT_SHIN_EDIT_1))
+    val LAYOUT_SHIN_EDIT = Alphabet.LAYOUT_QWERTY * CommonKeyboardLayout(mapOf(0 to LAYOUT_SHIN_EDIT_0_2_3, 1 to LAYOUT_SHIN_EDIT_1))
 
     val LAYOUT_MINI_SHIN_0 = LayoutLayer(mapOf(
             0x2010 to LayoutItem(0x1164),
@@ -256,7 +256,7 @@ object ShinSebeolHangul {
             0x2035 to LayoutItem(0x1112)
     ))
 
-    val LAYOUT_MINI_SHIN_EXPERIMENTAL = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(mapOf(0 to LAYOUT_MINI_SHIN_0, 1 to LAYOUT_MINI_SHIN_1, 2 to LAYOUT_MINI_SHIN_2, 3 to LAYOUT_MINI_SHIN_2))
+    val LAYOUT_MINI_SHIN_EXPERIMENTAL = Alphabet.LAYOUT_QWERTY * CommonKeyboardLayout(mapOf(0 to LAYOUT_MINI_SHIN_0, 1 to LAYOUT_MINI_SHIN_1, 2 to LAYOUT_MINI_SHIN_2, 3 to LAYOUT_MINI_SHIN_2))
 
     val COMBINATION_MINI_SHIN_EXPERIMENTAL = CombinationTable(mapOf(
             0x1100 to 0x1100 to 0x1101,	// ㄲ
