@@ -131,13 +131,12 @@ abstract class CommonInputMethod: InputMethod {
 
     protected fun processStickyKeysOnInput(resultChar: Int) {
         if(shift && !capsLock && !shiftPressing) {
-
             shift = false
         } else {
             inputOnShift = true
         }
         if(alt && !altLock && !altPressing) {
-            if(!isNumber(resultChar)) alt = false
+            alt = false
         } else {
             inputOnAlt = true
         }
