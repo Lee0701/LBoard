@@ -434,6 +434,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
                 SoftLayout.LAYOUT_10COLS_MOBILE,
                 SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
+                SoftLayout.LAYOUT_10COLS_MOBILE_WITH_APOSTROPHE,
+                SoftLayout.LAYOUT_10COLS_MOBILE_WITH_APOSTROPHE_NUM,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
                 SoftLayout.LAYOUT_10COLS_DVORAK,
@@ -475,6 +477,16 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 FullSoftLayout.LAYOUT_FULL
         )
 
+        val SOFT_LAYOUT_COLEMAK = listOf(
+                SoftLayout.LAYOUT_10COLS_MOBILE_WITH_APOSTROPHE,
+                SoftLayout.LAYOUT_10COLS_MOBILE_WITH_APOSTROPHE_NUM,
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE,
+                SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE,
+                TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
+                FullSoftLayout.LAYOUT_FULL
+        )
+
         val SOFT_LAYOUT_SEBEOL_GONG = listOf(
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE_WITH_NUM,
                 TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM,
@@ -500,6 +512,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         val PREDEFINED_METHODS = mapOf<String, PredefinedMethod>(
                 "alphabet-qwerty" to PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, Alphabet.LAYOUT_QWERTY),
                 "alphabet-dvorak" to PredefinedMethod(SOFT_LAYOUT_DVORAK, Alphabet.LAYOUT_DVORAK),
+                "alphabet-colemak" to PredefinedMethod(SOFT_LAYOUT_COLEMAK, Alphabet.LAYOUT_COLEMAK),
                 "alphabet-7cols-wert" to PredefinedMethod(SOFT_LAYOUT_MINI_7COLS, Alphabet.LAYOUT_7COLS_WERT),
 
                 "dubeol-standard" to PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, DubeolHangul.LAYOUT_DUBEOL_STANDARD, PredefinedHangulConverter.DUBEOL, DubeolHangul.COMBINATION_DUBEOL_STANDARD),

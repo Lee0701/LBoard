@@ -118,6 +118,50 @@ object Alphabet {
 
     )))
 
+    val LAYOUT_COLEMAK = LAYOUT_QWERTY + CommonKeyboardLayout(LayoutLayer(mapOf(
+            8  to LayoutItem(0x31, 0x21),
+            9  to LayoutItem(0x32, 0x40),
+            10 to LayoutItem(0x33, 0x23),
+            11 to LayoutItem(0x34, 0x24),
+            12 to LayoutItem(0x35, 0x25),
+            13 to LayoutItem(0x36, 0x5e),
+            14 to LayoutItem(0x37, 0x26),
+            15 to LayoutItem(0x38, 0x2a),
+            16 to LayoutItem(0x39, 0x28),
+            7  to LayoutItem(0x30, 0x29),
+            
+            45 to LayoutItem(0x71, 0x51),
+            51 to LayoutItem(0x77, 0x57),
+            33 to LayoutItem(0x66, 0x46),
+            46 to LayoutItem(0x70, 0x50),
+            48 to LayoutItem(0x67, 0x47),
+            53 to LayoutItem(0x6a, 0x4a),
+            49 to LayoutItem(0x6c, 0x4c),
+            37 to LayoutItem(0x75, 0x55),
+            43 to LayoutItem(0x79, 0x59),
+            44 to LayoutItem(0x3b, 0x3a),
+
+            29 to LayoutItem(0x61, 0x41),
+            47 to LayoutItem(0x72, 0x52),
+            32 to LayoutItem(0x73, 0x53),
+            34 to LayoutItem(0x74, 0x54),
+            35 to LayoutItem(0x64, 0x44),
+            36 to LayoutItem(0x68, 0x48),
+            38 to LayoutItem(0x6e, 0x4e),
+            39 to LayoutItem(0x65, 0x45),
+            40 to LayoutItem(0x69, 0x49),
+            74 to LayoutItem(0x6f, 0x4f),
+
+            54 to LayoutItem(0x7a, 0x5a),
+            52 to LayoutItem(0x78, 0x58),
+            31 to LayoutItem(0x63, 0x43),
+            50 to LayoutItem(0x76, 0x56),
+            30 to LayoutItem(0x62, 0x42),
+            42 to LayoutItem(0x6b, 0x4b),
+            41 to LayoutItem(0x6d, 0x4d)
+
+    )))
+
     val LAYOUT_7COLS_WERT = CommonKeyboardLayout(LayoutLayer(mapOf(
             0x2010 to LayoutItem(listOf(0x0077, 0x0071), listOf(0x0057, 0x0051)),
             0x2011 to LayoutItem(0x0065, 0x0045),

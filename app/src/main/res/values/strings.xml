@@ -59,6 +59,8 @@
 
     <string name="pref_method_soft_layout_10cols_mobile">10 Columns Mobile</string>
     <string name="pref_method_soft_layout_10cols_mobile_with_num">10 Columns Mobile with Numbers</string>
+    <string name="pref_method_soft_layout_10cols_mobile_with_apostrophe">10 Columns Mobile with Apostrophe</string>
+    <string name="pref_method_soft_layout_10cols_mobile_with_apostrophe_num">10 Columns Mobile with Apostrophe and Numbers</string>
     <string name="pref_method_soft_layout_10cols_dvorak">10 Columns Dvorak</string>
     <string name="pref_method_soft_layout_10cols_dvorak_with_num">10 Columns Dvorak with Numbers</string>
     <string name="pref_method_soft_layout_10cols_mod_quote">10 Columns Mod. Quote</string>
@@ -90,6 +92,7 @@
     <string name="pref_method_hard_layout_symbols_blackberry">Symbols Blackberry</string>
     <string name="pref_method_hard_layout_alphabet_qwerty">Qwerty</string>
     <string name="pref_method_hard_layout_alphabet_dvorak">Dvorak</string>
+    <string name="pref_method_hard_layout_alphabet_colemak">Colemak</string>
     <string name="pref_method_hard_layout_alphabet_7cols_wert">7 Columns WERT</string>
     <string name="pref_method_hard_layout_dubeol_standard">Dubeolsik Standard</string>
     <string name="pref_method_hard_layout_sebeol_390">Sebeolsik 390</string>

@@ -146,6 +146,8 @@ class BasicSoftKeyboard(
         val LAYOUTS = listOf(
                 SoftLayout.LAYOUT_10COLS_MOBILE,
                 SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM,
+                SoftLayout.LAYOUT_10COLS_MOBILE_WITH_APOSTROPHE,
+                SoftLayout.LAYOUT_10COLS_MOBILE_WITH_APOSTROPHE_NUM,
                 SoftLayout.LAYOUT_10COLS_DVORAK,
                 SoftLayout.LAYOUT_10COLS_DVORAK_WITH_NUM,
                 SoftLayout.LAYOUT_10COLS_MOD_QUOTE,

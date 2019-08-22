@@ -97,6 +97,7 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
 
                 "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
                 "alphabet-dvorak" to Alphabet.LAYOUT_DVORAK,
+                "alphabet-colemak" to Alphabet.LAYOUT_COLEMAK,
                 "alphabet-7cols-wert" to Alphabet.LAYOUT_7COLS_WERT,
                 "dubeol-standard" to DubeolHangul.LAYOUT_DUBEOL_STANDARD,
                 "sebeol-390" to SebeolHangul.LAYOUT_SEBEOL_390,
