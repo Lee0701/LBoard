@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
@@ -19,6 +20,7 @@ import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
+import io.github.lee0701.lboard.settings.SettingsActivity
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
@@ -213,13 +215,24 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         if(++currentMethodId >= methods.size) {
             currentMethodId = 0
             if(!inputAfterSwitch && switchBetweenApps) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)  switchToNextInputMethod(false)
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) switchToNextInputMethod(false)
                 else imm.switchToNextInputMethod(token, false)
             }
         }
 
         inputAfterSwitch = false
         setInputView(currentMethod.initView(this))
+    }
+
+    private fun showInputMethodPicker() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showInputMethodPicker()
+    }
+
+    private fun showSettingsApp() {
+        val intent = Intent(this, SettingsActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
     private fun setSymbolMode(symbolMode: Boolean) {
@@ -258,7 +271,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private fun onSoftKeyDown(event: SoftKeyClickEvent) {
         when(event.keyCode) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
-                switchInputMethod(true)
+                if(!ignoreNextInput) switchInputMethod(true)
                 return
             }
             KeyEvent.KEYCODE_SYM -> {
@@ -299,10 +312,18 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     @Subscribe fun onSoftKeyLongClick(event: SoftKeyLongClickEvent) {
-        if(!currentMethod.shift) {
-            currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
-            currentMethod.onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
+        when(event.keyCode) {
+            KeyEvent.KEYCODE_LANGUAGE_SWITCH -> showInputMethodPicker()
+            KeyEvent.KEYCODE_COMMA -> showSettingsApp()
+            else -> {
+                if(!currentMethod.shift) {
+                    currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
+                    currentMethod.onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
+                }
+                return
+            }
         }
+        ignoreNextInput = true
     }
 
     @Subscribe fun onSoftKeyFlick(event: SoftKeyFlickEvent) {
