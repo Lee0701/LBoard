@@ -18,8 +18,10 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
+import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
+import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -64,7 +66,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
-        val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null)!!]!!
+        val theme = BasicSoftKeyboard.THEMES[prefs.getString("common_soft_theme", null) ?: ""] ?: BasicSoftKeyboardTheme.WHITE
         val height = prefs.getInt("common_soft_height", 0).toFloat()
         val labels = prefs.getBoolean("common_soft_labels", true)
         val compatibleLabels = prefs.getBoolean("common_soft_labels_compatible", true)
@@ -75,23 +77,23 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         val longClickDelay = prefs.getInt("common_soft_long_click_delay", 0)
 
         run {
-            val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_en_predefined", null)!!]!!
+            val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_en_predefined", null) ?: ""] ?: PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, Alphabet.LAYOUT_QWERTY)
 
-            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null)!!]!!.clone()
+            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null) ?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
             val hardLayout = predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels, compatibleLabels,
+                    BasicSoftKeyboard(softLayout.clone(), theme, height, labels, compatibleLabels,
                             repeatRate, longClickDelay, marginHorizontal, marginHorizontal, marginBottom),
                     CommonHardKeyboard(hardLayout)
             )
             softInputMethods += methodEn
 
-            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_soft_layout", null)!!]!!
-            val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)!!]!!
+            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
+            val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)?: ""] ?: Symbols.LAYOUT_SYMBOLS_B
 
             val methodEnSymbols = AlphabetInputMethod(
-                    BasicSoftKeyboard(symbolsSoftLayout, theme, height, labels, compatibleLabels,
+                    BasicSoftKeyboard(symbolsSoftLayout.clone(), theme, height, labels, compatibleLabels,
                             repeatRate, longClickDelay, marginHorizontal, marginHorizontal, marginBottom),
                     CommonHardKeyboard(symbolsHardLayout)
             )
@@ -99,11 +101,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         }
 
         run {
-            val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_ko_predefined", null)!!]!!
+            val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_ko_predefined", null)?: ""] ?: PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, DubeolHangul.LAYOUT_DUBEOL_STANDARD)
 
             val timeout = prefs.getInt("method_ko_timeout", 0)
 
-            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)!!]!!.clone()
+            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
+
 
             val combinationTable = predefinedMethod.combinationTable
             val virtualJamoTable = predefinedMethod.virtualJamoTable
@@ -116,7 +119,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     }
 
             val methodKo = HangulInputMethod(
-                    BasicSoftKeyboard(softLayout, theme, height, labels, compatibleLabels,
+                    BasicSoftKeyboard(softLayout.clone(), theme, height, labels, compatibleLabels,
                             repeatRate, longClickDelay, marginHorizontal, marginHorizontal, marginBottom),
                     CommonHardKeyboard(predefinedMethod.hardLayout),
                     converter,
@@ -124,11 +127,11 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             )
             softInputMethods += methodKo
 
-            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_soft_layout", null)!!]!!
-            val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)!!]!!
+            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
+            val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)?: ""] ?: Symbols.LAYOUT_SYMBOLS_B
 
             val methodKoSymbols = AlphabetInputMethod(
-                    BasicSoftKeyboard(symbolsSoftLayout, theme, height, labels, compatibleLabels,
+                    BasicSoftKeyboard(symbolsSoftLayout.clone(), theme, height, labels, compatibleLabels,
                             repeatRate, longClickDelay, marginHorizontal, marginHorizontal, marginBottom),
                     CommonHardKeyboard(symbolsHardLayout)
             )
@@ -136,7 +139,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         }
 
         run {
-            val hardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_physical_hard_layout", null)!!]!!
+            val hardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_physical_hard_layout", null)?: ""] ?: Alphabet.LAYOUT_QWERTY
 
             val methodEn = AlphabetInputMethod(
                     EmptySoftKeyboard(),
@@ -147,7 +150,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         }
 
         run {
-            val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_ko_physical_predefined", null)!!]!!
+            val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_ko_physical_predefined", null)?: ""] ?: PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, DubeolHangul.LAYOUT_DUBEOL_STANDARD)
 
             val combinationTable = predefinedMethod.combinationTable
             val virtualJamoTable = predefinedMethod.virtualJamoTable
