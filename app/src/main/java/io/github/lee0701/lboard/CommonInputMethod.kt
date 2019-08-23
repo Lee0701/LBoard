@@ -76,7 +76,7 @@ abstract class CommonInputMethod: InputMethod {
                 val converted = convert(keyCode, shift, alt)
                 if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
                 if(converted.resultChar == null) {
-                    reset()
+                    hardKeyboard.reset()
                     if(converted.defaultChar)
                         EventBus.getDefault().post(CommitStringEvent(getDefaultChar(keyCode, shift, alt).toChar().toString()))
                 } else if(converted.resultChar == 0) {
@@ -120,13 +120,13 @@ abstract class CommonInputMethod: InputMethod {
     }
 
     protected fun convert(keyCode: Int, shift: Boolean, alt: Boolean): HardKeyboard.ConvertResult {
-        if(alt) return HardKeyboard.ConvertResult(KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD).get(keyCode, KeyEvent.META_ALT_ON))
-        else return hardKeyboard.convert(keyCode, shift, alt)
+        return hardKeyboard.convert(keyCode, shift, alt)
     }
 
     protected fun getDefaultChar(keyCode: Int, shift: Boolean, alt: Boolean): Int {
+        val metaState = (if(shift) KeyEvent.META_SHIFT_ON else 0) or (if(alt) KeyEvent.META_ALT_ON else 0)
         return KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD)
-                .get(keyCode, if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0)
+                .get(keyCode, metaState)
     }
 
     protected fun processStickyKeysOnInput(resultChar: Int) {

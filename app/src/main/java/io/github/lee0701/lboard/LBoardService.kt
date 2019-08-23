@@ -359,6 +359,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     currentMethod.onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
                 }
             }
+            SoftKeyFlickEvent.FlickDirection.DOWN -> {
+                if(!currentMethod.alt) {
+                    currentMethod.onKeyPress(KeyEvent.KEYCODE_ALT_LEFT)
+                    currentMethod.onKeyRelease(KeyEvent.KEYCODE_ALT_LEFT)
+                }
+            }
         }
     }
 
@@ -449,7 +455,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 TabletSoftLayout.LAYOUT_11COLS_TABLET_WITH_QUOTE_NUM
         )
 
-        val SOFT_LAYOUT_MODE_FULL = listOf<Layout>(
+        val SOFT_LAYOUT_MODE_FULL = listOf(
                 FullSoftLayout.LAYOUT_FULL
         )
 

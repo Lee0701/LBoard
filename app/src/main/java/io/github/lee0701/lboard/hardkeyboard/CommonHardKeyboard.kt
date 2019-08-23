@@ -16,6 +16,8 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
     private val currentLayer: CommonKeyboardLayout.LayoutLayer
         get() = layout[status] ?: layout[0] ?: CommonKeyboardLayout.LayoutLayer()
 
+    private val altLayer: CommonKeyboardLayout.LayoutLayer get() = layout[10] ?: CommonKeyboardLayout.LayoutLayer()
+
     var lastCode = 0
     var lastIndex = 0
     var lastShift = false
@@ -24,7 +26,8 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
     var lastChar = 0
 
     override fun convert(keyCode: Int, shift: Boolean, alt: Boolean): HardKeyboard.ConvertResult {
-        val codes = currentLayer[keyCode]?.let { if(shift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null, defaultChar = true)
+        val layer = if(alt) altLayer else currentLayer
+        val codes = layer[keyCode]?.let { if(shift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null, defaultChar = true)
         var backspace = false
         if(lastCode == keyCode && lastShift == shift && lastAlt == lastAlt) {
             if(++lastIndex >= codes.size) lastIndex = 0
@@ -70,7 +73,8 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
     }
 
     override fun getLabels(shift: Boolean, alt: Boolean): Map<Int, String> {
-        return currentLayer.layout.map { item ->
+        val layer = if(alt) altLayer else currentLayer
+        return layer.layout.map { item ->
             item.key to (if(shift) item.value.shift else item.value.normal).map { it.toChar() }.joinToString("")
         }.toMap() + currentLayer.labels
     }
