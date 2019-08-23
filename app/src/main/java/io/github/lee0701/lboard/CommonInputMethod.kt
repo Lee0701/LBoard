@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
@@ -8,10 +9,14 @@ import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.SetSymbolModeEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
+import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
 abstract class CommonInputMethod: InputMethod {
+
+    abstract val softKeyboard: SoftKeyboard
+    abstract val hardKeyboard: HardKeyboard
 
     override var shift: Boolean = false
     override var alt: Boolean = false
@@ -144,9 +149,13 @@ abstract class CommonInputMethod: InputMethod {
         }
     }
 
-    fun isNumber(charCode: Int): Boolean = charCode in 0x30 .. 0x39
-
     fun isSystemKey(keyCode: Int): Boolean = keyCode in 0 .. 6 || keyCode in 24 .. 28 || keyCode in 79 .. 85
+
+    override fun setPreferences(pref: SharedPreferences) {
+        super.setPreferences(pref)
+        softKeyboard.setPreferences(pref)
+        hardKeyboard.setPreferences(pref)
+    }
 
     override fun serialize(): JSONObject {
         return super.serialize().apply {

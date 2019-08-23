@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/pref_method_virtual_title">
+    <PreferenceCategory android:title="@string/pref_method_virtual_appearance_title">
         <ListPreference
             android:key="common_soft_theme"
             android:title="@string/pref_common_soft_theme_title"
@@ -40,6 +40,19 @@
             android:title="@string/pref_common_margin_bottom_title"
             android:summary="@string/pref_common_margin_bottom_summary"
             android:defaultValue="0" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_method_virtual_behaviour_title">
+        <CheckBoxPreference
+            android:key="common_soft_vibrate"
+            android:title="@string/pref_common_soft_vibrate_title"
+            android:summary="@string/pref_common_soft_vibrate_summary"
+            android:defaultValue="false" />
+        <io.github.lee0701.lboard.settings.IntEditTextPreference
+            android:key="common_soft_vibrate_duration"
+            android:title="@string/pref_common_soft_vibrate_duration_title"
+            android:summary="@string/pref_common_soft_vibrate_duration_summary"
+            android:defaultValue="30" />
         <io.github.lee0701.lboard.settings.IntEditTextPreference
             android:key="common_soft_repeat_rate"
             android:title="@string/pref_common_repeat_rate_title"

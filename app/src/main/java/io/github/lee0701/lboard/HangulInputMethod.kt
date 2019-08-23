@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
@@ -112,6 +113,11 @@ class HangulInputMethod(
         EventBus.getDefault().post(CommitComposingEvent())
         states.clear()
         super.reset()
+    }
+
+    override fun setPreferences(pref: SharedPreferences) {
+        super.setPreferences(pref)
+        hangulConverter.setPreferences(pref)
     }
 
     override fun serialize(): JSONObject {

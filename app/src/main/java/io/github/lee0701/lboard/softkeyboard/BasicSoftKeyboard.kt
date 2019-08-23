@@ -1,6 +1,8 @@
 package io.github.lee0701.lboard.softkeyboard
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.Vibrator
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
@@ -15,15 +17,7 @@ import org.json.JSONObject
 
 class BasicSoftKeyboard(
         val layout: Layout,
-        val theme: KeyboardTheme,
-        val keyHeight: Float,
-        val showLabels: Boolean,
-        val compatibleLabels: Boolean,
-        val repeatRate: Int,
-        val longClickDelay: Int,
-        val marginLeft: Int,
-        val marginRight: Int,
-        val marginBottom: Int
+        val theme: KeyboardTheme
 ): SoftKeyboard, BasicKeyboardView.OnKeyListener {
 
     var keyboardView: BasicKeyboardView? = null
@@ -36,7 +30,25 @@ class BasicSoftKeyboard(
         get() = keyboardView?.alt ?: 0
         set(value) {keyboardView?.alt = value}
 
+    private var pressTime: Long = 0
+
+    private var vibrator: Vibrator? = null
+
+    private var vibrate: Boolean = false
+    private var vibrateDuration: Int = 0
+
+    private var keyHeight: Float = 0f
+    private var showLabels: Boolean = true
+    private var compatibleLabels: Boolean = true
+    private var repeatRate: Int = 0
+    private var longClickDelay: Int = 0
+    private var marginLeft: Int = 0
+    private var marginRight: Int = 0
+    private var marginBottom: Int = 0
+
     override fun initView(context: Context): View? {
+        if(vibrate) vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
         val marginBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginBottom.toFloat(), context.resources.displayMetrics)
         val marginLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginLeft.toFloat(), context.resources.displayMetrics)
         val marginRight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginRight.toFloat(), context.resources.displayMetrics)
@@ -72,6 +84,8 @@ class BasicSoftKeyboard(
     }
 
     override fun onKeyDown(keyCode: Int, x: Int, y: Int) {
+        vibrator?.vibrate(vibrateDuration.toLong())
+        pressTime = System.currentTimeMillis()
         when(keyCode) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
@@ -81,6 +95,10 @@ class BasicSoftKeyboard(
     }
 
     override fun onKeyUp(keyCode: Int, x: Int, y: Int) {
+        val timeDiff = System.currentTimeMillis() - pressTime
+        val timeRatio = timeDiff.toFloat() / longClickDelay
+        val duration = ((if(timeRatio > 1) 1f else timeRatio) * vibrateDuration).toLong()
+        if(duration > 0) vibrator?.vibrate(duration)
         when(keyCode) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {}
@@ -92,6 +110,7 @@ class BasicSoftKeyboard(
     }
 
     override fun onKeyLongClick(keyCode: Int) {
+        vibrator?.vibrate(vibrateDuration.toLong() / 2)
         EventBus.getDefault().post(SoftKeyLongClickEvent(keyCode))
     }
 
@@ -109,6 +128,22 @@ class BasicSoftKeyboard(
 
     override fun onKeyFlickDown(keyCode: Int) {
         EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.DOWN))
+    }
+
+    override fun setPreferences(pref: SharedPreferences) {
+        keyHeight = pref.getInt("common_soft_height", 0).toFloat()
+        showLabels = pref.getBoolean("common_soft_labels", true)
+        compatibleLabels = pref.getBoolean("common_soft_labels_compatible", true)
+        marginLeft = pref.getInt("common_soft_margin_horizontal", 0)
+        marginRight = marginLeft
+        marginBottom = pref.getInt("common_soft_margin_bottom", 0)
+
+        repeatRate = pref.getInt("common_soft_repeat_rate", 0)
+        longClickDelay = pref.getInt("common_soft_long_click_delay", 0)
+
+        vibrate = pref.getBoolean("common_soft_vibrate", false)
+        vibrateDuration = pref.getInt("common_soft_vibrate_duration", vibrateDuration)
+
     }
 
     override fun serialize(): JSONObject {
@@ -131,16 +166,7 @@ class BasicSoftKeyboard(
         @JvmStatic fun deserialize(json: JSONObject): BasicSoftKeyboard? {
             val layout = LAYOUTS[json.getString("layout")] ?: return null
             val theme = THEMES[json.getString("theme")] ?: return null
-            val keyHeight = json.getInt("height").toFloat()
-            val keyLabels = json.optBoolean("labels", true)
-            val compatibleLabels = json.optBoolean("compatibleLabels", true)
-            val repeatRate = json.optInt("repeatRate", 50)
-            val longClickDelay = json.optInt("longPressDelay", 300)
-            val marginLeft = json.optInt("marginLeft")
-            val marginRight = json.optInt("marginRight")
-            val marginBottom = json.optInt("marginBottom")
-            return BasicSoftKeyboard(layout, theme, keyHeight,
-                    keyLabels, compatibleLabels, repeatRate, longClickDelay, marginLeft, marginRight, marginBottom)
+            return BasicSoftKeyboard(layout, theme)
         }
 
         val LAYOUTS = listOf(
