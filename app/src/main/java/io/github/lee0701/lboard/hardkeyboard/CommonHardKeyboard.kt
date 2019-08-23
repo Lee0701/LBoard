@@ -98,6 +98,7 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
                 "symbols-a" to Symbols.LAYOUT_SYMBOLS_A,
                 "symbols-b" to Symbols.LAYOUT_SYMBOLS_B,
                 "symbols-blackberry" to Symbols.LAYOUT_SYMBOLS_BLACKBERRY,
+                "symbols-google" to Symbols.LAYOUT_SYMBOLS_GOOGLE,
 
                 "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
                 "alphabet-dvorak" to Alphabet.LAYOUT_DVORAK,

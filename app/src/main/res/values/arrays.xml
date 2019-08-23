@@ -43,11 +43,13 @@
     <string-array name="method_symbols_hard_layouts">
         <item>@string/pref_method_hard_layout_symbols_a</item>
         <item>@string/pref_method_hard_layout_symbols_b</item>
+        <item>@string/pref_method_hard_layout_symbols_google</item>
     </string-array>
 
     <string-array name="method_symbols_hard_layout_ids">
         <item>symbols-a</item>
         <item>symbols-b</item>
+        <item>symbols-google</item>
     </string-array>
 
     <string-array name="method_en_hard_layouts">
