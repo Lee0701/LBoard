@@ -2,6 +2,7 @@ package io.github.lee0701.lboard.softkeyboard
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import android.os.Vibrator
 import android.util.TypedValue
 import android.view.KeyEvent
@@ -33,9 +34,13 @@ class BasicSoftKeyboard(
     private var pressTime: Long = 0
 
     private var vibrator: Vibrator? = null
+    private var downSound: MediaPlayer? = null
+    private var upSound: MediaPlayer? = null
 
     private var vibrate: Boolean = false
     private var vibrateDuration: Int = 0
+    private var sound: Boolean = false
+    private var soundType: BasicKeyboardSound? = null
 
     private var keyHeight: Float = 0f
     private var showLabels: Boolean = true
@@ -48,11 +53,16 @@ class BasicSoftKeyboard(
 
     override fun initView(context: Context): View? {
         if(vibrate) vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if(sound) soundType?.let { type ->
+            downSound = MediaPlayer.create(context, type.down)
+            if(type.up != null) upSound = MediaPlayer.create(context, type.up)
+        }
 
         val marginBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginBottom.toFloat(), context.resources.displayMetrics)
         val marginLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginLeft.toFloat(), context.resources.displayMetrics)
         val marginRight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginRight.toFloat(), context.resources.displayMetrics)
         val keyboardHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyHeight, context.resources.displayMetrics) * layout.rows.size
+
         keyboardView = BasicKeyboardView(context, layout, theme, this,
                 keyboardHeight.toInt(), showLabels, repeatRate, longClickDelay,
                 marginLeft.toInt(), marginRight.toInt(), marginBottom.toInt())
@@ -83,9 +93,14 @@ class BasicSoftKeyboard(
         }.joinToString("")
     }
 
-    override fun onKeyDown(keyCode: Int, x: Int, y: Int) {
-        vibrator?.vibrate(vibrateDuration.toLong())
+    override fun onKeyDown(keyCode: Int, x: Int, y: Int, repeated: Boolean) {
+        if(!repeated) {
+            vibrator?.vibrate(vibrateDuration.toLong())
+            downSound?.seekTo(0)
+            downSound?.start()
+        }
         pressTime = System.currentTimeMillis()
+
         when(keyCode) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
@@ -94,11 +109,17 @@ class BasicSoftKeyboard(
         }
     }
 
-    override fun onKeyUp(keyCode: Int, x: Int, y: Int) {
-        val timeDiff = System.currentTimeMillis() - pressTime
-        val timeRatio = timeDiff.toFloat() / longClickDelay
-        val duration = ((if(timeRatio > 1) 1f else timeRatio) * vibrateDuration).toLong()
+    override fun onKeyUp(keyCode: Int, x: Int, y: Int, repeated: Boolean) {
+        val timeDiff = System.currentTimeMillis() - pressTime - longClickDelay/5
+        val timeRatio = (timeDiff.toFloat() / longClickDelay).let { if(it > 1) 1f else if(it < 0) 0f else it }
+        val duration = (timeRatio * vibrateDuration).toLong()
         if(duration > 0) vibrator?.vibrate(duration)
+
+        val volume = timeRatio
+        upSound?.seekTo(0)
+        upSound?.setVolume(volume, volume)
+        upSound?.start()
+
         when(keyCode) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {}
@@ -143,6 +164,9 @@ class BasicSoftKeyboard(
 
         vibrate = pref.getBoolean("common_soft_vibrate", false)
         vibrateDuration = pref.getInt("common_soft_vibrate_duration", vibrateDuration)
+
+        sound = pref.getBoolean("common_soft_sound", false)
+        soundType = BasicKeyboardSound.SOUNDS[pref.getString("common_soft_sound_type", null) ?: ""]
 
     }
 

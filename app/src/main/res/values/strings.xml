@@ -60,6 +60,15 @@
     <string name="pref_common_soft_vibrate_duration_title">Vibrate Duration</string>
     <string name="pref_common_soft_vibrate_duration_summary">Adjust key vibrate duration. Default value is 30.</string>
 
+    <string name="pref_common_soft_sound_title">Sound on Key Press</string>
+    <string name="pref_common_soft_sound_summary">If enabled, play sound on key press.</string>
+
+    <string name="pref_common_soft_sound_type_title">Sound Type</string>
+    <string name="pref_common_soft_sound_type_summary">Choose key press sound type.</string>
+
+    <string name="pref_common_soft_sound_type_click">Click</string>
+    <string name="pref_common_soft_sound_type_pop">Pop</string>
+
 
     <string name="pref_method_virtual_title">Virtual Keyboard</string>
 

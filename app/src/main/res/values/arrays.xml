@@ -25,6 +25,16 @@
         <item>tablet</item>
         <item>full</item>
     </string-array>
+    
+    <string-array name="common_soft_sound_types">
+        <item>@string/pref_common_soft_sound_type_click</item>
+        <item>@string/pref_common_soft_sound_type_pop</item>
+    </string-array>
+    
+    <string-array name="common_soft_sound_type_ids">
+        <item>click</item>
+        <item>pop</item>
+    </string-array>
 
     <string-array name="method_soft_layouts">
         <item>@string/pref_method_soft_layout_10cols_mobile</item>

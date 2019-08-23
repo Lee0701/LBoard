@@ -160,8 +160,8 @@ class BasicKeyboardView(
                 key.onPressed { invalidate() }
 
                 val onLongClick = if(key.repeatable) timerTask {
-                    onKeyListener.onKeyDown(key.keyCode, x.toInt(), y.toInt())
-                    onKeyListener.onKeyUp(key.keyCode, x.toInt(), y.toInt())
+                    onKeyListener.onKeyDown(key.keyCode, x.toInt(), y.toInt(), true)
+                    onKeyListener.onKeyUp(key.keyCode, x.toInt(), y.toInt(), true)
                 } else timerTask {
                     onKeyListener.onKeyLongClick(key.keyCode)
                 }
@@ -263,8 +263,8 @@ class BasicKeyboardView(
     }
 
     interface OnKeyListener {
-        fun onKeyDown(keyCode: Int, x: Int, y: Int)
-        fun onKeyUp(keyCode: Int, x: Int, y: Int)
+        fun onKeyDown(keyCode: Int, x: Int, y: Int, repeated: Boolean = false)
+        fun onKeyUp(keyCode: Int, x: Int, y: Int, repeated: Boolean = false)
         fun onKeyLongClick(keyCode: Int)
         fun onKeyFlickLeft(keyCode: Int)
         fun onKeyFlickRight(keyCode: Int)

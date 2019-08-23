@@ -53,6 +53,18 @@
             android:title="@string/pref_common_soft_vibrate_duration_title"
             android:summary="@string/pref_common_soft_vibrate_duration_summary"
             android:defaultValue="30" />
+        <CheckBoxPreference
+            android:key="common_soft_sound"
+            android:title="@string/pref_common_soft_sound_title"
+            android:summary="@string/pref_common_soft_sound_summary"
+            android:defaultValue="false" />
+        <ListPreference
+            android:key="common_soft_sound_type"
+            android:title="@string/pref_common_soft_sound_type_title"
+            android:summary="@string/pref_common_soft_sound_type_summary"
+            android:entries="@array/common_soft_sound_types"
+            android:entryValues="@array/common_soft_sound_type_ids"
+            android:defaultValue="click" />
         <io.github.lee0701.lboard.settings.IntEditTextPreference
             android:key="common_soft_repeat_rate"
             android:title="@string/pref_common_repeat_rate_title"
