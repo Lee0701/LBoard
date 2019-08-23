@@ -75,8 +75,10 @@ class HangulInputMethod(
                     EventBus.getDefault().post(CommitComposingEvent())
                     states.clear()
                     hardKeyboard.reset()
-                    if(converted.defaultChar)
-                        EventBus.getDefault().post(CommitStringEvent(getDefaultChar(keyCode, shift, alt).toChar().toString()))
+                    if(converted.defaultChar) {
+                        val defaultChar = getDefaultChar(keyCode, shift, alt)
+                        if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(getDefaultChar(keyCode, shift, alt).toChar().toString()))
+                    }
                 } else if(converted.resultChar == 0) {
                     reset()
                 } else {
