@@ -312,7 +312,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         when(event.keyCode) {
             KeyEvent.KEYCODE_SYM -> {}
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> showInputMethodPicker()
-            KeyEvent.KEYCODE_COMMA -> showSettingsApp()
+            KeyEvent.KEYCODE_COMMA, KeyEvent.KEYCODE_PERIOD -> showSettingsApp()
             KeyEvent.KEYCODE_SPACE -> {}
             KeyEvent.KEYCODE_ENTER -> {}
             KeyEvent.KEYCODE_DEL -> {}

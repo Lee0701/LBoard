@@ -104,7 +104,7 @@ class BasicSoftKeyboard(
     override fun onKeyDown(keyCode: Int, x: Int, y: Int, repeated: Boolean) {
         if(!repeated) {
             vibrator?.vibrate(vibrateDuration.toLong())
-            (if( keyCode == KeyEvent.KEYCODE_SPACE && upSound != null) upSound else downSound)?.let { soundPool?.play(it, 1f, 1f, 1, 0, 1f) }
+            (if(keyCode == KeyEvent.KEYCODE_SPACE && upSound != null) upSound else downSound)?.let { soundPool?.play(it, 1f, 1f, 1, 0, 1f) }
         }
         pressTime = System.currentTimeMillis()
 
