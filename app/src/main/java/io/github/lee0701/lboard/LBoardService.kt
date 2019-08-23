@@ -85,8 +85,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         run {
             val predefinedMethod = PREDEFINED_METHODS[prefs.getString("method_en_predefined", null) ?: ""] ?: PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, Alphabet.LAYOUT_QWERTY)
 
+            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
+            val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)?: ""] ?: Symbols.LAYOUT_SYMBOLS_B
+            val layer10SymbolsHardLayout = CommonKeyboardLayout(10, symbolsHardLayout[0] ?: CommonKeyboardLayout.LayoutLayer(mapOf()))
+
             val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_en_soft_layout", null) ?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
-            val hardLayout = predefinedMethod.hardLayout
+            val hardLayout = layer10SymbolsHardLayout + predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
                     BasicSoftKeyboard(softLayout.clone(), theme, height, labels, compatibleLabels,
@@ -94,9 +98,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     CommonHardKeyboard(hardLayout)
             )
             softInputMethods += methodEn
-
-            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
-            val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_en_symbols_hard_layout", null)?: ""] ?: Symbols.LAYOUT_SYMBOLS_B
 
             val methodEnSymbols = AlphabetInputMethod(
                     BasicSoftKeyboard(symbolsSoftLayout.clone(), theme, height, labels, compatibleLabels,
@@ -111,8 +112,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val timeout = prefs.getInt("method_ko_timeout", 0)
 
-            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
+            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
+            val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)?: ""] ?: Symbols.LAYOUT_SYMBOLS_B
+            val layer10SymbolsHardLayout = CommonKeyboardLayout(10, symbolsHardLayout[0] ?: CommonKeyboardLayout.LayoutLayer(mapOf()))
 
+            val softLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
+            val hardLayout = layer10SymbolsHardLayout + predefinedMethod.hardLayout
 
             val combinationTable = predefinedMethod.combinationTable
             val virtualJamoTable = predefinedMethod.virtualJamoTable
@@ -127,14 +132,11 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val methodKo = HangulInputMethod(
                     BasicSoftKeyboard(softLayout.clone(), theme, height, labels, compatibleLabels,
                             repeatRate, longClickDelay, marginHorizontal, marginHorizontal, marginBottom),
-                    CommonHardKeyboard(predefinedMethod.hardLayout),
+                    CommonHardKeyboard(hardLayout),
                     converter,
                     timeout
             )
             softInputMethods += methodKo
-
-            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
-            val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[prefs.getString("method_ko_symbols_hard_layout", null)?: ""] ?: Symbols.LAYOUT_SYMBOLS_B
 
             val methodKoSymbols = AlphabetInputMethod(
                     BasicSoftKeyboard(symbolsSoftLayout.clone(), theme, height, labels, compatibleLabels,
