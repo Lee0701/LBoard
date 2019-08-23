@@ -4,7 +4,7 @@ import io.github.lee0701.lboard.R
 
 data class BasicKeyboardSound(
         val down: Int,
-        val up: Int?
+        val up: Int? = null
 ) {
     companion object {
         val CLICK = BasicKeyboardSound(R.raw.type_click_down, R.raw.type_click_up)

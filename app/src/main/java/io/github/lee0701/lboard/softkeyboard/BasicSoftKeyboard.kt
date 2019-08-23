@@ -2,7 +2,11 @@ package io.github.lee0701.lboard.softkeyboard
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.MediaPlayer
+import android.media.SoundPool
+import android.os.Build
 import android.os.Vibrator
 import android.util.TypedValue
 import android.view.KeyEvent
@@ -34,8 +38,9 @@ class BasicSoftKeyboard(
     private var pressTime: Long = 0
 
     private var vibrator: Vibrator? = null
-    private var downSound: MediaPlayer? = null
-    private var upSound: MediaPlayer? = null
+    private var soundPool: SoundPool? = null
+    private var downSound: Int? = null
+    private var upSound: Int? = null
 
     private var vibrate: Boolean = false
     private var vibrateDuration: Int = 0
@@ -53,9 +58,12 @@ class BasicSoftKeyboard(
 
     override fun initView(context: Context): View? {
         if(vibrate) vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if(sound) soundType?.let { type ->
-            downSound = MediaPlayer.create(context, type.down)
-            if(type.up != null) upSound = MediaPlayer.create(context, type.up)
+        if(sound) soundPool = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> SoundPool.Builder().setAudioAttributes(AudioAttributes.Builder().setLegacyStreamType(AudioManager.STREAM_SYSTEM).build()).build()
+            else -> SoundPool(1, AudioManager.STREAM_SYSTEM, 0)
+        }.apply {
+            soundType?.down?.let { downSound = load(context, it, 1) }
+            soundType?.up?.let { upSound = load(context, it, 1) }
         }
 
         val marginBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginBottom.toFloat(), context.resources.displayMetrics)
@@ -96,8 +104,7 @@ class BasicSoftKeyboard(
     override fun onKeyDown(keyCode: Int, x: Int, y: Int, repeated: Boolean) {
         if(!repeated) {
             vibrator?.vibrate(vibrateDuration.toLong())
-            downSound?.seekTo(0)
-            downSound?.start()
+            (if( keyCode == KeyEvent.KEYCODE_SPACE && upSound != null) upSound else downSound)?.let { soundPool?.play(it, 1f, 1f, 1, 0, 1f) }
         }
         pressTime = System.currentTimeMillis()
 
@@ -116,9 +123,7 @@ class BasicSoftKeyboard(
         if(duration > 0) vibrator?.vibrate(duration)
 
         val volume = timeRatio
-        upSound?.seekTo(0)
-        upSound?.setVolume(volume, volume)
-        upSound?.start()
+        upSound?.let { soundPool?.play(it, volume, volume, 1, 0, 1f) }
 
         when(keyCode) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
