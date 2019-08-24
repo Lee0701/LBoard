@@ -9,7 +9,8 @@ data class KeyTheme(
         @DrawableRes val background: Int,
         @DrawableRes val backgroundPressed: Int,
         val textColor: Int,
-        @DrawableRes val foreground: Int? = null
+        @DrawableRes val foreground: Int? = null,
+        @DrawableRes val preview: Int? = null
 )
 
 data class RowTheme(

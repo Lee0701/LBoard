@@ -4,7 +4,7 @@
         android:left="3dp"
         android:right="3dp"
         android:top="5dp"
-        android:bottom="5dp">
+        android:bottom="0dp">
         <shape>
             <corners android:radius="@dimen/key_radius"/>
 			<solid android:color="@color/keybg_mod"/>

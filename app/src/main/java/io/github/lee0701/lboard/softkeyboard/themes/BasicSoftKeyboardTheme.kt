@@ -12,7 +12,8 @@ object BasicSoftKeyboardTheme {
     private val WHITE_KEY_CHARACTER = KeyTheme(
             R.drawable.keybg_white,
             R.drawable.keybg_white_p,
-            Color.parseColor("#dd000000")
+            Color.parseColor("#dd000000"),
+            preview = R.drawable.keybg_white_preview
     )
 
     private val WHITE_KEY_MOD = KeyTheme(
@@ -33,7 +34,7 @@ object BasicSoftKeyboardTheme {
             Color.parseColor("#dd000000")
     )
 
-    private val WHITE_KEY_SPACE = WHITE_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_space_black)
+    private val WHITE_KEY_SPACE = WHITE_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_space_black, preview = null)
     private val WHITE_KEY_SHIFT = WHITE_KEY_MOD.copy(foreground = R.drawable.keyfg_shift_black)
     private val WHITE_KEY_DEL = WHITE_KEY_MOD.copy(foreground = R.drawable.keyfg_del_black)
     private val WHITE_KEY_LANG = WHITE_KEY_MOD.copy(foreground = R.drawable.keyfg_lang_black)
@@ -67,7 +68,8 @@ object BasicSoftKeyboardTheme {
     private val DARK_KEY_CHARACTER = KeyTheme(
             R.drawable.keybg_dark,
             R.drawable.keybg_dark_p,
-            Color.WHITE
+            Color.WHITE,
+            preview = R.drawable.keybg_dark_preview
     )
 
     private val DARK_KEY_MOD = KeyTheme(
@@ -88,7 +90,7 @@ object BasicSoftKeyboardTheme {
             Color.WHITE
     )
 
-    private val DARK_KEY_SPACE = DARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_space_white)
+    private val DARK_KEY_SPACE = DARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_space_white, preview = null)
     private val DARK_KEY_SHIFT = DARK_KEY_MOD.copy(foreground = R.drawable.keyfg_shift_white)
     private val DARK_KEY_DEL = DARK_KEY_MOD.copy(foreground = R.drawable.keyfg_del_white)
     private val DARK_KEY_LANG = DARK_KEY_MOD.copy(foreground = R.drawable.keyfg_lang_white)
@@ -122,7 +124,8 @@ object BasicSoftKeyboardTheme {
     private val FLATWHITE_KEY_CHARACTER = KeyTheme(
             R.drawable.keybg_flatwhite,
             R.drawable.keybg_flatwhite_p,
-            Color.parseColor("#ff000000")
+            Color.parseColor("#ff000000"),
+            preview = R.drawable.keybg_flatwhite_preview
     )
 
     private val FLATWHITE_KEY_STICKY = KeyTheme(
@@ -143,9 +146,9 @@ object BasicSoftKeyboardTheme {
             Color.parseColor("#ff000000")
     )
 
-    private val FLATWHITE_KEY_SHIFT = FLATWHITE_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_shift_black)
-    private val FLATWHITE_KEY_DEL = FLATWHITE_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_del_black)
-    private val FLATWHITE_KEY_LANG = FLATWHITE_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_lang_black)
+    private val FLATWHITE_KEY_SHIFT = FLATWHITE_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_shift_black, preview = null)
+    private val FLATWHITE_KEY_DEL = FLATWHITE_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_del_black, preview = null)
+    private val FLATWHITE_KEY_LANG = FLATWHITE_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_lang_black, preview = null)
 
     val FLATWHITE = KeyboardTheme(
             R.drawable.keybg_flatwhite_bg,
@@ -173,7 +176,8 @@ object BasicSoftKeyboardTheme {
     private val FLATDARK_KEY_CHARACTER = KeyTheme(
             R.drawable.keybg_flatdark,
             R.drawable.keybg_flatdark_p,
-            Color.parseColor("#ffffffff")
+            Color.parseColor("#ffffffff"),
+            preview = R.drawable.keybg_flatdark_preview
     )
 
     private val FLATDARK_KEY_STICKY = KeyTheme(
@@ -194,9 +198,9 @@ object BasicSoftKeyboardTheme {
             Color.parseColor("#ffffffff")
     )
 
-    private val FLATDARK_KEY_SHIFT = FLATDARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_shift_white)
-    private val FLATDARK_KEY_DEL = FLATDARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_del_white)
-    private val FLATDARK_KEY_LANG = FLATDARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_lang_white)
+    private val FLATDARK_KEY_SHIFT = FLATDARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_shift_white, preview = null)
+    private val FLATDARK_KEY_DEL = FLATDARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_del_white, preview = null)
+    private val FLATDARK_KEY_LANG = FLATDARK_KEY_CHARACTER.copy(foreground = R.drawable.keyfg_lang_white, preview = null)
 
     val FLATDARK = KeyboardTheme(
             R.drawable.keybg_flatdark_bg,

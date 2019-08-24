@@ -130,22 +130,36 @@ class BasicKeyboardView(
         pressedBgDrawable.setBounds(x, key.y, x + width, key.y + key.height)
         pressedBgDrawable.alpha = alpha
         pressedBgDrawable.draw(canvas)
+
+        if(theme.preview != null) {
+            val previewDrawable = ContextCompat.getDrawable(context, theme.preview)!!
+            previewDrawable.setBounds(x, key.y - key.height, x + width, key.y + key.height)
+            previewDrawable.alpha = alpha
+            previewDrawable.draw(canvas)
+        }
+
     }
 
     private fun onDrawKeyForeground(canvas: Canvas, key: Key) {
         val theme = theme.keyTheme[key.keyCode] ?: theme.keyTheme[null] ?: return
 
+        val offset = if(theme.preview == null || key.alpha == null || key.alpha == 0f) 0 else -key.height
+        val alpha = if(theme.preview == null || key.alpha == null || key.alpha == 0f) 255 else ((key.alpha ?: 0f) * 255).toInt()
+
         if (theme.foreground != null) with(ContextCompat.getDrawable(context, theme.foreground)!!) {
                 val x = key.x + (key.width - intrinsicWidth)/2
-                val y = key.y + (key.height - intrinsicHeight)/2
+                val y = key.y + (key.height - intrinsicHeight)/2 + offset
                 setBounds(x, y, x + intrinsicWidth, y + intrinsicHeight)
                 draw(canvas)
         } else {
             paint.color = theme.textColor
+            paint.alpha = alpha
             val boundString = key.label.map { "W" }.joinToString("")
             paint.textSize = key.textSize
             paint.textSize = key.textSize * (if(key.width > key.height) key.height else key.width) / paint.measureText(boundString) / 3 * 2
-            canvas.drawText(key.label, (key.x + key.width/2).toFloat(), (key.y + key.height/2 - (paint.descent() + paint.ascent())/2).toFloat(), paint)
+            val x = (key.x + key.width/2).toFloat()
+            val y = (key.y + key.height/2 - (paint.descent() + paint.ascent())/2).toFloat() + offset
+            canvas.drawText(key.label, x, y, paint)
         }
     }
 
