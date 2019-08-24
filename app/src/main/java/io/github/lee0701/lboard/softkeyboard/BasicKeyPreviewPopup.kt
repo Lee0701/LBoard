@@ -8,14 +8,11 @@ import android.view.View
 import android.widget.PopupWindow
 import android.widget.TextView
 
-class BasicKeyboardPopup(val context: Context, val key: Key, background: Int, val color: Int) {
+class BasicKeyPreviewPopup(context: Context, key: Key, background: Int, val color: Int): KeyboardPopup(context, key) {
 
     private val background = ContextCompat.getDrawable(context, background)!!
-    private val popupWindow: PopupWindow = PopupWindow(context, null)
-    private val popupShown = validatePopupShown(key)
 
-    fun show(parent: View) {
-        if(!popupShown) return
+    override fun show(parent: View) {
         popupWindow.contentView = TextView(context).apply {
             text = key.label
             gravity = Gravity.CENTER_HORIZONTAL
@@ -30,19 +27,13 @@ class BasicKeyboardPopup(val context: Context, val key: Key, background: Int, va
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, key.x, key.y - key.height)
     }
 
-    fun setAlpha(alpha: Float) {
-        if(!popupShown) return
+    override fun fade(alpha: Float) {
         background.alpha = (alpha * 255).toInt()
         popupWindow.contentView.alpha = alpha
     }
 
-    fun dismiss() {
-        if(!popupShown) return
+    override fun dismiss() {
         popupWindow.dismiss()
-    }
-
-    private fun validatePopupShown(key: Key): Boolean {
-        return key.keyCode in 7 .. 19 || key.keyCode in 29 .. 56 || key.keyCode in 68 .. 78
     }
 
 }

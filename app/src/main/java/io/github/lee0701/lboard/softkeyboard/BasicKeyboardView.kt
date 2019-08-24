@@ -6,7 +6,6 @@ import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.view.*
-import android.widget.TextView
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -37,7 +36,7 @@ class BasicKeyboardView(
     private val paint = Paint()
 
     private val pointers = mutableMapOf<Int, TouchPointer>()
-    private val popups = mutableMapOf<Int, BasicKeyboardPopup>()
+    private val popups = mutableMapOf<Int, KeyboardPopup>()
 
     private val timer = Timer()
 
@@ -166,8 +165,8 @@ class BasicKeyboardView(
 
                 popups[key.keyCode]?.dismiss()
                 popups -= key.keyCode
-                if(showPopups) {
-                    val popup = BasicKeyboardPopup(context, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
+                if(showPopups && validatePopupShown(key)) {
+                    val popup = BasicKeyPreviewPopup(context, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
                     popups += key.keyCode to popup
                     popup.show(this)
                 }
@@ -239,10 +238,10 @@ class BasicKeyboardView(
                     pointer.key.onReleased {
                         invalidate()
                         val alpha = pointer.key.alpha ?: 0f
-                        popup?.setAlpha(alpha)
+                        popup?.fade(alpha)
                         if(alpha == 0f && popup != null) {
                             popup.dismiss()
-                            popups -= popup.key.keyCode
+                            popups -= pointer.key.keyCode
                         }
                     }
 
@@ -268,6 +267,10 @@ class BasicKeyboardView(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         setMeasuredDimension(measuredWidth, keyboardHeight + marginBottom)
+    }
+
+    private fun validatePopupShown(key: Key): Boolean {
+        return key.keyCode in 7 .. 19 || key.keyCode in 29 .. 56 || key.keyCode in 68 .. 78
     }
 
     data class TouchPointer(
