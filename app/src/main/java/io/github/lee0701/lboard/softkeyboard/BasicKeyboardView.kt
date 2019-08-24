@@ -6,6 +6,7 @@ import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.view.*
+import android.widget.TextView
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -35,6 +36,7 @@ class BasicKeyboardView(
     private val paint = Paint()
 
     private val pointers = mutableMapOf<Int, TouchPointer>()
+    private val popups = mutableMapOf<Int, BasicKeyboardPopup>()
 
     private val timer = Timer()
 
@@ -131,34 +133,23 @@ class BasicKeyboardView(
         pressedBgDrawable.alpha = alpha
         pressedBgDrawable.draw(canvas)
 
-        if(theme.preview != null) {
-            val previewDrawable = ContextCompat.getDrawable(context, theme.preview)!!
-            previewDrawable.setBounds(x, key.y - key.height, x + width, key.y + key.height)
-            previewDrawable.alpha = alpha
-            previewDrawable.draw(canvas)
-        }
-
     }
 
     private fun onDrawKeyForeground(canvas: Canvas, key: Key) {
         val theme = theme.keyTheme[key.keyCode] ?: theme.keyTheme[null] ?: return
 
-        val offset = if(theme.preview == null || key.alpha == null || key.alpha == 0f) 0 else -key.height
-        val alpha = if(theme.preview == null || key.alpha == null || key.alpha == 0f) 255 else ((key.alpha ?: 0f) * 255).toInt()
-
         if (theme.foreground != null) with(ContextCompat.getDrawable(context, theme.foreground)!!) {
                 val x = key.x + (key.width - intrinsicWidth)/2
-                val y = key.y + (key.height - intrinsicHeight)/2 + offset
+                val y = key.y + (key.height - intrinsicHeight)/2
                 setBounds(x, y, x + intrinsicWidth, y + intrinsicHeight)
                 draw(canvas)
         } else {
             paint.color = theme.textColor
-            paint.alpha = alpha
             val boundString = key.label.map { "W" }.joinToString("")
             paint.textSize = key.textSize
             paint.textSize = key.textSize * (if(key.width > key.height) key.height else key.width) / paint.measureText(boundString) / 3 * 2
             val x = (key.x + key.width/2).toFloat()
-            val y = (key.y + key.height/2 - (paint.descent() + paint.ascent())/2).toFloat() + offset
+            val y = (key.y + key.height/2 - (paint.descent() + paint.ascent())/2).toFloat()
             canvas.drawText(key.label, x, y, paint)
         }
     }
@@ -171,6 +162,11 @@ class BasicKeyboardView(
         when(event.actionMasked) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
                 val key = getKey(x.toInt(), y.toInt()) ?: return super.onTouchEvent(event)
+
+                val popup = BasicKeyboardPopup(context, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
+                popups += key.keyCode to popup
+                popup.show(this)
+
                 key.onPressed { invalidate() }
 
                 val onLongClick = if(key.repeatable) timerTask {
@@ -232,8 +228,13 @@ class BasicKeyboardView(
                 pointers[pointerId]?.let { pointer ->
                     pointers -= pointerId
 
+                    val popup = popups[pointer.key.keyCode]
+                    popup?.dismiss()
+
                     pointer.longClickHandler.cancel()
-                    pointer.key.onReleased { invalidate() }
+                    pointer.key.onReleased {
+                        invalidate()
+                    }
 
                     onKeyListener.onKeyUp(pointer.key.keyCode, pointer.x, pointer.y)
                 }

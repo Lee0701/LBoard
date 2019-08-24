@@ -317,10 +317,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             KeyEvent.KEYCODE_ENTER -> {}
             KeyEvent.KEYCODE_DEL -> {}
             else -> {
-                if(!currentMethod.shift) {
-                    currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
-                    currentMethod.onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
-                }
                 return
             }
         }
