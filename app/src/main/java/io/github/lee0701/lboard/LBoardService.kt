@@ -47,7 +47,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private var switchBetweenApps: Boolean = true
 
     private var inputAfterSwitch: Boolean = false
-    private var ignoreNextInput: Boolean = false
 
     override fun onCreate() {
         super.onCreate()
@@ -269,7 +268,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private fun onSoftKeyDown(event: SoftKeyClickEvent) {
         when(event.keyCode) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
-                if(!ignoreNextInput) switchInputMethod(this.switchBetweenApps)
+                switchInputMethod(this.switchBetweenApps)
                 return
             }
             KeyEvent.KEYCODE_SYM -> {
@@ -279,7 +278,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         }
 
         inputAfterSwitch = true
-        if(ignoreNextInput) return
 
         val result = currentMethod.onKeyPress(event.keyCode)
         // 입력 이벤트 처리가 되었으면 Release 이벤트 전송, 처리되지 않았으면 기본 처리를 수행.
@@ -305,8 +303,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     private fun onSoftKeyUp(event: SoftKeyClickEvent) {
-        if(!ignoreNextInput) currentMethod.onKeyRelease(event.keyCode)
-        ignoreNextInput = false
+        currentMethod.onKeyRelease(event.keyCode)
     }
 
     @Subscribe fun onSoftKeyLongClick(event: SoftKeyLongClickEvent) {
@@ -321,41 +318,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 return
             }
         }
-        ignoreNextInput = true
     }
 
     @Subscribe fun onSoftKeyFlick(event: SoftKeyFlickEvent) {
         if(listOf(KeyEvent.KEYCODE_SYM, KeyEvent.KEYCODE_LANGUAGE_SWITCH, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DEL)
                         .contains(event.keyCode)) return
-
-        if((event.keyCode and ExtendedCode.TWELVE_KEYPAD) != 0) {
-            val code = event.keyCode or when(event.direction) {
-                SoftKeyFlickEvent.FlickDirection.UP -> ExtendedCode.TWELVE_FLICK_UP
-                SoftKeyFlickEvent.FlickDirection.DOWN -> ExtendedCode.TWELVE_FLICK_DOWN
-                SoftKeyFlickEvent.FlickDirection.LEFT -> ExtendedCode.TWELVE_FLICK_LEFT
-                SoftKeyFlickEvent.FlickDirection.RIGHT -> ExtendedCode.TWELVE_FLICK_RIGHT
-            }
-            val result = currentMethod.onKeyPress(code)
-            if(result && currentMethod.onKeyRelease(code)) {
-                ignoreNextInput = true
-                return
-            }
-        }
-
-        when(event.direction) {
-            SoftKeyFlickEvent.FlickDirection.UP -> {
-                if(!currentMethod.shift) {
-                    currentMethod.onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
-                    currentMethod.onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
-                }
-            }
-            SoftKeyFlickEvent.FlickDirection.DOWN -> {
-                if(!currentMethod.alt) {
-                    currentMethod.onKeyPress(KeyEvent.KEYCODE_ALT_LEFT)
-                    currentMethod.onKeyRelease(KeyEvent.KEYCODE_ALT_LEFT)
-                }
-            }
-        }
+        currentMethod.onKeyFlick(event.keyCode, event.direction)
     }
 
     @Subscribe fun onCompose(event: ComposeEvent) {

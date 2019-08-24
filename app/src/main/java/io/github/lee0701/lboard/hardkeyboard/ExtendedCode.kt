@@ -2,6 +2,8 @@ package io.github.lee0701.lboard.hardkeyboard
 
 object ExtendedCode {
 
+    const val MORE_KEYS_KEYPAD = 0x1000
+
     const val TWELVE_KEYPAD = 0x2000
 
     const val TWELVE_FLICK_UP = 0x0200

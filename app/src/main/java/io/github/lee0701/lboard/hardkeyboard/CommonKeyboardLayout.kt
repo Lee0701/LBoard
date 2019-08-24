@@ -62,4 +62,9 @@ data class CommonKeyboardLayout(
         operator fun get(key: Int): Int? = table[key]
     }
 
+    companion object {
+        const val LAYER_ALT = 10
+        const val LAYER_MORE_KEYS = 20
+    }
+
 }

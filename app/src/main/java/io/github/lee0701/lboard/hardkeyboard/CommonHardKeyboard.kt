@@ -9,14 +9,14 @@ import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import org.json.JSONObject
 
-class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
+class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHardKeyboard {
 
     var status: Int = 0
 
     private val currentLayer: CommonKeyboardLayout.LayoutLayer
         get() = layout[status] ?: layout[0] ?: CommonKeyboardLayout.LayoutLayer()
 
-    private val altLayer: CommonKeyboardLayout.LayoutLayer get() = layout[10] ?: CommonKeyboardLayout.LayoutLayer()
+    private val altLayer: CommonKeyboardLayout.LayoutLayer get() = layout[CommonKeyboardLayout.LAYER_ALT] ?: CommonKeyboardLayout.LayoutLayer()
 
     var lastCode = 0
     var lastIndex = 0
@@ -77,6 +77,11 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): HardKeyboard {
         return layer.layout.map { item ->
             item.key to (if(shift) item.value.shift else item.value.normal).map { it.toChar() }.joinToString("")
         }.toMap() + currentLayer.labels
+    }
+
+    override fun getMoreKeys(keyCode: Int, shift: Boolean, alt: Boolean): List<Int> {
+        val layer = layout.layers[CommonKeyboardLayout.LAYER_MORE_KEYS] ?: CommonKeyboardLayout.LayoutLayer(mapOf())
+        return (if(shift) layer[keyCode]?.shift else layer[keyCode]?.normal) ?: listOf()
     }
 
     override fun serialize(): JSONObject {

@@ -7,7 +7,9 @@ import android.view.KeyEvent
 import android.view.View
 import io.github.lee0701.lboard.event.CommitStringEvent
 import io.github.lee0701.lboard.event.SetSymbolModeEvent
+import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
+import io.github.lee0701.lboard.hardkeyboard.ExtendedCode
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
@@ -29,6 +31,8 @@ abstract class CommonInputMethod: InputMethod {
     var inputOnShift = false
     var inputOnAlt = false
 
+    var ignoreNextInput: Boolean = false
+
     override fun initView(context: Context): View? {
         return softKeyboard.initView(context)
     }
@@ -42,6 +46,7 @@ abstract class CommonInputMethod: InputMethod {
 
     override fun onKeyPress(keyCode: Int): Boolean {
         if(isSystemKey(keyCode)) return false
+        if(ignoreNextInput) return true
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
@@ -113,6 +118,44 @@ abstract class CommonInputMethod: InputMethod {
             }
         }
         EventBus.getDefault().post(UpdateViewEvent())
+        ignoreNextInput = false
+        return true
+    }
+
+    override fun onKeyLongPress(keyCode: Int): Boolean {
+        ignoreNextInput = true
+        return true
+    }
+
+    override fun onKeyFlick(keyCode: Int, direction: SoftKeyFlickEvent.FlickDirection): Boolean {
+        if((keyCode and ExtendedCode.TWELVE_KEYPAD) != 0) {
+            val code = keyCode or when(direction) {
+                SoftKeyFlickEvent.FlickDirection.UP -> ExtendedCode.TWELVE_FLICK_UP
+                SoftKeyFlickEvent.FlickDirection.DOWN -> ExtendedCode.TWELVE_FLICK_DOWN
+                SoftKeyFlickEvent.FlickDirection.LEFT -> ExtendedCode.TWELVE_FLICK_LEFT
+                SoftKeyFlickEvent.FlickDirection.RIGHT -> ExtendedCode.TWELVE_FLICK_RIGHT
+            }
+            val result = onKeyPress(code)
+            if(result && onKeyRelease(code)) {
+                ignoreNextInput = true
+                return true
+            }
+        }
+
+        when(direction) {
+            SoftKeyFlickEvent.FlickDirection.UP -> {
+                if(!shift) {
+                    onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
+                    onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
+                }
+            }
+            SoftKeyFlickEvent.FlickDirection.DOWN -> {
+                if(!alt) {
+                    onKeyPress(KeyEvent.KEYCODE_ALT_LEFT)
+                    onKeyRelease(KeyEvent.KEYCODE_ALT_LEFT)
+                }
+            }
+        }
         return true
     }
 
