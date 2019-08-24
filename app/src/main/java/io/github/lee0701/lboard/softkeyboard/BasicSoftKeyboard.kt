@@ -46,6 +46,7 @@ class BasicSoftKeyboard(
     private var vibrateDuration: Int = 0
     private var sound: Boolean = false
     private var soundType: BasicKeyboardSound? = null
+    private var soundVolume: Float = 0f
 
     private var keyHeight: Float = 0f
     private var showLabels: Boolean = true
@@ -104,7 +105,9 @@ class BasicSoftKeyboard(
     override fun onKeyDown(keyCode: Int, x: Int, y: Int, repeated: Boolean) {
         if(!repeated) {
             vibrator?.vibrate(vibrateDuration.toLong())
-            (if(keyCode == KeyEvent.KEYCODE_SPACE && upSound != null) upSound else downSound)?.let { soundPool?.play(it, 1f, 1f, 1, 0, 1f) }
+            val volume = soundVolume
+
+            (if(keyCode == KeyEvent.KEYCODE_SPACE && upSound != null) upSound else downSound)?.let { soundPool?.play(it, volume, volume, 1, 0, 1f) }
         }
         pressTime = System.currentTimeMillis()
 
@@ -122,7 +125,7 @@ class BasicSoftKeyboard(
         val duration = (timeRatio * vibrateDuration).toLong()
         if(duration > 0) vibrator?.vibrate(duration)
 
-        val volume = timeRatio
+        val volume = timeRatio * soundVolume
         upSound?.let { soundPool?.play(it, volume, volume, 1, 0, 1f) }
 
         when(keyCode) {
@@ -172,6 +175,9 @@ class BasicSoftKeyboard(
 
         sound = pref.getBoolean("common_soft_sound", false)
         soundType = BasicKeyboardSound.SOUNDS[pref.getString("common_soft_sound_type", null) ?: ""]
+        soundVolume = pref.getInt("common_soft_sound_volume", 0).toFloat() / 100f
+        if(soundVolume > 1f) soundVolume = 1f
+        if(soundVolume < 0f) soundVolume = 0f
 
     }
 

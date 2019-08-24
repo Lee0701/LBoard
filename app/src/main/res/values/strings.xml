@@ -69,6 +69,9 @@
     <string name="pref_common_soft_sound_type_click">Click</string>
     <string name="pref_common_soft_sound_type_pop">Pop</string>
 
+    <string name="pref_common_soft_sound_volume_title">Sound Volume</string>
+    <string name="pref_common_soft_sound_volume_summary">Adjust key press sound volume percent.</string>
+
 
     <string name="pref_method_virtual_title">Virtual Keyboard</string>
 
