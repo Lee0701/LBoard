@@ -23,10 +23,10 @@ object TwelveDubeolHangul {
             // Flick codes
             0x2401 to LayoutItem(0x3153),   // ㅓ
             0x2501 to LayoutItem(0x314f),   // ㅏ
-            0x2103 to LayoutItem(0x3157),   // ㅗ
-            0x2203 to LayoutItem(0x315c),   // ㅜ
-            0x2102 to LayoutItem(0x315b),   // ㅛ
-            0x2202 to LayoutItem(0x3160),   // ㅠ
+            0x2203 to LayoutItem(0x3157),   // ㅗ
+            0x2303 to LayoutItem(0x315c),   // ㅜ
+            0x2202 to LayoutItem(0x315b),   // ㅛ
+            0x2302 to LayoutItem(0x3160),   // ㅠ
             0x2402 to LayoutItem(0x3155),   // ㅕ
             0x2502 to LayoutItem(0x3151)    // ㅑ
     ), labels = mapOf(

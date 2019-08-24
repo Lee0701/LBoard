@@ -17,6 +17,7 @@ import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
+import io.github.lee0701.lboard.hardkeyboard.ExtendedCode
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
@@ -327,12 +328,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         if(listOf(KeyEvent.KEYCODE_SYM, KeyEvent.KEYCODE_LANGUAGE_SWITCH, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DEL)
                         .contains(event.keyCode)) return
 
-        if((event.keyCode and 0x2000) != 0) {
+        if((event.keyCode and ExtendedCode.TWELVE_KEYPAD) != 0) {
             val code = event.keyCode or when(event.direction) {
-                SoftKeyFlickEvent.FlickDirection.UP -> 0x0100
-                SoftKeyFlickEvent.FlickDirection.DOWN -> 0x0200
-                SoftKeyFlickEvent.FlickDirection.LEFT -> 0x0400
-                SoftKeyFlickEvent.FlickDirection.RIGHT -> 0x0500
+                SoftKeyFlickEvent.FlickDirection.UP -> ExtendedCode.TWELVE_FLICK_UP
+                SoftKeyFlickEvent.FlickDirection.DOWN -> ExtendedCode.TWELVE_FLICK_DOWN
+                SoftKeyFlickEvent.FlickDirection.LEFT -> ExtendedCode.TWELVE_FLICK_LEFT
+                SoftKeyFlickEvent.FlickDirection.RIGHT -> ExtendedCode.TWELVE_FLICK_RIGHT
             }
             val result = currentMethod.onKeyPress(code)
             if(result && currentMethod.onKeyRelease(code)) {
