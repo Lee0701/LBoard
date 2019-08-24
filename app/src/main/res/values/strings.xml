@@ -54,13 +54,13 @@
     <string name="pref_common_soft_switch_between_methods_title">Switch between Input Methods</string>
     <string name="pref_common_soft_switch_between_methods_summary">If enabled, the language key switches to next input method.</string>
 
-    <string name="pref_common_soft_vibrate_title">Vibrate on Key Press</string>
+    <string name="pref_common_soft_vibrate_title">Key Vibration</string>
     <string name="pref_common_soft_vibrate_summary">If enabled, vibrate on key press.</string>
 
     <string name="pref_common_soft_vibrate_duration_title">Vibrate Duration</string>
     <string name="pref_common_soft_vibrate_duration_summary">Adjust key vibrate duration. Default value is 30.</string>
 
-    <string name="pref_common_soft_sound_title">Sound on Key Press</string>
+    <string name="pref_common_soft_sound_title">Key Sound</string>
     <string name="pref_common_soft_sound_summary">If enabled, play sound on key press.</string>
 
     <string name="pref_common_soft_sound_type_title">Sound Type</string>
@@ -71,6 +71,9 @@
 
     <string name="pref_common_soft_sound_volume_title">Sound Volume</string>
     <string name="pref_common_soft_sound_volume_summary">Adjust key press sound volume percent.</string>
+
+    <string name="pref_common_soft_popups_title">Key Popups</string>
+    <string name="pref_common_soft_popups_summary">Show popups on key press.</string>
 
 
     <string name="pref_method_virtual_title">Virtual Keyboard</string>

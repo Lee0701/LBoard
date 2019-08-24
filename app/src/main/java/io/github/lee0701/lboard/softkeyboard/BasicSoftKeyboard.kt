@@ -50,6 +50,7 @@ class BasicSoftKeyboard(
 
     private var keyHeight: Float = 0f
     private var showLabels: Boolean = true
+    private var showPopups: Boolean = false
     private var compatibleLabels: Boolean = true
     private var repeatRate: Int = 0
     private var longClickDelay: Int = 0
@@ -73,7 +74,7 @@ class BasicSoftKeyboard(
         val keyboardHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyHeight, context.resources.displayMetrics) * layout.rows.size
 
         keyboardView = BasicKeyboardView(context, layout, theme, this,
-                keyboardHeight.toInt(), showLabels, repeatRate, longClickDelay,
+                keyboardHeight.toInt(), showLabels, showPopups, repeatRate, longClickDelay,
                 marginLeft.toInt(), marginRight.toInt(), marginBottom.toInt())
         return keyboardView
     }
@@ -163,6 +164,7 @@ class BasicSoftKeyboard(
         keyHeight = pref.getInt("common_soft_height", 0).toFloat()
         showLabels = pref.getBoolean("common_soft_labels", true)
         compatibleLabels = pref.getBoolean("common_soft_labels_compatible", true)
+        showPopups = pref.getBoolean("common_soft_popups", showPopups)
         marginLeft = pref.getInt("common_soft_margin_horizontal", 0)
         marginRight = marginLeft
         marginBottom = pref.getInt("common_soft_margin_bottom", 0)
@@ -187,6 +189,7 @@ class BasicSoftKeyboard(
             put("theme", REVERSE_THEMES[theme])
             put("height", keyHeight.toInt())
             put("labels", showLabels)
+            put("popups", showPopups)
             put("compatibleLabels", compatibleLabels)
             put("repeatRate", repeatRate)
             put("longClickDelay", longClickDelay)

@@ -70,6 +70,11 @@
             android:title="@string/pref_common_soft_sound_volume_title"
             android:summary="@string/pref_common_soft_sound_volume_summary"
             android:defaultValue="100" />
+        <CheckBoxPreference
+            android:key="common_soft_popups"
+            android:title="@string/pref_common_soft_popups_title"
+            android:summary="@string/pref_common_soft_popups_summary"
+            android:defaultValue="false" />
         <io.github.lee0701.lboard.settings.IntEditTextPreference
             android:key="common_soft_repeat_rate"
             android:title="@string/pref_common_repeat_rate_title"

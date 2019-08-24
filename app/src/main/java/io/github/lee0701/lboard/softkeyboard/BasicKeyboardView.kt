@@ -20,6 +20,7 @@ class BasicKeyboardView(
         val onKeyListener: OnKeyListener,
         val keyboardHeight: Int,
         val showLabels: Boolean,
+        val showPopups: Boolean,
         val repeatRate: Int,
         val longClickDelay: Int,
         val marginLeft: Int,
@@ -165,10 +166,11 @@ class BasicKeyboardView(
 
                 popups[key.keyCode]?.dismiss()
                 popups -= key.keyCode
-
-                val popup = BasicKeyboardPopup(context, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
-                popups += key.keyCode to popup
-                popup.show(this)
+                if(showPopups) {
+                    val popup = BasicKeyboardPopup(context, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
+                    popups += key.keyCode to popup
+                    popup.show(this)
+                }
 
                 key.onPressed { invalidate() }
 
