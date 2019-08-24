@@ -163,6 +163,9 @@ class BasicKeyboardView(
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
                 val key = getKey(x.toInt(), y.toInt()) ?: return super.onTouchEvent(event)
 
+                popups[key.keyCode]?.dismiss()
+                popups -= key.keyCode
+
                 val popup = BasicKeyboardPopup(context, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
                 popups += key.keyCode to popup
                 popup.show(this)
@@ -229,11 +232,16 @@ class BasicKeyboardView(
                     pointers -= pointerId
 
                     val popup = popups[pointer.key.keyCode]
-                    popup?.dismiss()
 
                     pointer.longClickHandler.cancel()
                     pointer.key.onReleased {
                         invalidate()
+                        val alpha = pointer.key.alpha ?: 0f
+                        popup?.setAlpha(alpha)
+                        if(alpha == 0f && popup != null) {
+                            popup.dismiss()
+                            popups -= popup.key.keyCode
+                        }
                     }
 
                     onKeyListener.onKeyUp(pointer.key.keyCode, pointer.x, pointer.y)

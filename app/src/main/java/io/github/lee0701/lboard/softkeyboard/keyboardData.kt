@@ -87,7 +87,7 @@ data class Key (
             this.setValues(alpha)
             this.addUpdateListener(updateListener)
             this.interpolator = DecelerateInterpolator()
-            this.duration = 100
+            this.duration = 200
             this.start()
         }
     }

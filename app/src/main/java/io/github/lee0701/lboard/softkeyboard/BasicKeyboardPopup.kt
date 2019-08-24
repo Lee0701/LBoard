@@ -8,10 +8,11 @@ import android.view.View
 import android.widget.PopupWindow
 import android.widget.TextView
 
-class BasicKeyboardPopup(val context: Context, val key: Key, val background: Int, val color: Int) {
+class BasicKeyboardPopup(val context: Context, val key: Key, background: Int, val color: Int) {
 
-    val popupWindow: PopupWindow = PopupWindow(context, null)
-    val popupShown = validatePopupShown(key)
+    private val background = ContextCompat.getDrawable(context, background)!!
+    private val popupWindow: PopupWindow = PopupWindow(context, null)
+    private val popupShown = validatePopupShown(key)
 
     fun show(parent: View) {
         if(!popupShown) return
@@ -21,11 +22,18 @@ class BasicKeyboardPopup(val context: Context, val key: Key, val background: Int
             setTextSize(TypedValue.COMPLEX_UNIT_PX, key.width.toFloat() / key.label.length)
             setTextColor(color)
         }
-        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(context, background))
+        popupWindow.setBackgroundDrawable(background)
         popupWindow.width = key.width
         popupWindow.height = key.height * 2
         popupWindow.isClippingEnabled = false
+        popupWindow.isTouchable = false
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, key.x, key.y - key.height)
+    }
+
+    fun setAlpha(alpha: Float) {
+        if(!popupShown) return
+        background.alpha = (alpha * 255).toInt()
+        popupWindow.contentView.alpha = alpha
     }
 
     fun dismiss() {
