@@ -76,6 +76,26 @@ object SebeolHangul {
             0x116e to 0x1175 to 0x1171	// ㅟ
     ))
 
+    val LAYOUT_SEBEOL_391_STRICT = LAYOUT_SEBEOL_391 + CommonKeyboardLayout(LayoutLayer(mapOf(
+            16 to LayoutItem(0x100116e, 0x0027),
+            76 to LayoutItem(0x1001169, 0x0021)
+    )))
+
+    val COMBINATION_SEBEOL_391_STRICT = CombinationTable(mapOf(
+            0x1100 to 0x1100 to 0x1101,	// ㄲ
+            0x1103 to 0x1103 to 0x1104,	// ㄸ
+            0x1107 to 0x1107 to 0x1108,	// ㅃ
+            0x1109 to 0x1109 to 0x110a,	// ㅆ
+            0x110c to 0x110c to 0x110d,	// ㅉ
+
+            0x01001169 to 0x1161 to 0x116a,	// ㅘ
+            0x01001169 to 0x1162 to 0x116b,	// ㅙ
+            0x01001169 to 0x1175 to 0x116c,	// ㅚ
+            0x0100116e to 0x1165 to 0x116f,	// ㅝ
+            0x0100116e to 0x1166 to 0x1170,	// ㅞ
+            0x0100116e to 0x1175 to 0x1171	// ㅟ
+    ))
+
     val LAYOUT_SEBEOL_390 = Alphabet.LAYOUT_QWERTY + CommonKeyboardLayout(LayoutLayer(mapOf(
             8 to LayoutItem(0x11c2, 0x11bd),
             9 to LayoutItem(0x11bb, 0x0040),

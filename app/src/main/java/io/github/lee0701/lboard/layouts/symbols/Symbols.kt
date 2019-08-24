@@ -151,8 +151,8 @@ object Symbols {
             44 to LayoutItem(0x0030, 0x2206),
 
             29 to LayoutItem(0x0040, 0x00a3),
-            47 to LayoutItem(0x0023, 0x0024),
-            32 to LayoutItem(0x20a9, 0x20ac),
+            47 to LayoutItem(0x0023, 0x20a9),
+            32 to LayoutItem(0x0024, 0x20ac),
             34 to LayoutItem(0x005f, 0x00a5),
             35 to LayoutItem(0x0026, 0x005e),
             36 to LayoutItem(0x002d, 0x00b0),
