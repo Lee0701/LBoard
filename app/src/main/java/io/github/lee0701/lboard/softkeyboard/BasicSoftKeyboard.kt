@@ -3,6 +3,8 @@ package io.github.lee0701.lboard.softkeyboard
 import android.app.Service
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
@@ -15,8 +17,9 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
+import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
@@ -34,7 +37,11 @@ class BasicSoftKeyboard(
     var keyboardViewHolder: ViewGroup? = null
     var keyboardView: BasicKeyboardView? = null
     var oneHandedButtonsHolder: View? = null
-    var flipButton: Button? = null
+    var flipButton: ImageButton? = null
+
+    lateinit var leftDrawable: Drawable
+    lateinit var rightDrawable: Drawable
+
     var currentLabels: Map<Int, String> = mapOf()
 
     private val displayMetrics = DisplayMetrics()
@@ -102,23 +109,28 @@ class BasicSoftKeyboard(
         }
         this.keyboardViewHolder = keyboardViewHolder
 
+        leftDrawable = ContextCompat.getDrawable(context, R.drawable.ic_chevron_left_black_24dp)!!
+        rightDrawable = ContextCompat.getDrawable(context, R.drawable.ic_chevron_right_black_24dp)!!
+
         val buttonsHolder = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = ViewGroup.LayoutParams(oneHandedMargin, ViewGroup.LayoutParams.MATCH_PARENT)
             background = ContextCompat.getDrawable(context, theme.background)
 
-            addView(Button(context).apply {
+            addView(ImageButton(context).apply {
                 layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                     weight = 1f
                 }
+                setBackgroundColor(Color.TRANSPARENT)
                 setOnClickListener {
                     updateOneHandedMode(-oneHandedMode)
                 }
                 flipButton = this
             })
-            addView(Button(context).apply {
+            addView(ImageButton(context).apply {
                 layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                text = "<->"
+                setBackgroundColor(Color.TRANSPARENT)
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_zoom_out_map_black_24dp))
                 setOnClickListener {
                     updateOneHandedMode(0)
                 }
@@ -173,7 +185,7 @@ class BasicSoftKeyboard(
             if(oneHandedMode < 0) holder.addView(oneHandedButtonsHolder)
         }
 
-        flipButton?.text = if(oneHandedMode < 0) ">" else "<"
+        flipButton?.setImageDrawable(if(oneHandedMode < 0) rightDrawable else leftDrawable)
     }
 
     override fun onKeyDown(keyCode: Int, x: Int, y: Int, repeated: Boolean) {
