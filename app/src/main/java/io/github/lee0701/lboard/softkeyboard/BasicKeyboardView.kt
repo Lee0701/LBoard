@@ -200,6 +200,8 @@ class BasicKeyboardView(
                     pointer.x = x.toInt()
                     pointer.y = y.toInt()
                     pointer.pressure = pressure
+                    val distance = Math.sqrt(((pointer.x-pointer.initialX)*(pointer.x-pointer.initialX) + (pointer.y-pointer.initialY)*(pointer.y-pointer.initialY)).toDouble()).toInt()
+                    val threshold = if(pointer.key.width < pointer.key.height) pointer.key.width/2 else pointer.key.height/2
 
                     val popup = popups[pointer.key.keyCode]
                     if(popup != null) {
@@ -207,21 +209,21 @@ class BasicKeyboardView(
                     }
 
                     if(abs(pointer.dy) > abs((pointer.dx))) {
-                        if((pointer.y > pointer.key.y + pointer.key.height || pointer.y > pointer.initialY + pointer.key.height/2)
+                        if((pointer.y > pointer.key.y + pointer.key.height || pointer.y > pointer.initialY && distance > threshold)
                                 && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.DOWN) {
                             onKeyListener.onKeyFlickDown(pointer.key.keyCode)
                             pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.DOWN
-                        } else if((pointer.y < pointer.key.y || pointer.y < pointer.initialY - pointer.key.height/2)
+                        } else if((pointer.y < pointer.key.y || pointer.y < pointer.initialY && distance > threshold)
                                 && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.UP) {
                             onKeyListener.onKeyFlickUp(pointer.key.keyCode)
                             pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.UP
                         }
                     } else {
-                        if((pointer.x > pointer.key.x + pointer.key.width || pointer.x > pointer.initialX + pointer.key.width/2)
+                        if((pointer.x > pointer.key.x + pointer.key.width || pointer.x > pointer.initialX && distance > threshold)
                                 && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.RIGHT) {
                             onKeyListener.onKeyFlickRight(pointer.key.keyCode)
                             pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.RIGHT
-                        } else if((pointer.x < pointer.key.x || pointer.x < pointer.initialX - pointer.key.width/2)
+                        } else if((pointer.x < pointer.key.x || pointer.x < pointer.initialX && distance > threshold)
                                         && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.LEFT) {
                             onKeyListener.onKeyFlickLeft(pointer.key.keyCode)
                             pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.LEFT
