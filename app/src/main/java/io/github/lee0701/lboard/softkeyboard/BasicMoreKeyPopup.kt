@@ -7,14 +7,15 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.view.Gravity
-import android.view.MotionEvent
 import android.view.View
 
 class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyboard.Key, val list: List<Pair<Int, String>>, background: Int, backgroundActive: Int, val color: Int): KeyboardPopup(context, key) {
 
     private val background = ContextCompat.getDrawable(context, background)!!
-    val keys = list.map { Key(it.first, it.second) }
+    private val keys = list.map { Key(it.first, it.second) }
     private val keyboardView = KeyboardView(context, listOf(keys), ContextCompat.getDrawable(context, backgroundActive)!!, color)
+
+    var keyCode: Int? = null
 
     override fun show(parent: View) {
         popupWindow.setBackgroundDrawable(background)
@@ -34,11 +35,14 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
         val innerX = x - key.x
         val innerY = y - (key.y - key.height)
 
+        keyCode = null
+
         var changed = false
         keys.forEach { key ->
             val active = key.rect.contains(innerX, innerY)
             if(key.active != active) changed = true
             key.active = active
+            if(active) keyCode = key.keyCode
         }
         if(changed) keyboardView.invalidate()
 
@@ -62,7 +66,7 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
         var width: Int = 0
         var height: Int = 0
         var active: Boolean = false
-        val rect: Rect get() = Rect(x, y, x + width, y + height)
+        val rect: Rect get() = Rect(x, y + height, x + width, y + height*2)
     }
 
     class KeyboardView(
@@ -108,13 +112,10 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
             }
 
             // Foreground (text)
+            val params = KeyTextSizeAndPositionCalculator.calculate(key.label, key.x, key.y, key.width, key.height)
+            paint.textSize = params.size
             paint.color = keyForegroundColor
-            val boundString = key.label.map { "W" }.joinToString("")
-            paint.textSize = 4f
-            paint.textSize = paint.textSize * (if(key.width > key.height) key.height else key.width) / paint.measureText(boundString) / 3 * 2
-            val x = (key.x + key.width/2).toFloat()
-            val y = (key.y + key.height/2 - (paint.descent() + paint.ascent())/2).toFloat()
-            canvas.drawText(key.label, x, y, paint)
+            canvas.drawText(key.label, params.x, params.y, paint)
         }
 
     }

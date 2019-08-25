@@ -144,13 +144,10 @@ class BasicKeyboardView(
                 setBounds(x, y, x + intrinsicWidth, y + intrinsicHeight)
                 draw(canvas)
         } else {
+            val params = KeyTextSizeAndPositionCalculator.calculate(key.label, key.x, key.y, key.width, key.height)
+            paint.textSize = params.size
             paint.color = theme.textColor
-            val boundString = key.label.map { "W" }.joinToString("")
-            paint.textSize = key.textSize
-            paint.textSize = key.textSize * (if(key.width > key.height) key.height else key.width) / paint.measureText(boundString) / 3 * 2
-            val x = (key.x + key.width/2).toFloat()
-            val y = (key.y + key.height/2 - (paint.descent() + paint.ascent())/2).toFloat()
-            canvas.drawText(key.label, x, y, paint)
+            canvas.drawText(key.label, params.x, params.y, paint)
         }
     }
 
@@ -247,7 +244,9 @@ class BasicKeyboardView(
                         if(alpha == 0f && popup != null) closePopup(popup.key.keyCode)
                     }
 
-                    onKeyListener.onKeyUp(pointer.key.keyCode, pointer.x, pointer.y)
+                    val popupKeycode = if(popup is BasicMoreKeyPopup) popup.keyCode else null
+
+                    onKeyListener.onKeyUp(popupKeycode ?: pointer.key.keyCode, pointer.x, pointer.y)
                 }
                 return true
             }
