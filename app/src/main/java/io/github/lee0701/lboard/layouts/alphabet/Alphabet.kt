@@ -9,6 +9,56 @@ object Alphabet {
 
     val LAYOUT_MOREKEYS = CommonKeyboardLayout(mapOf(
             0 to LayoutLayer(mapOf(
+                    // A
+                    0x1041 to LayoutItem(0x00c6),
+                    0x1141 to LayoutItem(0x00c3),
+                    0x1241 to LayoutItem(0x00c5),
+                    0x1341 to LayoutItem(0x0100),
+                    0x1441 to LayoutItem(0x00c0),
+                    0x1541 to LayoutItem(0x00c1),
+                    0x1641 to LayoutItem(0x00c2),
+                    0x1741 to LayoutItem(0x00c4),
+
+                    // C
+                    0x1043 to LayoutItem(0x00c7),
+
+                    // E
+                    0x1045 to LayoutItem(0x0112),
+                    0x1145 to LayoutItem(0x00ca),
+                    0x1245 to LayoutItem(0x00c9),
+                    0x1345 to LayoutItem(0x00c8),
+                    0x1445 to LayoutItem(0x00cb),
+
+                    // I
+                    0x1049 to LayoutItem(0x00cc),
+                    0x1149 to LayoutItem(0x00cf),
+                    0x1249 to LayoutItem(0x00cd),
+                    0x1349 to LayoutItem(0x00ce),
+                    0x1449 to LayoutItem(0x012a),
+
+                    // N
+                    0x104e to LayoutItem(0x00d1),
+
+                    // O
+                    0x104f to LayoutItem(0x014c),
+                    0x114f to LayoutItem(0x0152),
+                    0x124f to LayoutItem(0x00d8),
+                    0x134f to LayoutItem(0x00d5),
+                    0x144f to LayoutItem(0x00d6),
+                    0x154f to LayoutItem(0x00d3),
+                    0x164f to LayoutItem(0x00d4),
+                    0x174f to LayoutItem(0x00d2),
+
+                    // S
+                    0x1053 to LayoutItem(0x1e9e),
+
+                    // U
+                    0x1055 to LayoutItem(0x016a),
+                    0x1155 to LayoutItem(0x00dc),
+                    0x1255 to LayoutItem(0x00da),
+                    0x1355 to LayoutItem(0x00db),
+                    0x1455 to LayoutItem(0x00d9),
+
                     // a
                     0x1061 to LayoutItem(0x00e6),
                     0x1161 to LayoutItem(0x00e3),
@@ -62,6 +112,15 @@ object Alphabet {
             )),
             // char code to list of keycodes
             CommonKeyboardLayout.LAYER_MORE_KEYS to LayoutLayer(mapOf(
+                    0x0041 to LayoutItem(listOf(0x1041, 0x1141, 0x1241, 0x1341, 0x1441, 0x1541, 0x1461, 0x1741)),
+                    0x0043 to LayoutItem(listOf(0x1043)),
+                    0x0045 to LayoutItem(listOf(0x1045, 0x1145, 0x1245, 0x1345, 0x1445)),
+                    0x0049 to LayoutItem(listOf(0x1049, 0x1149, 0x1249, 0x1349, 0x1449)),
+                    0x004e to LayoutItem(listOf(0x104e)),
+                    0x004f to LayoutItem(listOf(0x104f, 0x114f, 0x124f, 0x134f, 0x144f, 0x154f, 0x146f, 0x174f)),
+                    0x0053 to LayoutItem(listOf(0x1053)),
+                    0x0055 to LayoutItem(listOf(0x1055, 0x1155, 0x1255, 0x1355, 0x1455)),
+
                     0x0061 to LayoutItem(listOf(0x1061, 0x1161, 0x1261, 0x1361, 0x1461, 0x1561, 0x1661, 0x1761)),
                     0x0063 to LayoutItem(listOf(0x1063)),
                     0x0065 to LayoutItem(listOf(0x1065, 0x1165, 0x1265, 0x1365, 0x1465)),
