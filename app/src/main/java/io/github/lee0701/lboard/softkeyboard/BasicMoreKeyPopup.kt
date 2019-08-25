@@ -9,7 +9,10 @@ import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 
-class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyboard.Key, val list: List<Pair<Int, String>>, background: Int, backgroundActive: Int, val color: Int): KeyboardPopup(context, key) {
+class BasicMoreKeyPopup(context: Context, val showOffset: Int, key: io.github.lee0701.lboard.softkeyboard.Key,
+                        val list: List<Pair<Int, String>>,
+                        background: Int, backgroundActive: Int, val color: Int
+): KeyboardPopup(context, key) {
 
     private val background = ContextCompat.getDrawable(context, background)!!
     private val keys = list.map { Key(it.first, it.second) }
@@ -52,7 +55,7 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
             }
         }
 
-        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, offsetX, offsetY)
+        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, offsetX + showOffset, offsetY)
 
         firstTouchedKey?.let {
             it.active = true
