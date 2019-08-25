@@ -11,7 +11,6 @@ import java.util.*
 import kotlin.concurrent.timerTask
 import kotlin.math.abs
 
-
 class BasicKeyboardView(
         context: Context,
         val layout: Layout,

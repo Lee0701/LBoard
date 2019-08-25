@@ -76,6 +76,7 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
     private fun createKeyboardLayout(keys: List<Key>): List<List<Key>> {
         var rows = 1
         if(keys.size > 5) rows = 2
+        if(key.y == 0) rows = 1
         var columns = keys.size / rows
         if(keys.size % rows > 0) columns++
         return (0 until rows).map { j ->
