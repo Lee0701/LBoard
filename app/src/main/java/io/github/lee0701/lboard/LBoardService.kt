@@ -385,10 +385,14 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         outInsets?.contentTopInsets = outInsets?.visibleTopInsets
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        reloadPreferences()
-        reset()
-        setInputView(onCreateInputView())
+    override fun onSharedPreferenceChanged(pref: SharedPreferences, key: String) {
+        if(listOf("common_soft_one_handed_mode").contains(key)) {
+            EventBus.getDefault().post(UpdateOneHandedModeEvent(pref.getInt("common_soft_one_handed_mode", 0)))
+        } else {
+            reloadPreferences()
+            reset()
+            setInputView(onCreateInputView())
+        }
     }
 
     override fun onDestroy() {
