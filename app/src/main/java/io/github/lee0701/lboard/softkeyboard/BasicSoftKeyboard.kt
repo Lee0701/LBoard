@@ -23,6 +23,7 @@ import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
+import io.github.lee0701.lboard.event.UpdateOneHandedModeEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
@@ -123,7 +124,7 @@ class BasicSoftKeyboard(
                 }
                 setBackgroundColor(Color.TRANSPARENT)
                 setOnClickListener {
-                    updateOneHandedMode(-oneHandedMode)
+                    EventBus.getDefault().post(UpdateOneHandedModeEvent(-oneHandedMode))
                 }
                 flipButton = this
             })
@@ -132,7 +133,7 @@ class BasicSoftKeyboard(
                 setBackgroundColor(Color.TRANSPARENT)
                 setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_zoom_out_map_black_24dp))
                 setOnClickListener {
-                    updateOneHandedMode(0)
+                    EventBus.getDefault().post(UpdateOneHandedModeEvent(0))
                 }
             })
         }
@@ -169,7 +170,7 @@ class BasicSoftKeyboard(
         }.joinToString("")
     }
 
-    private fun updateOneHandedMode(oneHandedMode: Int) {
+    override fun updateOneHandedMode(oneHandedMode: Int) {
         this.oneHandedMode = oneHandedMode
 
         keyboardView?.let {

@@ -262,6 +262,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         currentMethod.updateView(this)
     }
 
+    @Subscribe fun onUpdateOneHandedMode(event: UpdateOneHandedModeEvent) {
+        (softInputMethods + symbolInputMethods + physicalInputMethods).forEach {
+            if(it is CommonInputMethod) it.softKeyboard.updateOneHandedMode(event.oneHandedMode)
+        }
+    }
+
     @Subscribe fun onSetSymbolMode(event: SetSymbolModeEvent) {
         setSymbolMode(event.symbolMode)
     }

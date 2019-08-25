@@ -21,6 +21,10 @@ class EmptySoftKeyboard: SoftKeyboard {
         return view
     }
 
+    override fun updateOneHandedMode(oneHandedMode: Int) {
+
+    }
+
     override fun setLabels(labels: Map<Int, String>) {
 
     }
