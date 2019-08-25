@@ -24,6 +24,7 @@ class WordComposingInputMethod(
 
     override fun onKeyPress(keyCode: Int): Boolean {
         if(isSystemKey(keyCode)) return false
+        if(ignoreNextInput) return true
         when(keyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
