@@ -7,7 +7,22 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 
 object Alphabet {
 
-    val LAYOUT_MOREKEYS = CommonKeyboardLayout(mapOf(
+    val MOREKEYS_NUMBERS = CommonKeyboardLayout(mapOf(
+            CommonKeyboardLayout.LAYER_MORE_KEYS_KEYCODE to LayoutLayer(mapOf(
+                    45 to LayoutItem(8),
+                    51 to LayoutItem(9),
+                    33 to LayoutItem(10),
+                    46 to LayoutItem(11),
+                    48 to LayoutItem(12),
+                    53 to LayoutItem(13),
+                    49 to LayoutItem(14),
+                    37 to LayoutItem(15),
+                    43 to LayoutItem(16),
+                    44 to LayoutItem(7)
+            ))
+    ))
+
+    val MOREKEYS_LATIN_SUPPLEMENT = CommonKeyboardLayout(mapOf(
             0 to LayoutLayer(mapOf(
                     // A
                     0x1041 to LayoutItem(0x00c6),
@@ -111,7 +126,7 @@ object Alphabet {
 
             )),
             // char code to list of keycodes
-            CommonKeyboardLayout.LAYER_MORE_KEYS to LayoutLayer(mapOf(
+            CommonKeyboardLayout.LAYER_MORE_KEYS_CHARCODE to LayoutLayer(mapOf(
                     0x0041 to LayoutItem(listOf(0x1041, 0x1141, 0x1241, 0x1341, 0x1441, 0x1541, 0x1641, 0x1741)),
                     0x0043 to LayoutItem(listOf(0x1043)),
                     0x0045 to LayoutItem(listOf(0x1045, 0x1145, 0x1245, 0x1345, 0x1445)),
@@ -133,7 +148,7 @@ object Alphabet {
             ))
     ))
 
-    val LAYOUT_QWERTY = LAYOUT_MOREKEYS + CommonKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_QWERTY = MOREKEYS_NUMBERS + MOREKEYS_LATIN_SUPPLEMENT + CommonKeyboardLayout(LayoutLayer(mapOf(
             68 to LayoutItem(0x0060, 0x007e),
 
             8 to LayoutItem(0x0031, 0x0021),

@@ -64,7 +64,8 @@ data class CommonKeyboardLayout(
 
     companion object {
         const val LAYER_ALT = 10
-        const val LAYER_MORE_KEYS = 20
+        const val LAYER_MORE_KEYS_KEYCODE = 20
+        const val LAYER_MORE_KEYS_CHARCODE = 21
     }
 
 }
