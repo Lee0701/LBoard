@@ -266,6 +266,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         (softInputMethods + symbolInputMethods + physicalInputMethods).forEach {
             if(it is CommonInputMethod) it.softKeyboard.updateOneHandedMode(event.oneHandedMode)
         }
+        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        editor.putInt("common_soft_one_handed_mode", event.oneHandedMode)
+        editor.apply()
     }
 
     @Subscribe fun onSetSymbolMode(event: SetSymbolModeEvent) {

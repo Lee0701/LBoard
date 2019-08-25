@@ -51,6 +51,12 @@
     <string name="pref_common_margin_bottom_title">Soft Key Bottom Margin</string>
     <string name="pref_common_margin_bottom_summary">Adjust soft keyboard margin on bottom.</string>
 
+    <string name="pref_common_soft_one_handed_title">One-Handed Keyboard Mode</string>
+    <string name="pref_common_soft_one_handed_summary">Reduce keyboard width for one-handed use.</string>
+
+    <string name="pref_common_soft_one_handed_margin_title">Width Reduction Amount</string>
+    <string name="pref_common_soft_one_handed_margin_summary">Adjust amount of width reduction for one-handed mode.</string>
+
     <string name="pref_common_soft_switch_between_methods_title">Switch between Input Methods</string>
     <string name="pref_common_soft_switch_between_methods_summary">If enabled, the language key switches to next input method.</string>
 

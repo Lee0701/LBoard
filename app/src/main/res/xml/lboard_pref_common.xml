@@ -40,6 +40,16 @@
             android:title="@string/pref_common_margin_bottom_title"
             android:summary="@string/pref_common_margin_bottom_summary"
             android:defaultValue="0" />
+        <io.github.lee0701.lboard.settings.IntCheckBoxPreference
+            android:key="common_soft_one_handed_mode"
+            android:title="@string/pref_common_soft_one_handed_title"
+            android:summary="@string/pref_common_soft_one_handed_summary"
+            android:defaultValue="0" />
+        <io.github.lee0701.lboard.settings.IntEditTextPreference
+            android:key="common_soft_one_handed_margin"
+            android:title="@string/pref_common_soft_one_handed_margin_title"
+            android:summary="@string/pref_common_soft_one_handed_margin_summary"
+            android:defaultValue="250" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_method_virtual_behaviour_title">

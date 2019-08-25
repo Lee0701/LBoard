@@ -80,8 +80,8 @@ class BasicSoftKeyboard(
     private var marginRight: Int = 0
     private var marginBottom: Int = 0
 
-    private var oneHandedMode: Int = 1
-    private var oneHandedMargin: Int = 250
+    private var oneHandedMode: Int = 0
+    private var oneHandedMargin: Int = 0
 
     override fun initView(context: Context): View? {
         (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
@@ -267,6 +267,9 @@ class BasicSoftKeyboard(
         marginLeft = pref.getInt("common_soft_margin_horizontal", 0)
         marginRight = marginLeft
         marginBottom = pref.getInt("common_soft_margin_bottom", 0)
+
+        oneHandedMode = pref.getInt("common_soft_one_handed_mode", 0)
+        oneHandedMargin = pref.getInt("common_soft_one_handed_margin", 0)
 
         repeatRate = pref.getInt("common_soft_repeat_rate", 0)
         longClickDelay = pref.getInt("common_soft_long_click_delay", 0)
