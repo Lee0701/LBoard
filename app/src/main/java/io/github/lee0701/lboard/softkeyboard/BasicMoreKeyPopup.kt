@@ -29,6 +29,10 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
         popupWindow.isClippingEnabled = false
         popupWindow.isTouchable = true
 
+        offsetX = -popupWindow.width
+        if(layout.first().size % 2 == 1) offsetX += key.width/2
+        while(offsetX < 0) offsetX += key.width
+        while(offsetX + popupWindow.width >= parent.width) offsetX -= key.width
         offsetY = -popupWindow.height
 
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, key.x + offsetX, key.y + offsetY)
