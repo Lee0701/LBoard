@@ -5,20 +5,20 @@ import android.support.v4.content.ContextCompat
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.widget.PopupWindow
 import android.widget.TextView
 
 class BasicKeyPreviewPopup(context: Context, key: Key, background: Int, val color: Int): KeyboardPopup(context, key) {
 
     private val background = ContextCompat.getDrawable(context, background)!!
+    private val contentView = TextView(context).apply {
+        text = key.label
+        gravity = Gravity.CENTER_HORIZONTAL
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, key.width.toFloat() / key.label.length)
+        setTextColor(color)
+    }
 
     override fun show(parent: View) {
-        popupWindow.contentView = TextView(context).apply {
-            text = key.label
-            gravity = Gravity.CENTER_HORIZONTAL
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, key.width.toFloat() / key.label.length)
-            setTextColor(color)
-        }
+        popupWindow.contentView = contentView
         popupWindow.setBackgroundDrawable(background)
         popupWindow.width = key.width
         popupWindow.height = key.height * 2
@@ -27,9 +27,17 @@ class BasicKeyPreviewPopup(context: Context, key: Key, background: Int, val colo
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, key.x, key.y - key.height)
     }
 
+    override fun update() {
+        contentView.text = key.label
+    }
+
+    override fun touchMove(x: Int, y: Int) {
+
+    }
+
     override fun fade(alpha: Float) {
         background.alpha = (alpha * 255).toInt()
-        popupWindow.contentView.alpha = alpha
+        popupWindow.contentView?.alpha = alpha
     }
 
     override fun dismiss() {

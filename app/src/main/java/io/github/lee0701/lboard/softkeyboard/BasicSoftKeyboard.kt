@@ -2,6 +2,7 @@ package io.github.lee0701.lboard.softkeyboard
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -23,9 +24,10 @@ import org.json.JSONObject
 class BasicSoftKeyboard(
         val layout: Layout,
         val theme: KeyboardTheme
-): SoftKeyboard, BasicKeyboardView.OnKeyListener {
+): MoreKeysSupportedSoftKeyboard, BasicKeyboardView.OnKeyListener {
 
     var keyboardView: BasicKeyboardView? = null
+    var currentLabels: Map<Int, String> = mapOf()
 
     override var shift: Int
         get() = keyboardView?.shift ?: 0
@@ -84,6 +86,7 @@ class BasicSoftKeyboard(
     }
 
     override fun setLabels(labels: Map<Int, String>) {
+        this.currentLabels = labels
         layout.rows.forEach { row ->
             row.keys.forEach { key ->
                 key.label = labels[key.keyCode] ?: key.label
@@ -91,6 +94,7 @@ class BasicSoftKeyboard(
             }
         }
         keyboardView?.invalidate()
+        keyboardView?.updatePopups()
     }
 
     private fun convertToCompatible(label: String): String {
@@ -158,6 +162,19 @@ class BasicSoftKeyboard(
 
     override fun onKeyFlickDown(keyCode: Int) {
         EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.DOWN))
+    }
+
+    override fun showMoreKeysKeyboard(keyCode: Int, moreKeys: List<Int>) {
+        val key = layout.rows.flatMap { row -> row.keys }.filter { key -> key.keyCode == keyCode }.firstOrNull() ?: return
+        val keyboardView = keyboardView ?: return
+        val list = moreKeys.map { it to (currentLabels[it] ?: it.toString()) }
+        if(list.isEmpty()) return
+        val popup = BasicMoreKeyPopup(keyboardView.context, key, list, theme.previewBackground, theme.keyTheme[null]?.backgroundPressed!!, theme.keyTheme[null]?.textColor!!)
+        keyboardView.showPopup(popup)
+    }
+
+    override fun closeMoreKeysKeyboard() {
+
     }
 
     override fun setPreferences(pref: SharedPreferences) {

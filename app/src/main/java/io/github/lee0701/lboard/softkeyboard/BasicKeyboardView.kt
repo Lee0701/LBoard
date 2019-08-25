@@ -163,12 +163,10 @@ class BasicKeyboardView(
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
                 val key = getKey(x.toInt(), y.toInt()) ?: return super.onTouchEvent(event)
 
-                popups[key.keyCode]?.dismiss()
-                popups -= key.keyCode
+
                 if(showPopups && validatePopupShown(key)) {
                     val popup = BasicKeyPreviewPopup(context, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
-                    popups += key.keyCode to popup
-                    popup.show(this)
+                    showPopup(popup)
                 }
 
                 key.onPressed { invalidate() }
@@ -202,6 +200,11 @@ class BasicKeyboardView(
                     pointer.x = x.toInt()
                     pointer.y = y.toInt()
                     pointer.pressure = pressure
+
+                    val popup = popups[pointer.key.keyCode]
+                    if(popup != null) {
+                        popup.touchMove(pointer.x, pointer.y)
+                    }
 
                     if(abs(pointer.dy) > abs((pointer.dx))) {
                         if((pointer.y > pointer.key.y + pointer.key.height || pointer.y > pointer.initialY + pointer.key.height/2)
@@ -239,10 +242,7 @@ class BasicKeyboardView(
                         invalidate()
                         val alpha = pointer.key.alpha ?: 0f
                         popup?.fade(alpha)
-                        if(alpha == 0f && popup != null) {
-                            popup.dismiss()
-                            popups -= pointer.key.keyCode
-                        }
+                        if(alpha == 0f && popup != null) closePopup(popup.key.keyCode)
                     }
 
                     onKeyListener.onKeyUp(pointer.key.keyCode, pointer.x, pointer.y)
@@ -251,6 +251,26 @@ class BasicKeyboardView(
             }
         }
         return super.onTouchEvent(event)
+    }
+
+    fun showPopup(popup: KeyboardPopup) {
+        closePopup(popup.key.keyCode)
+        popups += popup.key.keyCode to popup
+        handler.post {
+            popup.show(this)
+        }
+    }
+
+    fun closePopup(keyCode: Int) {
+        val popup = popups[keyCode] ?: return
+        popups -= keyCode
+        handler.post {
+            popup.dismiss()
+        }
+    }
+
+    fun updatePopups() {
+        popups.values.forEach { it.update() }
     }
 
     private fun getKey(x: Int, y: Int): Key? {

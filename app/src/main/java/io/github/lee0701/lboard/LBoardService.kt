@@ -315,6 +315,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             KeyEvent.KEYCODE_ENTER -> {}
             KeyEvent.KEYCODE_DEL -> {}
             else -> {
+                currentMethod.onKeyLongPress(event.keyCode)
                 return
             }
         }

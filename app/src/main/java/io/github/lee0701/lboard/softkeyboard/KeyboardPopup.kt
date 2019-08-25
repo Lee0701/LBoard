@@ -10,8 +10,12 @@ abstract class KeyboardPopup(val context: Context, val key: Key) {
 
     abstract fun show(parent: View)
 
-    abstract fun dismiss()
+    abstract fun update()
+
+    abstract fun touchMove(x: Int, y: Int)
 
     abstract fun fade(alpha: Float)
+
+    abstract fun dismiss()
 
 }

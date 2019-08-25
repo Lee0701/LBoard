@@ -11,6 +11,8 @@ import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.UpdateViewEvent
 import io.github.lee0701.lboard.hardkeyboard.ExtendedCode
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
+import io.github.lee0701.lboard.hardkeyboard.MoreKeysSupportedHardKeyboard
+import io.github.lee0701.lboard.softkeyboard.MoreKeysSupportedSoftKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
@@ -124,6 +126,12 @@ abstract class CommonInputMethod: InputMethod {
 
     override fun onKeyLongPress(keyCode: Int): Boolean {
         ignoreNextInput = true
+        if(hardKeyboard is MoreKeysSupportedHardKeyboard) {
+            val moreKeys = (hardKeyboard as MoreKeysSupportedHardKeyboard).getMoreKeys(keyCode, shift, alt)
+            if(softKeyboard is MoreKeysSupportedSoftKeyboard) {
+                (softKeyboard as MoreKeysSupportedSoftKeyboard).showMoreKeysKeyboard(keyCode, moreKeys)
+            }
+        }
         return true
     }
 

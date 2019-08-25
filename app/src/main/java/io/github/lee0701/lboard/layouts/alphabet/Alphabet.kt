@@ -7,7 +7,23 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 
 object Alphabet {
 
-    val LAYOUT_QWERTY = CommonKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_MOREKEYS = CommonKeyboardLayout(mapOf(
+            0 to LayoutLayer(mapOf(
+                    0x1061 to LayoutItem(0x00e6),
+                    0x1161 to LayoutItem(0x00e3),
+                    0x1261 to LayoutItem(0x00e5),
+                    0x1361 to LayoutItem(0x0101),
+                    0x1461 to LayoutItem(0x00e0),
+                    0x1561 to LayoutItem(0x00e1),
+                    0x1661 to LayoutItem(0x00e2),
+                    0x1761 to LayoutItem(0x00e4)
+            )),
+            CommonKeyboardLayout.LAYER_MORE_KEYS to LayoutLayer(mapOf(
+                    0x61 to LayoutItem(listOf(0x1061, 0x1161, 0x1261, 0x1361, 0x1461, 0x1561, 0x1661, 0x1761))
+            ))
+    ))
+
+    val LAYOUT_QWERTY = LAYOUT_MOREKEYS + CommonKeyboardLayout(LayoutLayer(mapOf(
             68 to LayoutItem(0x0060, 0x007e),
 
             8 to LayoutItem(0x0031, 0x0021),

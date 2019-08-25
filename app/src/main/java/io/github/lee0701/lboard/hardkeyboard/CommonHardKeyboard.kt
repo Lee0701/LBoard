@@ -80,8 +80,13 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHar
     }
 
     override fun getMoreKeys(keyCode: Int, shift: Boolean, alt: Boolean): List<Int> {
+        if(alt) return listOf()
+
+        val charCodes = (if(shift) currentLayer[keyCode]?.shift else currentLayer[keyCode]?.normal) ?: listOf()
+        val charCode = charCodes.firstOrNull() ?: 0
+
         val layer = layout.layers[CommonKeyboardLayout.LAYER_MORE_KEYS] ?: CommonKeyboardLayout.LayoutLayer(mapOf())
-        return (if(shift) layer[keyCode]?.shift else layer[keyCode]?.normal) ?: listOf()
+        return layer[charCode]?.normal ?: listOf()
     }
 
     override fun serialize(): JSONObject {
