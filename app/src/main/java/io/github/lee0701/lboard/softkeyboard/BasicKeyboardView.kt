@@ -17,6 +17,7 @@ class BasicKeyboardView(
         val layout: Layout,
         val theme: KeyboardTheme,
         val onKeyListener: OnKeyListener,
+        val keyboardWidth: Int,
         val keyboardHeight: Int,
         val showLabels: Boolean,
         val showPopups: Boolean,
@@ -31,9 +32,10 @@ class BasicKeyboardView(
     var alt: Int = 0
 
     private val rect = Rect()
-    private val displayMetrics = DisplayMetrics()
-
-    private val paint = Paint()
+    private val paint = Paint().apply {
+        textAlign = Paint.Align.CENTER
+        isAntiAlias = true
+    }
 
     private val pointers = mutableMapOf<Int, TouchPointer>()
     private val popups = mutableMapOf<Int, KeyboardPopup>()
@@ -41,19 +43,14 @@ class BasicKeyboardView(
     private val timer = Timer()
 
     init {
-        paint.textAlign = Paint.Align.CENTER
-        paint.isAntiAlias = true
+        invalidateAllKeys()
+    }
 
-        this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, keyboardHeight + marginBottom)
+    fun invalidateAllKeys() {
+        val keyboardWidth = keyboardWidth - (marginLeft + marginRight)
+        val keyHeight = keyboardHeight / layout.rows.size
 
-        val rows = layout.rows
-
-        (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
-
-        val keyboardWidth = displayMetrics.widthPixels - (marginLeft + marginRight)
-        val keyHeight = keyboardHeight / rows.size
-
-        rows.forEachIndexed { j, row ->
+        layout.rows.forEachIndexed { j, row ->
             var x = (row.marginLeft * keyboardWidth).toInt() + marginLeft
             row.y = j * keyHeight
             row.height = keyHeight

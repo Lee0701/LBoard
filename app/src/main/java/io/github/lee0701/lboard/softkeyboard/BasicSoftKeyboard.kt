@@ -1,5 +1,6 @@
 package io.github.lee0701.lboard.softkeyboard
 
+import android.app.Service
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -9,9 +10,11 @@ import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Build
 import android.os.Vibrator
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
@@ -28,6 +31,8 @@ class BasicSoftKeyboard(
 
     var keyboardView: BasicKeyboardView? = null
     var currentLabels: Map<Int, String> = mapOf()
+
+    private val displayMetrics = DisplayMetrics()
 
     override var shift: Int
         get() = keyboardView?.shift ?: 0
@@ -61,6 +66,8 @@ class BasicSoftKeyboard(
     private var marginBottom: Int = 0
 
     override fun initView(context: Context): View? {
+        (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
+
         if(vibrate) vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if(sound) soundPool = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> SoundPool.Builder().setAudioAttributes(AudioAttributes.Builder().setLegacyStreamType(AudioManager.STREAM_SYSTEM).build()).build()
@@ -74,9 +81,10 @@ class BasicSoftKeyboard(
         val marginLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginLeft.toFloat(), context.resources.displayMetrics)
         val marginRight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginRight.toFloat(), context.resources.displayMetrics)
         val keyboardHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyHeight, context.resources.displayMetrics) * layout.rows.size
+        val keyboardWidth = displayMetrics.widthPixels
 
         keyboardView = BasicKeyboardView(context, layout, theme, this,
-                keyboardHeight.toInt(), showLabels, showPopups, repeatRate, longClickDelay,
+                keyboardWidth, keyboardHeight.toInt(), showLabels, showPopups, repeatRate, longClickDelay,
                 marginLeft.toInt(), marginRight.toInt(), marginBottom.toInt())
         return keyboardView
     }
