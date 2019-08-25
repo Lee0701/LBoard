@@ -160,7 +160,6 @@ class BasicKeyboardView(
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
                 val key = getKey(x.toInt(), y.toInt()) ?: return super.onTouchEvent(event)
 
-
                 if(showPopups && validatePopupShown(key)) {
                     val popup = BasicKeyPreviewPopup(context, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
                     showPopup(popup)

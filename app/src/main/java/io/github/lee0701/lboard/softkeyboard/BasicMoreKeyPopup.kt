@@ -13,18 +13,25 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
 
     private val background = ContextCompat.getDrawable(context, background)!!
     private val keys = list.map { Key(it.first, it.second) }
-    private val keyboardView = KeyboardView(context, listOf(keys), ContextCompat.getDrawable(context, backgroundActive)!!, color)
+    private val layout = createKeyboardLayout(keys)
+    private val keyboardView = KeyboardView(context, layout, ContextCompat.getDrawable(context, backgroundActive)!!, color)
+
+    private var offsetX = 0
+    private var offsetY = 0
 
     var keyCode: Int? = null
 
     override fun show(parent: View) {
         popupWindow.setBackgroundDrawable(background)
-        popupWindow.width = key.width * list.size
-        popupWindow.height = key.height
+        popupWindow.width = key.width * layout.first().size
+        popupWindow.height = key.height * layout.size
         popupWindow.contentView = keyboardView
         popupWindow.isClippingEnabled = false
         popupWindow.isTouchable = true
-        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, key.x, key.y - key.height)
+
+        offsetY = -popupWindow.height
+
+        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, key.x + offsetX, key.y + offsetY)
     }
 
     override fun update() {
@@ -32,8 +39,8 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
     }
 
     override fun touchMove(x: Int, y: Int) {
-        val innerX = x - key.x
-        val innerY = y - (key.y - key.height)
+        val innerX = x - (key.x + offsetX)
+        val innerY = y - (key.y + offsetY)
 
         keyCode = null
 
@@ -55,6 +62,16 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
 
     override fun dismiss() {
         popupWindow.dismiss()
+    }
+
+    private fun createKeyboardLayout(keys: List<Key>): List<List<Key>> {
+        var rows = 1
+        if(keys.size > 5) rows = 2
+        var columns = keys.size / rows
+        if(keys.size % rows > 0) columns++
+        return (0 until rows).map { j ->
+            (0 until columns).map { i -> keys.getOrNull(j * columns + i) }.filterNotNull()
+        }
     }
 
     data class Key(
