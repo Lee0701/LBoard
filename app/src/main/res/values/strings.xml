@@ -107,6 +107,7 @@
 
     <string name="pref_method_more_keys_layout_top_row_numbers">Top Row Numbers</string>
     <string name="pref_method_more_keys_layout_latin_supplement">Latin Supplement</string>
+    <string name="pref_method_more_keys_layout_romanization">Hangul Romanization</string>
 
     <string name="pref_method_hard_timeout_title">Composition Timeout</string>
     <string name="pref_method_hard_timeout_summary">Set composition timeout for danmoeum layouts in milliseconds.</string>

@@ -97,11 +97,13 @@
     <string-array name="method_en_more_keys_layouts">
         <item>@string/pref_method_more_keys_layout_top_row_numbers</item>
         <item>@string/pref_method_more_keys_layout_latin_supplement</item>
+        <item>@string/pref_method_more_keys_layout_romanization</item>
     </string-array>
 
     <string-array name="method_en_more_keys_layout_ids">
         <item>more-keys-top-row-numbers</item>
         <item>more-keys-latin-supplement</item>
+        <item>more-keys-romanization</item>
     </string-array>
 
     <string-array name="method_en_more_keys_layout_defaults">

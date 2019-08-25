@@ -148,6 +148,27 @@ object Alphabet {
             ))
     ))
 
+    val MOREKEYS_ROMANIZATION = CommonKeyboardLayout(mapOf(
+            0 to LayoutLayer(mapOf(
+                    0x1045 to LayoutItem(0x00cb),
+                    0x104f to LayoutItem(0x014e),
+                    0x1055 to LayoutItem(0x016c),
+
+                    0x1065 to LayoutItem(0x00eb),
+                    0x106f to LayoutItem(0x014f),
+                    0x1075 to LayoutItem(0x016d)
+            )),
+            CommonKeyboardLayout.LAYER_MORE_KEYS_CHARCODE to LayoutLayer((mapOf(
+                    0x0045 to LayoutItem(listOf(0x1045)),   // E
+                    0x004f to LayoutItem(listOf(0x104f)),   // O
+                    0x0055 to LayoutItem(listOf(0x1055)),   // U
+
+                    0x0065 to LayoutItem(listOf(0x1065)),   // e
+                    0x006f to LayoutItem(listOf(0x106f)),   // o
+                    0x0075 to LayoutItem(listOf(0x1075))    // u
+            )))
+    ))
+
     val LAYOUT_QWERTY = CommonKeyboardLayout(LayoutLayer(mapOf(
             68 to LayoutItem(0x0060, 0x007e),
 

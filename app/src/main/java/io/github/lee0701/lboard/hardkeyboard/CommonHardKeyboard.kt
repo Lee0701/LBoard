@@ -113,6 +113,7 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHar
 
                 "more-keys-top-row-numbers" to Alphabet.MOREKEYS_NUMBERS,
                 "more-keys-latin-supplement" to Alphabet.MOREKEYS_LATIN_SUPPLEMENT,
+                "more-keys-romanization" to Alphabet.MOREKEYS_ROMANIZATION,
 
                 "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
                 "alphabet-dvorak" to Alphabet.LAYOUT_DVORAK,
