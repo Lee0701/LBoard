@@ -15,7 +15,7 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
     private val keys = list.map { Key(it.first, it.second) }
     private val layout = createKeyboardLayout(keys)
     private val keyboardView = KeyboardView(context, layout,
-            key.width * layout.first().size, key.height * layout.size,
+            key.width * layout.width, key.height * layout.height,
             ContextCompat.getDrawable(context, backgroundActive)!!, color)
 
     private var offsetX = 0
@@ -32,15 +32,34 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
         popupWindow.isTouchable = true
 
         offsetX = key.x - popupWindow.width/2
-        if(layout.first().size % 2 == 1) offsetX += key.width/2
+        if(layout.width % 2 == 1) offsetX += key.width/2
         while(offsetX < 0) offsetX += key.width
         while(offsetX + popupWindow.width > parent.width) offsetX -= key.width
         offsetY = key.y - popupWindow.height
 
+        val rect = Rect(key.x, key.y, key.x + key.width, key.y + key.height)
+        var firstTouchedKey = findKey(rect.centerX(), rect.centerY())
+        println(firstTouchedKey)
+
+        firstTouchedKey?.let { key ->
+            val firstKey = layout.rows.first().keys.first()
+            if(firstKey.keyCode < 0x1000) {
+                layout.rows.find { row -> row.keys.contains(key) }?.let { row ->
+                    row.keys[row.keys.indexOf(key)] = firstKey
+                    layout.rows.first().keys[0] = key
+                    keyboardView.invalidateAllKeys()
+                    firstTouchedKey = findKey(rect.centerX(), rect.centerY())
+                }
+            }
+        }
+
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, offsetX, offsetY)
 
-        val rect = Rect(key.x, key.y, key.x + key.width, key.y + key.height)
-        touchMove(rect.centerX(), rect.centerY())
+        firstTouchedKey?.let {
+            it.active = true
+            keyCode = it.keyCode
+        }
+
     }
 
     override fun update() {
@@ -61,7 +80,6 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
             if(active) keyCode = key.keyCode
         }
         if(changed) keyboardView.invalidate()
-
     }
 
     override fun fade(alpha: Float) {
@@ -73,15 +91,25 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
         popupWindow.dismiss()
     }
 
-    private fun createKeyboardLayout(keys: List<Key>): List<List<Key>> {
+    private fun findKey(x: Int, y: Int): Key? {
+        val innerX = x - offsetX
+        val innerY = y - offsetY
+
+        keys.forEach { key ->
+            if(key.touchableRect.contains(innerX, innerY)) return key
+        }
+        return null
+    }
+
+    private fun createKeyboardLayout(keys: List<Key>): Layout {
         var rows = 1
         if(keys.size > 5) rows = 2
         if(key.y == 0) rows = 1
         var columns = keys.size / rows
         if(keys.size % rows > 0) columns++
-        return (0 until rows).map { j ->
-            (0 until columns).map { i -> keys.getOrNull(j * columns + i) }.filterNotNull()
-        }
+        return Layout((0 until rows).map { j ->
+            Row((0 until columns).map { i -> keys.getOrNull(j * columns + i) }.filterNotNull().toMutableList())
+        }.toMutableList())
     }
 
     data class Key(
@@ -96,9 +124,22 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
         val touchableRect: Rect get() = Rect(x, y + height, x + width, y + height*2)
     }
 
+    data class Row(
+            val keys: MutableList<Key>
+    ) {
+        val width: Int get() = keys.size
+    }
+
+    data class Layout(
+            val rows: MutableList<Row>
+    ) {
+        val width: Int get() = rows.first().width
+        val height: Int get() = rows.size
+    }
+
     class KeyboardView(
             context: Context,
-            val keys: List<List<Key>>,
+            val layout: Layout,
             val keyboardWidth: Int,
             val keyboardHeight: Int,
             val keyBackgroundActive: Drawable,
@@ -111,22 +152,11 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
             paint.textAlign = Paint.Align.CENTER
             paint.isAntiAlias = true
 
-            val keyWidth = keyboardWidth / keys.first().size
-            val keyHeight = keyboardHeight / keys.size
-            keys.forEachIndexed { j, row ->
-                val y = j * keyHeight
-                row.forEachIndexed { i, key ->
-                    val x = i * keyWidth
-                    key.x = x
-                    key.y = y
-                    key.width = keyWidth
-                    key.height = keyHeight
-                }
-            }
+            invalidateAllKeys()
         }
 
         override fun onDraw(canvas: Canvas) {
-            keys.forEach { row -> row.forEach { key -> onDrawKey(canvas, key) } }
+            layout.rows.forEach { row -> row.keys.forEach { key -> onDrawKey(canvas, key) } }
         }
 
         fun onDrawKey(canvas: Canvas, key: Key) {
@@ -142,6 +172,21 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
             paint.textSize = params.size
             paint.color = keyForegroundColor
             canvas.drawText(key.label, params.x, params.y, paint)
+        }
+
+        fun invalidateAllKeys() {
+            val keyWidth = keyboardWidth / layout.width
+            val keyHeight = keyboardHeight / layout.height
+            layout.rows.forEachIndexed { j, row ->
+                val y = j * keyHeight
+                row.keys.forEachIndexed { i, key ->
+                    val x = i * keyWidth
+                    key.x = x
+                    key.y = y
+                    key.width = keyWidth
+                    key.height = keyHeight
+                }
+            }
         }
 
     }
