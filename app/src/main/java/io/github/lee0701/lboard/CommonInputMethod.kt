@@ -125,7 +125,6 @@ abstract class CommonInputMethod: InputMethod {
     }
 
     override fun onKeyLongPress(keyCode: Int): Boolean {
-        ignoreNextInput = true
         if(hardKeyboard is MoreKeysSupportedHardKeyboard) {
             val moreKeys = (hardKeyboard as MoreKeysSupportedHardKeyboard).getMoreKeys(keyCode, shift, alt)
             if(softKeyboard is MoreKeysSupportedSoftKeyboard) {
