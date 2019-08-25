@@ -3,6 +3,7 @@ package io.github.lee0701.lboard.softkeyboard
 import android.content.Context
 import android.app.Service
 import android.graphics.*
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.view.*
@@ -255,7 +256,7 @@ class BasicKeyboardView(
     fun showPopup(popup: KeyboardPopup) {
         closePopup(popup.key.keyCode)
         popups += popup.key.keyCode to popup
-        handler.post {
+        handler?.post {
             popup.show(this)
         }
     }
@@ -263,7 +264,7 @@ class BasicKeyboardView(
     fun closePopup(keyCode: Int) {
         val popup = popups[keyCode] ?: return
         popups -= keyCode
-        handler.post {
+        handler?.post {
             popup.dismiss()
         }
     }
