@@ -1,11 +1,8 @@
 package io.github.lee0701.lboard.softkeyboard
 
 import android.content.Context
-import android.app.Service
 import android.graphics.*
-import android.os.Handler
 import android.support.v4.content.ContextCompat
-import android.util.DisplayMetrics
 import android.view.*
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import java.util.*
@@ -17,8 +14,8 @@ class BasicKeyboardView(
         val layout: Layout,
         val theme: KeyboardTheme,
         val onKeyListener: OnKeyListener,
-        val keyboardWidth: Int,
-        val keyboardHeight: Int,
+        var keyboardWidth: Int,
+        var keyboardHeight: Int,
         val showLabels: Boolean,
         val showPopups: Boolean,
         val repeatRate: Int,
@@ -283,7 +280,7 @@ class BasicKeyboardView(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(measuredWidth, keyboardHeight + marginBottom)
+        setMeasuredDimension(keyboardWidth, keyboardHeight + marginBottom)
     }
 
     private fun validatePopupShown(key: Key): Boolean {

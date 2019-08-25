@@ -3,18 +3,20 @@ package io.github.lee0701.lboard.softkeyboard
 import android.app.Service
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Build
 import android.os.Vibrator
+import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Button
+import android.widget.LinearLayout
 import io.github.lee0701.lboard.event.SoftKeyClickEvent
 import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
@@ -29,7 +31,10 @@ class BasicSoftKeyboard(
         val theme: KeyboardTheme
 ): MoreKeysSupportedSoftKeyboard, BasicKeyboardView.OnKeyListener {
 
+    var keyboardViewHolder: ViewGroup? = null
     var keyboardView: BasicKeyboardView? = null
+    var oneHandedButtonsHolder: View? = null
+    var flipButton: Button? = null
     var currentLabels: Map<Int, String> = mapOf()
 
     private val displayMetrics = DisplayMetrics()
@@ -57,13 +62,18 @@ class BasicSoftKeyboard(
 
     private var keyHeight: Float = 0f
     private var showLabels: Boolean = true
-    private var showPopups: Boolean = false
     private var compatibleLabels: Boolean = true
+
+    private var showPopups: Boolean = false
     private var repeatRate: Int = 0
     private var longClickDelay: Int = 0
+
     private var marginLeft: Int = 0
     private var marginRight: Int = 0
     private var marginBottom: Int = 0
+
+    private var oneHandedMode: Int = 1
+    private var oneHandedMargin: Int = 250
 
     override fun initView(context: Context): View? {
         (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
@@ -81,12 +91,44 @@ class BasicSoftKeyboard(
         val marginLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginLeft.toFloat(), context.resources.displayMetrics)
         val marginRight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, marginRight.toFloat(), context.resources.displayMetrics)
         val keyboardHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyHeight, context.resources.displayMetrics) * layout.rows.size
-        val keyboardWidth = displayMetrics.widthPixels
+        val keyboardWidth = displayMetrics.widthPixels - if(oneHandedMode != 0) oneHandedMargin else 0
 
         keyboardView = BasicKeyboardView(context, layout, theme, this,
                 keyboardWidth, keyboardHeight.toInt(), showLabels, showPopups, repeatRate, longClickDelay,
                 marginLeft.toInt(), marginRight.toInt(), marginBottom.toInt())
-        return keyboardView
+
+        val keyboardViewHolder = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+        this.keyboardViewHolder = keyboardViewHolder
+
+        val buttonsHolder = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = ViewGroup.LayoutParams(oneHandedMargin, ViewGroup.LayoutParams.MATCH_PARENT)
+            background = ContextCompat.getDrawable(context, theme.background)
+
+            addView(Button(context).apply {
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                    weight = 1f
+                }
+                setOnClickListener {
+                    updateOneHandedMode(-oneHandedMode)
+                }
+                flipButton = this
+            })
+            addView(Button(context).apply {
+                layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                text = "<->"
+                setOnClickListener {
+                    updateOneHandedMode(0)
+                }
+            })
+        }
+        this.oneHandedButtonsHolder = buttonsHolder
+
+        updateOneHandedMode(oneHandedMode)
+
+        return keyboardViewHolder
     }
 
     override fun getView(): View? {
@@ -113,6 +155,25 @@ class BasicSoftKeyboard(
             else if(HangulComposer.isJong(c.toInt())) HangulComposer.COMPAT_CHO[HangulComposer.CONVERT_JONG.indexOf(c)]
             else c
         }.joinToString("")
+    }
+
+    private fun updateOneHandedMode(oneHandedMode: Int) {
+        this.oneHandedMode = oneHandedMode
+
+        keyboardView?.let {
+            it.keyboardWidth = displayMetrics.widthPixels - if(oneHandedMode != 0) oneHandedMargin else 0
+            it.invalidateAllKeys()
+            it.invalidate()
+        }
+
+        keyboardViewHolder?.let { holder ->
+            holder.removeAllViews()
+            if(oneHandedMode > 0) holder.addView(oneHandedButtonsHolder)
+            holder.addView(keyboardView)
+            if(oneHandedMode < 0) holder.addView(oneHandedButtonsHolder)
+        }
+
+        flipButton?.text = if(oneHandedMode < 0) ">" else "<"
     }
 
     override fun onKeyDown(keyCode: Int, x: Int, y: Int, repeated: Boolean) {
