@@ -14,7 +14,9 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
     private val background = ContextCompat.getDrawable(context, background)!!
     private val keys = list.map { Key(it.first, it.second) }
     private val layout = createKeyboardLayout(keys)
-    private val keyboardView = KeyboardView(context, layout, ContextCompat.getDrawable(context, backgroundActive)!!, color)
+    private val keyboardView = KeyboardView(context, layout,
+            key.width * layout.first().size, key.height * layout.size,
+            ContextCompat.getDrawable(context, backgroundActive)!!, color)
 
     private var offsetX = 0
     private var offsetY = 0
@@ -23,19 +25,22 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
 
     override fun show(parent: View) {
         popupWindow.setBackgroundDrawable(background)
-        popupWindow.width = key.width * layout.first().size
-        popupWindow.height = key.height * layout.size
+        popupWindow.width = keyboardView.keyboardWidth
+        popupWindow.height = keyboardView.keyboardHeight
         popupWindow.contentView = keyboardView
         popupWindow.isClippingEnabled = false
         popupWindow.isTouchable = true
 
-        offsetX = -popupWindow.width
+        offsetX = key.x - popupWindow.width/2
         if(layout.first().size % 2 == 1) offsetX += key.width/2
         while(offsetX < 0) offsetX += key.width
-        while(offsetX + popupWindow.width >= parent.width) offsetX -= key.width
-        offsetY = -popupWindow.height
+        while(offsetX + popupWindow.width > parent.width) offsetX -= key.width
+        offsetY = key.y - popupWindow.height
 
-        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, key.x + offsetX, key.y + offsetY)
+        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, offsetX, offsetY)
+
+        val rect = Rect(key.x, key.y, key.x + key.width, key.y + key.height)
+        touchMove(rect.centerX(), rect.centerY())
     }
 
     override fun update() {
@@ -43,14 +48,14 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
     }
 
     override fun touchMove(x: Int, y: Int) {
-        val innerX = x - (key.x + offsetX)
-        val innerY = y - (key.y + offsetY)
+        val innerX = x - offsetX
+        val innerY = y - offsetY
 
         keyCode = null
 
         var changed = false
         keys.forEach { key ->
-            val active = key.rect.contains(innerX, innerY)
+            val active = key.touchableRect.contains(innerX, innerY)
             if(key.active != active) changed = true
             key.active = active
             if(active) keyCode = key.keyCode
@@ -87,28 +92,24 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
         var width: Int = 0
         var height: Int = 0
         var active: Boolean = false
-        val rect: Rect get() = Rect(x, y + height, x + width, y + height*2)
+        val touchableRect: Rect get() = Rect(x, y + height, x + width, y + height*2)
     }
 
     class KeyboardView(
             context: Context,
             val keys: List<List<Key>>,
+            val keyboardWidth: Int,
+            val keyboardHeight: Int,
             val keyBackgroundActive: Drawable,
             val keyForegroundColor: Int
     ): View(context, null) {
 
         private val paint = Paint()
-        private val rect = Rect()
 
         init {
             paint.textAlign = Paint.Align.CENTER
             paint.isAntiAlias = true
-        }
 
-        override fun onDraw(canvas: Canvas) {
-            getLocalVisibleRect(rect)
-            val keyboardWidth = rect.width()
-            val keyboardHeight = rect.height()
             val keyWidth = keyboardWidth / keys.first().size
             val keyHeight = keyboardHeight / keys.size
             keys.forEachIndexed { j, row ->
@@ -119,9 +120,12 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
                     key.y = y
                     key.width = keyWidth
                     key.height = keyHeight
-                    onDrawKey(canvas, key)
                 }
             }
+        }
+
+        override fun onDraw(canvas: Canvas) {
+            keys.forEach { row -> row.forEach { key -> onDrawKey(canvas, key) } }
         }
 
         fun onDrawKey(canvas: Canvas, key: Key) {
