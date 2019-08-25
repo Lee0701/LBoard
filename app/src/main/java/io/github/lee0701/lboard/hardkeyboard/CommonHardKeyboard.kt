@@ -111,6 +111,9 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHar
                 "symbols-blackberry" to Symbols.LAYOUT_SYMBOLS_BLACKBERRY,
                 "symbols-google" to Symbols.LAYOUT_SYMBOLS_GOOGLE,
 
+                "more-keys-top-row-numbers" to Alphabet.MOREKEYS_NUMBERS,
+                "more-keys-latin-supplement" to Alphabet.MOREKEYS_LATIN_SUPPLEMENT,
+
                 "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
                 "alphabet-dvorak" to Alphabet.LAYOUT_DVORAK,
                 "alphabet-colemak" to Alphabet.LAYOUT_COLEMAK,

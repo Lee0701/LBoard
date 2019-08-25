@@ -94,6 +94,20 @@
         <item>alphabet-7cols-wert</item>
     </string-array>
 
+    <string-array name="method_en_more_keys_layouts">
+        <item>@string/pref_method_more_keys_layout_top_row_numbers</item>
+        <item>@string/pref_method_more_keys_layout_latin_supplement</item>
+    </string-array>
+
+    <string-array name="method_en_more_keys_layout_ids">
+        <item>more-keys-top-row-numbers</item>
+        <item>more-keys-latin-supplement</item>
+    </string-array>
+
+    <string-array name="method_en_more_keys_layout_defaults">
+        <item>more-keys-latin-supplement</item>
+    </string-array>
+
     <string-array name="method_ko_predefined_layouts">
         <item>@string/pref_method_hard_layout_dubeol_standard</item>
         <item>@string/pref_method_hard_layout_sebeol_390</item>
@@ -118,6 +132,17 @@
         <item>dubeol-google</item>
         <item>dubeol-cheonjiin</item>
         <item>dubeol-naratgeul</item>
+    </string-array>
+
+    <string-array name="method_ko_more_keys_layouts">
+        <item>@string/pref_method_more_keys_layout_top_row_numbers</item>
+    </string-array>
+
+    <string-array name="method_ko_more_keys_layout_ids">
+        <item>more-keys-top-row-numbers</item>
+    </string-array>
+
+    <string-array name="method_ko_more_keys_layout_defaults">
     </string-array>
 
     <string-array name="method_ko_physical_predefined_layouts">

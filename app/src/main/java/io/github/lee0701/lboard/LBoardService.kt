@@ -78,12 +78,16 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         run {
             val predefinedMethod = PREDEFINED_METHODS[pref.getString("method_en_predefined", null) ?: ""] ?: PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, Alphabet.LAYOUT_QWERTY)
 
-            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[pref.getString("method_ko_symbols_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
+            val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[pref.getString("method_en_symbols_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
             val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[pref.getString("method_en_symbols_hard_layout", null)?: ""] ?: Symbols.LAYOUT_SYMBOLS_B
             val layer10SymbolsHardLayout = CommonKeyboardLayout(10, symbolsHardLayout[0] ?: CommonKeyboardLayout.LayoutLayer(mapOf()))
 
+            val moreKeysLayouts = (pref.getStringSet("method_en_more_keys_layouts", null) ?: setOf())
+                    .map { name -> CommonHardKeyboard.LAYOUTS[name] }.filterNotNull()
+            val moreKeysLayout = if(moreKeysLayouts.isNotEmpty()) moreKeysLayouts.reduceRight { layout, acc -> layout + acc } else CommonKeyboardLayout()
+
             val softLayout = BasicSoftKeyboard.LAYOUTS[pref.getString("method_en_soft_layout", null) ?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
-            val hardLayout = layer10SymbolsHardLayout + predefinedMethod.hardLayout
+            val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
                     BasicSoftKeyboard(softLayout.clone(), theme),
@@ -107,8 +111,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[pref.getString("method_ko_symbols_hard_layout", null)?: ""] ?: Symbols.LAYOUT_SYMBOLS_B
             val layer10SymbolsHardLayout = CommonKeyboardLayout(10, symbolsHardLayout[0] ?: CommonKeyboardLayout.LayoutLayer(mapOf()))
 
+            val moreKeysLayouts = (pref.getStringSet("method_ko_more_keys_layouts", null) ?: setOf())
+                    .map { name -> CommonHardKeyboard.LAYOUTS[name] }.filterNotNull()
+            val moreKeysLayout = if(moreKeysLayouts.isNotEmpty()) moreKeysLayouts.reduceRight { layout, acc -> layout + acc } else CommonKeyboardLayout()
+
             val softLayout = BasicSoftKeyboard.LAYOUTS[pref.getString("method_ko_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
-            val hardLayout = layer10SymbolsHardLayout + predefinedMethod.hardLayout
+            val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
             val combinationTable = predefinedMethod.combinationTable
             val virtualJamoTable = predefinedMethod.virtualJamoTable

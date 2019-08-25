@@ -148,7 +148,7 @@ object Alphabet {
             ))
     ))
 
-    val LAYOUT_QWERTY = MOREKEYS_NUMBERS + MOREKEYS_LATIN_SUPPLEMENT + CommonKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_QWERTY = CommonKeyboardLayout(LayoutLayer(mapOf(
             68 to LayoutItem(0x0060, 0x007e),
 
             8 to LayoutItem(0x0031, 0x0021),

@@ -17,6 +17,13 @@
             android:entryValues="@array/method_en_predefined_layout_ids"
             android:defaultValue="alphabet-qwerty"
             softLayoutKey="method_en_soft_layout" />
+        <MultiSelectListPreference
+            android:key="method_en_more_keys_layouts"
+            android:title="@string/pref_method_more_keys_layout_title"
+            android:summary="@string/pref_method_more_keys_layout_summary"
+            android:entries="@array/method_en_more_keys_layouts"
+            android:entryValues="@array/method_en_more_keys_layout_ids"
+            android:defaultValue="@array/method_en_more_keys_layout_defaults" />
         <ListPreference
             android:key="method_en_symbols_soft_layout"
             android:title="@string/pref_method_symbols_soft_layout_title"

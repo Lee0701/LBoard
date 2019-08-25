@@ -102,6 +102,12 @@
     <string name="pref_method_hard_layout_title">Keyboard Layout</string>
     <string name="pref_method_hard_layout_summary">Choose a keyboard layout.</string>
 
+    <string name="pref_method_more_keys_layout_title">More Keys Layout</string>
+    <string name="pref_method_more_keys_layout_summary">Select more keys layouts to use.</string>
+
+    <string name="pref_method_more_keys_layout_top_row_numbers">Top Row Numbers</string>
+    <string name="pref_method_more_keys_layout_latin_supplement">Latin Supplement</string>
+
     <string name="pref_method_hard_timeout_title">Composition Timeout</string>
     <string name="pref_method_hard_timeout_summary">Set composition timeout for danmoeum layouts in milliseconds.</string>
 

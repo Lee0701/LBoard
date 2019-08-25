@@ -39,7 +39,6 @@ class BasicMoreKeyPopup(context: Context, key: io.github.lee0701.lboard.softkeyb
 
         val rect = Rect(key.x, key.y, key.x + key.width, key.y + key.height)
         var firstTouchedKey = findKey(rect.centerX(), rect.centerY())
-        println(firstTouchedKey)
 
         firstTouchedKey?.let { key ->
             val firstKey = layout.rows.first().keys.first()
