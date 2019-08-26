@@ -195,20 +195,38 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         physicalKeyboardMode = newConfig?.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
-        try {
-            setInputView(currentMethod.initView(this))
-        } catch(ex: IndexOutOfBoundsException) {
-            currentMethodId = 0
-            setInputView(currentMethod.initView(this))
-        }
+        setInputView(onCreateInputView())
     }
 
     override fun onCreateInputView(): View? {
-        return currentMethod.initView(this)
+        try {
+            return currentMethod.initView(this)
+        } catch(ex: IndexOutOfBoundsException) {
+            currentMethodId = 0
+            return currentMethod.initView(this)
+        }
     }
 
-    override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
+    override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
         super.onStartInputView(info, restarting)
+
+        when(info.inputType and EditorInfo.TYPE_MASK_CLASS) {
+            EditorInfo.TYPE_CLASS_TEXT -> when(info.inputType and EditorInfo.TYPE_MASK_VARIATION) {
+                EditorInfo.TYPE_TEXT_VARIATION_PASSWORD,
+                    EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
+                    EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD -> {
+                    directInputMode = true
+                }
+                EditorInfo.TYPE_TEXT_VARIATION_URI,
+                EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS -> {
+                    directInputMode = true
+                }
+                else -> {
+                    directInputMode = false
+                }
+            }
+        }
+
         currentMethod.reset()
     }
 
@@ -219,6 +237,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private fun reset() {
         currentMethodId = 0
         symbolKeyboardMode = false
+        directInputMode = false
     }
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
@@ -257,12 +276,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         if(symbolKeyboardMode == symbolMode) return
         currentMethod.reset()
         symbolKeyboardMode = symbolMode
-        try {
-            setInputView(currentMethod.initView(this))
-        } catch(ex: IndexOutOfBoundsException) {
-            currentMethodId = 0
-            setInputView(currentMethod.initView(this))
-        }
+        setInputView(onCreateInputView())
     }
 
     @Subscribe fun onResetView(event: ResetViewEvent) {
