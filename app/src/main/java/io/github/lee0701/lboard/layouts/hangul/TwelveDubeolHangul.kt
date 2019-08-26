@@ -24,6 +24,41 @@ object TwelveDubeolHangul {
             0x200b to LayoutItem(listOf(0x002c, 0x002e, 0x003f, 0x0021)),
             0x200c to LayoutItem(SystemCode.KEYPRESS or KeyEvent.KEYCODE_SPACE),
 
+            0x2204 to LayoutItem(0x3132),
+            0x2304 to LayoutItem(0x314b),
+            0x2404 to LayoutItem(0x314b),
+            0x2504 to LayoutItem(0x314b),
+
+            0x2205 to LayoutItem(0x3139),
+            0x2305 to LayoutItem(0x3139),
+            0x2405 to LayoutItem(0x3139),
+            0x2505 to LayoutItem(0x3139),
+
+            0x2206 to LayoutItem(0x3138),
+            0x2306 to LayoutItem(0x314c),
+            0x2406 to LayoutItem(0x314c),
+            0x2506 to LayoutItem(0x314c),
+
+            0x2207 to LayoutItem(0x3143),
+            0x2307 to LayoutItem(0x314d),
+            0x2407 to LayoutItem(0x314d),
+            0x2507 to LayoutItem(0x314d),
+
+            0x2208 to LayoutItem(0x3146),
+            0x2308 to LayoutItem(0x314e),
+            0x2408 to LayoutItem(0x314e),
+            0x2508 to LayoutItem(0x314e),
+
+            0x2209 to LayoutItem(0x3149),
+            0x2309 to LayoutItem(0x314a),
+            0x2409 to LayoutItem(0x314a),
+            0x2509 to LayoutItem(0x314a),
+
+            0x220a to LayoutItem(0x3141),
+            0x230a to LayoutItem(0x3141),
+            0x240a to LayoutItem(0x3141),
+            0x250a to LayoutItem(0x3141),
+
             // Flick codes
             0x2401 to LayoutItem(0x3153),   // ㅓ
             0x2501 to LayoutItem(0x314f),   // ㅏ
