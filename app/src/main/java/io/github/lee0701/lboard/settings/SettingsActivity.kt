@@ -1,6 +1,8 @@
 package io.github.lee0701.lboard.settings
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
@@ -18,7 +20,8 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
             ActivationFragment(),
             CommonFragment(),
             InputMethodFragmentEn(),
-            InputMethodFragmentKo()
+            InputMethodFragmentKo(),
+            AboutFragment()
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,6 +103,22 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
         override val title = R.string.pref_method_ko_title
         override fun onCreatePreferences(p0: Bundle?, p1: String?) {
             addPreferencesFromResource(R.xml.lboard_pref_method_ko)
+        }
+    }
+
+    class AboutFragment: Fragment() {
+        override val title = R.string.pref_about_title
+        override val icon = R.drawable.ic_info_outline_black_24dp
+        override fun onCreatePreferences(p0: Bundle?, p1: String?) {
+            addPreferencesFromResource(R.xml.lboard_pref_about)
+            preferenceManager
+                    .findPreference("about_copyright_info_license_url")
+                    .setOnPreferenceClickListener {
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse("http://www.apache.org/licenses/LICENSE-2.0")
+                        startActivity(intent)
+                        true
+                    }
         }
     }
 

@@ -259,7 +259,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         }
 
         inputAfterSwitch = false
-        setInputView(currentMethod.initView(this))
+        setInputView(onCreateInputView())
     }
 
     private fun showInputMethodPicker() {

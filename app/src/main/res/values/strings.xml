@@ -2,11 +2,32 @@
     <string name="app_name">LBoard</string>
     <string name="service_name">LBoard</string>
     <string name="settings_name">LBoard Settings</string>
+    
+    <string name="app_copyright_title">Copyright</string>
+    <string name="app_copyright_info">
+        Copyright 2019 Hyegyu Lee
+    </string>
+    <string name="app_copyright_info_license">
+        Licensed under the Apache License, Version 2.0 (the "License");\n
+        you may not use this file except in compliance with the License.\n
+        You may obtain a copy of the License at
+    </string>
+    <string name="app_copyright_info_license_url">
+                    http://www.apache.org/licenses/LICENSE-2.0
+    </string>
+    <string name="app_copyright_info_license_info">
+        Unless required by applicable law or agreed to in writing, software\n
+        distributed under the License is distributed on an "AS IS" BASIS,\n
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+        See the License for the specific language governing permissions and\n
+        limitations under the License.
+    </string>
 
     <string name="pref_activation_title">Activation</string>
     <string name="pref_common_title">Common</string>
     <string name="pref_method_en_title">Alphabet Input Method</string>
     <string name="pref_method_ko_title">Korean Input Method</string>
+    <string name="pref_about_title">About</string>
 
 
     <string name="pref_common_soft_mode_default">mobile</string>

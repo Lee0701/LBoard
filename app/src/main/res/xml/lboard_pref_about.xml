@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:title="@string/app_name"
+        android:summary="@string/app_version_name" />
+    <Preference
+        android:title="@string/app_copyright_title"
+        android:summary="@string/app_copyright_info" />
+    <Preference
+        android:summary="@string/app_copyright_info_license" />
+    <Preference
+        android:key="about_copyright_info_license_url"
+        android:summary="@string/app_copyright_info_license_url" />
+    <Preference
+        android:summary="@string/app_copyright_info_license_info" />
+</PreferenceScreen>
