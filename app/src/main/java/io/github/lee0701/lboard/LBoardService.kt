@@ -44,11 +44,14 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private var directInputMode: Boolean = false
     private var physicalKeyboardMode: Boolean = false
     private var currentMethodId: Int = 0
-    private val currentMethod: InputMethod get() =
-        if(symbolKeyboardMode) symbolInputMethods[currentMethodId]
-        else if(physicalKeyboardMode) physicalInputMethods[currentMethodId]
-        else if(directInputMode) directInputMethods[currentMethodId]
-        else softInputMethods[currentMethodId]
+
+    private val currentMethods: List<InputMethod> get() =
+        if(symbolKeyboardMode) symbolInputMethods
+        else if(physicalKeyboardMode) physicalInputMethods
+        else if(directInputMode) directInputMethods
+        else softInputMethods
+
+    private val currentMethod: InputMethod get() = currentMethods[currentMethodId]
 
     private var switchBetweenApps: Boolean = true
 
@@ -244,12 +247,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         currentMethod.reset()
         symbolKeyboardMode = false
 
-        val methods = if(physicalKeyboardMode) physicalInputMethods else softInputMethods
-
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val token = window.window.attributes.token
 
-        if(++currentMethodId >= methods.size) {
+        if(++currentMethodId >= currentMethods.size) {
             currentMethodId = 0
             if(!inputAfterSwitch && switchBetweenApps) {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) switchToNextInputMethod(false)
