@@ -1,10 +1,12 @@
 package io.github.lee0701.lboard.layouts.hangul
 
+import android.view.KeyEvent
 import io.github.lee0701.lboard.hangul.CombinationTable
 import io.github.lee0701.lboard.hangul.VirtualJamoTable
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
+import io.github.lee0701.lboard.hardkeyboard.SystemCode
 
 object TwelveDubeolHangul {
     
@@ -19,6 +21,8 @@ object TwelveDubeolHangul {
             0x2008 to LayoutItem(listOf(0x3145, 0x314e, 0x3146)),
             0x2009 to LayoutItem(listOf(0x3148, 0x314a, 0x3149)),
             0x200a to LayoutItem(listOf(0x3147, 0x3141)),
+            0x200b to LayoutItem(listOf(0x002c, 0x002e, 0x003f, 0x0021)),
+            0x200c to LayoutItem(SystemCode.KEYPRESS or KeyEvent.KEYCODE_SPACE),
 
             // Flick codes
             0x2401 to LayoutItem(0x3153),   // ㅓ
@@ -34,7 +38,8 @@ object TwelveDubeolHangul {
             0x2006 to "ㄷㅌ",
             0x2007 to "ㅂㅍ",
             0x2008 to "ㅅㅎ",
-            0x2009 to "ㅈㅊ"
+            0x2009 to "ㅈㅊ",
+            0x200c to "간격"
     )), spaceForSeparation = true)
     
     val COMBINATION_CHEONJIIN = CombinationTable(mapOf(

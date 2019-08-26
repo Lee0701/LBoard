@@ -88,8 +88,8 @@ abstract class CommonInputMethod: InputMethod {
                 val converted = convert(keyCode, shift, alt)
                 if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
                 if(converted.resultChar == null) {
-                    hardKeyboard.reset()
                     if(converted.defaultChar) {
+                        hardKeyboard.reset()
                         val defaultChar = getDefaultChar(keyCode, shift, alt)
                         if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(defaultChar.toChar().toString()))
                     }

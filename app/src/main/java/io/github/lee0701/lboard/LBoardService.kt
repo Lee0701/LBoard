@@ -303,6 +303,14 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         setSymbolMode(event.symbolMode)
     }
 
+    @Subscribe fun onKeyPress(event: KeyPressEvent) {
+        this.onKeyDown(event.keyCode, KeyEvent(KeyEvent.ACTION_DOWN, event.keyCode))
+    }
+
+    @Subscribe fun onKeyRelease(event: KeyReleaseEvent) {
+        this.onKeyUp(event.keyCode, KeyEvent(KeyEvent.ACTION_UP, event.keyCode))
+    }
+
     @Subscribe fun onSoftKeyClick(event: SoftKeyClickEvent) {
         when(event.state) {
             SoftKeyClickEvent.State.DOWN -> onSoftKeyDown(event)

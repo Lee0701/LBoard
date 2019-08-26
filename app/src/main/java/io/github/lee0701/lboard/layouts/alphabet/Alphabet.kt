@@ -4,6 +4,7 @@ import android.view.KeyEvent
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
+import io.github.lee0701.lboard.hardkeyboard.SystemCode
 
 object Alphabet {
 
@@ -341,7 +342,7 @@ object Alphabet {
             0x2025 to LayoutItem(listOf(0x0068, 0x006b), listOf(0x0048, 0x004b)),
             0x2026 to LayoutItem(0x006c, 0x004c),
 
-            0x2030 to LayoutItem(0x60000000 or KeyEvent.KEYCODE_SHIFT_LEFT),
+            0x2030 to LayoutItem(SystemCode.KEYPRESS or KeyEvent.KEYCODE_SHIFT_LEFT),
             0x2031 to LayoutItem(listOf(0x007a, 0x0078), listOf(0x005a, 0x0058)),
             0x2032 to LayoutItem(listOf(0x0063, 0x0076), listOf(0x0043, 0x0056)),
             0x2033 to LayoutItem(0x0062, 0x0042),

@@ -1,12 +1,15 @@
 package io.github.lee0701.lboard.hardkeyboard
 
 import android.view.KeyEvent
+import io.github.lee0701.lboard.event.KeyPressEvent
+import io.github.lee0701.lboard.event.KeyReleaseEvent
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
 import io.github.lee0701.lboard.layouts.symbols.Symbols
+import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
 class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHardKeyboard {
@@ -47,12 +50,15 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHar
                 result = layout.strokes[strokeTableIndex][lastChar] ?: lastChar
                 backspace = true
             }
-            SystemCode.KEYPRESS -> when(result and 0x0000ffff) {
-                KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT ->
-                    return HardKeyboard.ConvertResult(null, shiftOn = !shift)
-                KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT ->
-                    return HardKeyboard.ConvertResult(null, altOn = !alt)
-                else -> return convert(result and 0x0000ffff, result and SystemCode.KEYPRESS_SHIFT != 0, result  and SystemCode.KEYPRESS_ALT!= 0)
+            SystemCode.KEYPRESS -> {
+                if(result and SystemCode.KEYPRESS_SHIFT != 0) EventBus.getDefault().post(KeyPressEvent(KeyEvent.KEYCODE_SHIFT_LEFT))
+                if(result and SystemCode.KEYPRESS_ALT != 0) EventBus.getDefault().post(KeyPressEvent(KeyEvent.KEYCODE_ALT_LEFT))
+                EventBus.getDefault().post(KeyPressEvent(result and 0x0000ffff))
+                EventBus.getDefault().post(KeyReleaseEvent(result and 0x0000ffff))
+                if(result and SystemCode.KEYPRESS_SHIFT != 0) EventBus.getDefault().post(KeyReleaseEvent(KeyEvent.KEYCODE_SHIFT_LEFT))
+                if(result and SystemCode.KEYPRESS_ALT != 0) EventBus.getDefault().post(KeyReleaseEvent(KeyEvent.KEYCODE_ALT_LEFT))
+
+                return HardKeyboard.ConvertResult(null, defaultChar = false)
             }
         }
 

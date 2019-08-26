@@ -74,10 +74,10 @@ class HangulInputMethod(
                 val converted = convert(keyCode, shift, alt)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
-                    EventBus.getDefault().post(CommitComposingEvent())
-                    states.clear()
-                    hardKeyboard.reset()
                     if(converted.defaultChar) {
+                        EventBus.getDefault().post(CommitComposingEvent())
+                        states.clear()
+                        hardKeyboard.reset()
                         val defaultChar = getDefaultChar(keyCode, shift, alt)
                         if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(getDefaultChar(keyCode, shift, alt).toChar().toString()))
                     }
