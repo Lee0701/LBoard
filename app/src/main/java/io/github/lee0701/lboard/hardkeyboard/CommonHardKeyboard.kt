@@ -1,8 +1,8 @@
 package io.github.lee0701.lboard.hardkeyboard
 
 import android.view.KeyEvent
-import io.github.lee0701.lboard.event.KeyPressEvent
-import io.github.lee0701.lboard.event.KeyReleaseEvent
+import io.github.lee0701.lboard.old_event.KeyPressEvent
+import io.github.lee0701.lboard.old_event.KeyReleaseEvent
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul

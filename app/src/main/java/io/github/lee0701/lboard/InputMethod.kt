@@ -3,15 +3,31 @@ package io.github.lee0701.lboard
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
-import io.github.lee0701.lboard.event.SoftKeyFlickEvent
-import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
-import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
+import io.github.lee0701.lboard.old_event.SoftKeyFlickEvent
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.EventBusException
 import org.json.JSONObject
 
 interface InputMethod {
 
     var shift: Boolean
     var alt: Boolean
+
+    fun init() {
+        try {
+            EventBus.getDefault().register(this)
+        } catch(ex: EventBusException) {
+            // Do nothing.
+        }
+    }
+
+    fun destroy() {
+        try {
+            EventBus.getDefault().unregister(this)
+        } catch(ex: EventBusException) {
+            // Do nothing.
+        }
+    }
 
     fun initView(context: Context): View?
     fun updateView(context: Context): View?

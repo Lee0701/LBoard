@@ -4,7 +4,7 @@ import android.content.Context
 import android.inputmethodservice.Keyboard
 import android.inputmethodservice.KeyboardView
 import android.view.View
-import io.github.lee0701.lboard.event.SoftKeyClickEvent
+import io.github.lee0701.lboard.old_event.SoftKeyClickEvent
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 

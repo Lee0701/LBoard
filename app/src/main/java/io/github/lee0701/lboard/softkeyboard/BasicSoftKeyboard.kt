@@ -20,10 +20,10 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import io.github.lee0701.lboard.R
-import io.github.lee0701.lboard.event.SoftKeyClickEvent
-import io.github.lee0701.lboard.event.SoftKeyFlickEvent
-import io.github.lee0701.lboard.event.SoftKeyLongClickEvent
-import io.github.lee0701.lboard.event.UpdateOneHandedModeEvent
+import io.github.lee0701.lboard.old_event.SoftKeyClickEvent
+import io.github.lee0701.lboard.old_event.SoftKeyFlickEvent
+import io.github.lee0701.lboard.old_event.SoftKeyLongClickEvent
+import io.github.lee0701.lboard.old_event.UpdateOneHandedModeEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme

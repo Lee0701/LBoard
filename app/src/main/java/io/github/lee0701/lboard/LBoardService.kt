@@ -6,18 +6,16 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
-import android.os.Vibrator
 import android.support.v7.preference.PreferenceManager
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import io.github.lee0701.lboard.event.*
+import io.github.lee0701.lboard.old_event.*
 import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
-import io.github.lee0701.lboard.hardkeyboard.ExtendedCode
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
@@ -74,6 +72,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     private fun reloadPreferences() {
+        allInputMethods.forEach { it.destroy() }
+
         softInputMethods.clear()
         directInputMethods.clear()
         symbolInputMethods.clear()
@@ -191,7 +191,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             physicalInputMethods += methodKo
         }
 
-        allInputMethods.forEach { it.setPreferences(pref) }
+        allInputMethods.forEach {
+            it.init()
+            it.setPreferences(pref)
+        }
 
     }
 
@@ -432,8 +435,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        allInputMethods.forEach { it.destroy() }
         EventBus.getDefault().unregister(this)
+        super.onDestroy()
     }
 
     enum class PredefinedHangulConverter() {

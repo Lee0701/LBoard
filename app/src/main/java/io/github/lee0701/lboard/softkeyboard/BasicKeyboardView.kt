@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.view.*
-import io.github.lee0701.lboard.event.SoftKeyFlickEvent
+import io.github.lee0701.lboard.old_event.SoftKeyFlickEvent
 import java.util.*
 import kotlin.concurrent.timerTask
 import kotlin.math.abs

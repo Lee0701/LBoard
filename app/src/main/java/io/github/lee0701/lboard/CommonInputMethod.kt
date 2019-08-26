@@ -5,10 +5,10 @@ import android.content.SharedPreferences
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
-import io.github.lee0701.lboard.event.CommitStringEvent
-import io.github.lee0701.lboard.event.SetSymbolModeEvent
-import io.github.lee0701.lboard.event.SoftKeyFlickEvent
-import io.github.lee0701.lboard.event.UpdateViewEvent
+import io.github.lee0701.lboard.old_event.CommitStringEvent
+import io.github.lee0701.lboard.old_event.SetSymbolModeEvent
+import io.github.lee0701.lboard.old_event.SoftKeyFlickEvent
+import io.github.lee0701.lboard.old_event.UpdateViewEvent
 import io.github.lee0701.lboard.hardkeyboard.ExtendedCode
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.MoreKeysSupportedHardKeyboard

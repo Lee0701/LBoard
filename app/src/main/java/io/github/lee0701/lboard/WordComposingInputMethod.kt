@@ -1,10 +1,9 @@
 package io.github.lee0701.lboard
 
 import android.content.Context
-import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
-import io.github.lee0701.lboard.event.*
+import io.github.lee0701.lboard.old_event.*
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
