@@ -1,22 +1,21 @@
 package io.github.lee0701.lboard
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.view.KeyEvent
-import android.view.View
+import io.github.lee0701.lboard.event.PreferenceChangeEvent
 import io.github.lee0701.lboard.old_event.*
 import io.github.lee0701.lboard.hangul.HangulComposer
-import io.github.lee0701.lboard.hangul.SebeolHangulComposer
 import io.github.lee0701.lboard.hangul.SingleVowelDubeolHangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
 import java.util.*
 import kotlin.concurrent.timerTask
 
 class HangulInputMethod(
+        override val methodId: String,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
         val hangulConverter: HangulComposer,
@@ -29,8 +28,10 @@ class HangulInputMethod(
     private val timer = Timer()
     private var timeoutTask: TimerTask? = null
 
-    override fun initView(context: Context): View? {
-        return softKeyboard.initView(context)
+    @Subscribe
+    override fun onPreferenceChange(event: PreferenceChangeEvent) {
+        super.onPreferenceChange(event)
+        hangulConverter.setPreferences(event.preferences)
     }
 
     override fun onKeyPress(keyCode: Int): Boolean {
@@ -110,14 +111,8 @@ class HangulInputMethod(
     }
 
     override fun reset() {
-        EventBus.getDefault().post(CommitComposingEvent())
         states.clear()
         super.reset()
-    }
-
-    override fun setPreferences(pref: SharedPreferences) {
-        super.setPreferences(pref)
-        hangulConverter.setPreferences(pref)
     }
 
     override fun serialize(): JSONObject {
@@ -127,12 +122,7 @@ class HangulInputMethod(
     }
 
     companion object {
-        @JvmStatic fun deserialize(json: JSONObject): HangulInputMethod? {
-            val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard
-            val hardKeyboard = InputMethod.deserializeModule(json.getJSONObject("hard-keyboard")) as HardKeyboard
-            val hangulConverter = InputMethod.deserializeModule(json.getJSONObject("hangul-converter")) as SebeolHangulComposer
-            return HangulInputMethod(softKeyboard, hardKeyboard, hangulConverter)
-        }
+
     }
 
 }

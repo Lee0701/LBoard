@@ -19,9 +19,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import io.github.lee0701.lboard.InputHistoryHolder
 import io.github.lee0701.lboard.R
-import io.github.lee0701.lboard.old_event.SoftKeyClickEvent
-import io.github.lee0701.lboard.old_event.SoftKeyFlickEvent
+import io.github.lee0701.lboard.event.LBoardKeyEvent
+import io.github.lee0701.lboard.event.SoftKeyEvent
 import io.github.lee0701.lboard.old_event.SoftKeyLongClickEvent
 import io.github.lee0701.lboard.old_event.UpdateOneHandedModeEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
@@ -33,15 +34,20 @@ import org.json.JSONObject
 class BasicSoftKeyboard(
         val layout: Layout,
         val theme: KeyboardTheme
-): MoreKeysSupportedSoftKeyboard, BasicKeyboardView.OnKeyListener {
+): MoreKeysSupportedSoftKeyboard, InputHistoryHolder, BasicKeyboardView.OnKeyListener {
+
+    override lateinit var methodId: String
 
     var keyboardViewHolder: ViewGroup? = null
+
     var keyboardView: BasicKeyboardView? = null
     var oneHandedButtonsHolder: View? = null
     var flipButton: ImageButton? = null
 
     lateinit var leftDrawable: Drawable
     lateinit var rightDrawable: Drawable
+
+    override val inputHistory: MutableMap<Int, MutableList<LBoardKeyEvent.Action>> = mutableMapOf()
 
     var currentLabels: Map<Int, String> = mapOf()
 
@@ -141,14 +147,14 @@ class BasicSoftKeyboard(
 
         updateOneHandedMode(oneHandedMode)
 
-        return keyboardViewHolder
+        return this.keyboardViewHolder
     }
 
     override fun getView(): View? {
-        return keyboardView
+        return keyboardViewHolder
     }
 
-    override fun setLabels(labels: Map<Int, String>) {
+    override fun updateLabels(labels: Map<Int, String>) {
         this.currentLabels = labels
         layout.rows.forEach { row ->
             row.keys.forEach { key ->
@@ -189,24 +195,19 @@ class BasicSoftKeyboard(
         flipButton?.setImageDrawable(if(oneHandedMode < 0) rightDrawable else leftDrawable)
     }
 
-    override fun onKeyDown(keyCode: Int, x: Int, y: Int, repeated: Boolean) {
-        if(!repeated) {
-            vibrator?.vibrate(vibrateDuration.toLong())
-            val volume = soundVolume
+    override fun onKeyDown(keyCode: Int, x: Int, y: Int) {
+        vibrator?.vibrate(vibrateDuration.toLong())
+        val volume = soundVolume
 
-            (if(keyCode == KeyEvent.KEYCODE_SPACE && upSound != null) upSound else downSound)?.let { soundPool?.play(it, volume, volume, 1, 0, 1f) }
-        }
+        (if(keyCode == KeyEvent.KEYCODE_SPACE && upSound != null) upSound else downSound)?.let { soundPool?.play(it, volume, volume, 1, 0, 1f) }
         pressTime = System.currentTimeMillis()
 
-        when(keyCode) {
-            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
-            KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
-                EventBus.getDefault().post(SoftKeyClickEvent(keyCode, SoftKeyClickEvent.State.DOWN))
-            }
-        }
+        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
+                LBoardKeyEvent.ActionType.PRESS, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
     }
 
-    override fun onKeyUp(keyCode: Int, x: Int, y: Int, repeated: Boolean) {
+    override fun onKeyUp(keyCode: Int, x: Int, y: Int) {
         val timeDiff = System.currentTimeMillis() - pressTime - longClickDelay/5
         val timeRatio = (timeDiff.toFloat() / longClickDelay).let { if(it > 1) 1f else if(it < 0) 0f else it }
         val duration = (timeRatio * vibrateDuration).toLong()
@@ -215,14 +216,9 @@ class BasicSoftKeyboard(
         val volume = timeRatio * soundVolume
         upSound?.let { soundPool?.play(it, volume, volume, 1, 0, 1f) }
 
-        when(keyCode) {
-            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
-            KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {}
-            else -> {
-                EventBus.getDefault().post(SoftKeyClickEvent(keyCode, SoftKeyClickEvent.State.DOWN))
-            }
-        }
-        EventBus.getDefault().post(SoftKeyClickEvent(keyCode, SoftKeyClickEvent.State.UP))
+        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
+                LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
     }
 
     override fun onKeyLongClick(keyCode: Int) {
@@ -230,20 +226,34 @@ class BasicSoftKeyboard(
         EventBus.getDefault().post(SoftKeyLongClickEvent(keyCode))
     }
 
+    override fun onKeyRepeat(keyCode: Int) {
+        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
+                LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+    }
+
     override fun onKeyFlickLeft(keyCode: Int) {
-        EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.LEFT))
+        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
+                LBoardKeyEvent.ActionType.FLICK_LEFT, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
     }
 
     override fun onKeyFlickRight(keyCode: Int) {
-        EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.RIGHT))
+        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
+                LBoardKeyEvent.ActionType.FLICK_RIGHT, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
     }
 
     override fun onKeyFlickUp(keyCode: Int) {
-        EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.UP))
+        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
+                LBoardKeyEvent.ActionType.FLICK_UP, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
     }
 
     override fun onKeyFlickDown(keyCode: Int) {
-        EventBus.getDefault().post(SoftKeyFlickEvent(keyCode, SoftKeyFlickEvent.FlickDirection.DOWN))
+        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
+                LBoardKeyEvent.ActionType.FLICK_DOWN, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
     }
 
     override fun showMoreKeysKeyboard(keyCode: Int, moreKeys: List<Int>) {
@@ -303,12 +313,6 @@ class BasicSoftKeyboard(
     }
 
     companion object {
-
-        @JvmStatic fun deserialize(json: JSONObject): BasicSoftKeyboard? {
-            val layout = LAYOUTS[json.getString("layout")] ?: return null
-            val theme = THEMES[json.getString("theme")] ?: return null
-            return BasicSoftKeyboard(layout, theme)
-        }
 
         val LAYOUTS = listOf(
                 SoftLayout.LAYOUT_10COLS_MOBILE,

@@ -8,20 +8,13 @@ import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.json.JSONObject
 
 class AlphabetInputMethod(
+        override val methodId: String,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard
 ): CommonInputMethod() {
 
-    override fun initView(context: Context): View? {
-        return softKeyboard.initView(context)
-    }
-
     companion object {
-        @JvmStatic fun deserialize(json: JSONObject): AlphabetInputMethod? {
-            val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard
-            val hardKeyboard = InputMethod.deserializeModule(json.getJSONObject("hard-keyboard")) as HardKeyboard
-            return AlphabetInputMethod(softKeyboard, hardKeyboard)
-        }
+
     }
 
 }

@@ -10,16 +10,13 @@ import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
 class WordComposingInputMethod(
+        override val methodId: String,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard
 ): CommonInputMethod() {
 
     val states: MutableList<String> = mutableListOf()
     val lastState: String get() = if(states.isEmpty()) "" else states.last()
-
-    override fun initView(context: Context): View? {
-        return softKeyboard.initView(context)
-    }
 
     override fun onKeyPress(keyCode: Int): Boolean {
         if(isSystemKey(keyCode)) return false
@@ -55,13 +52,7 @@ class WordComposingInputMethod(
                 val converted = convert(keyCode, shift, alt)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
-                    if(converted.defaultChar) {
-                        EventBus.getDefault().post(CommitComposingEvent())
-                        states.clear()
-                        hardKeyboard.reset()
-                        val defaultChar = getDefaultChar(keyCode, shift, alt)
-                        if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(getDefaultChar(keyCode, shift, alt).toChar().toString()))
-                    }
+                    if(converted.defaultChar) return false
                 } else if(converted.resultChar == 0) {
                     reset()
                 } else {
@@ -78,17 +69,12 @@ class WordComposingInputMethod(
     }
 
     override fun reset() {
-        EventBus.getDefault().post(CommitComposingEvent())
         states.clear()
         super.reset()
     }
 
     companion object {
-        @JvmStatic fun deserialize(json: JSONObject): WordComposingInputMethod? {
-            val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard
-            val hardKeyboard = InputMethod.deserializeModule(json.getJSONObject("hard-keyboard")) as HardKeyboard
-            return WordComposingInputMethod(softKeyboard, hardKeyboard)
-        }
+
     }
 
 }

@@ -10,6 +10,8 @@ import org.json.JSONObject
 
 interface InputMethod {
 
+    val methodId: String
+
     var shift: Boolean
     var alt: Boolean
 
@@ -27,20 +29,6 @@ interface InputMethod {
         } catch(ex: EventBusException) {
             // Do nothing.
         }
-    }
-
-    fun initView(context: Context): View?
-    fun updateView(context: Context): View?
-
-    fun onKeyPress(keyCode: Int): Boolean
-    fun onKeyRelease(keyCode: Int): Boolean
-    fun onKeyLongPress(keyCode: Int): Boolean
-    fun onKeyFlick(keyCode: Int, direction: SoftKeyFlickEvent.FlickDirection): Boolean
-
-    fun reset()
-
-    fun setPreferences(pref: SharedPreferences) {
-
     }
 
     fun serialize(): JSONObject {

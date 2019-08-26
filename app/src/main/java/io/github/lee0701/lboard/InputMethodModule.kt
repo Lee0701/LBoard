@@ -7,22 +7,6 @@ import org.json.JSONObject
 
 interface InputMethodModule {
 
-    fun init() {
-        try {
-            EventBus.getDefault().register(this)
-        } catch(ex: EventBusException) {
-            // Do nothing.
-        }
-    }
-
-    fun destroy() {
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch(ex: EventBusException) {
-            // Do nothing.
-        }
-    }
-
     fun setPreferences(pref: SharedPreferences) {
 
     }

@@ -8,7 +8,11 @@ import io.github.lee0701.lboard.old_event.SoftKeyClickEvent
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
-class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.OnKeyboardActionListener {
+class DefaultSoftKeyboard(
+        val layoutResId: String
+): SoftKeyboard, KeyboardView.OnKeyboardActionListener {
+
+    override lateinit var methodId: String
 
     var keyboardView: KeyboardView? = null
 
@@ -42,7 +46,7 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
         EventBus.getDefault().post(SoftKeyClickEvent(primaryCode, SoftKeyClickEvent.State.UP))
     }
 
-    override fun setLabels(labels: Map<Int, String>) {
+    override fun updateLabels(labels: Map<Int, String>) {
         keyboardView?.keyboard?.keys?.forEach {
             it.label = labels[it.codes[0]] ?: it.label
         }
@@ -79,9 +83,6 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
     }
 
     companion object {
-        @JvmStatic fun deserialize(json: JSONObject): DefaultSoftKeyboard? {
-            return DefaultSoftKeyboard(json.getString("layout"))
-        }
     }
 
 }

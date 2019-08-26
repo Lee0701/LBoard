@@ -12,7 +12,9 @@ import io.github.lee0701.lboard.layouts.symbols.Symbols
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
-class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHardKeyboard {
+class CommonHardKeyboard(
+        val layout: CommonKeyboardLayout
+): MoreKeysSupportedHardKeyboard {
 
     var status: Int = 0
 
@@ -105,11 +107,6 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHar
     companion object {
 
         const val MASK_SYSTEM_CODE = 0x70000000
-
-        @JvmStatic fun deserialize(json: JSONObject): CommonHardKeyboard? {
-            val layout = LAYOUTS[json.getString("layout")] ?: return null
-            return CommonHardKeyboard(layout)
-        }
 
         val LAYOUTS = mapOf<String, CommonKeyboardLayout>(
                 "symbols-a" to Symbols.LAYOUT_SYMBOLS_A,
