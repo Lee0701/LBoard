@@ -237,6 +237,11 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         super.onFinishInputView(finishingInput)
     }
 
+    override fun onViewClicked(focusChanged: Boolean) {
+        super.onViewClicked(focusChanged)
+        currentMethod.reset()
+    }
+
     private fun reset() {
         currentMethodId = 0
         symbolKeyboardMode = false
