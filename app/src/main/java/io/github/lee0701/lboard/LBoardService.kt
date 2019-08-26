@@ -33,15 +33,21 @@ import org.greenrobot.eventbus.ThreadMode
 class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val softInputMethods: MutableList<InputMethod> = mutableListOf()
-    private val physicalInputMethods: MutableList<InputMethod> = mutableListOf()
     private val symbolInputMethods: MutableList<InputMethod> = mutableListOf()
+    private val directInputMethods: MutableList<InputMethod> = mutableListOf()
+    private val physicalInputMethods: MutableList<InputMethod> = mutableListOf()
 
-    private var physicalKeyboardMode: Boolean = false
+    private val allInputMethods: List<InputMethod>
+        get() = softInputMethods + symbolInputMethods + directInputMethods + physicalInputMethods
+
     private var symbolKeyboardMode: Boolean = false
+    private var directInputMode: Boolean = false
+    private var physicalKeyboardMode: Boolean = false
     private var currentMethodId: Int = 0
     private val currentMethod: InputMethod get() =
         if(symbolKeyboardMode) symbolInputMethods[currentMethodId]
         else if(physicalKeyboardMode) physicalInputMethods[currentMethodId]
+        else if(directInputMode) directInputMethods[currentMethodId]
         else softInputMethods[currentMethodId]
 
     private var switchBetweenApps: Boolean = true
@@ -66,6 +72,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     private fun reloadPreferences() {
         softInputMethods.clear()
+        directInputMethods.clear()
         symbolInputMethods.clear()
         physicalInputMethods.clear()
 
@@ -94,6 +101,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     CommonHardKeyboard(hardLayout)
             )
             softInputMethods += methodEn
+
+            val methodEnDirect = AlphabetInputMethod(
+                    BasicSoftKeyboard(softLayout.clone(), theme),
+                    CommonHardKeyboard(hardLayout)
+            )
+            directInputMethods += methodEnDirect
 
             val methodEnSymbols = AlphabetInputMethod(
                     BasicSoftKeyboard(symbolsSoftLayout.clone(), theme),
@@ -175,7 +188,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             physicalInputMethods += methodKo
         }
 
-        (softInputMethods + symbolInputMethods + physicalInputMethods).forEach { it.setPreferences(pref) }
+        allInputMethods.forEach { it.setPreferences(pref) }
 
     }
 
@@ -263,7 +276,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     @Subscribe fun onUpdateOneHandedMode(event: UpdateOneHandedModeEvent) {
-        (softInputMethods + symbolInputMethods + physicalInputMethods).forEach {
+        allInputMethods.forEach {
             if(it is CommonInputMethod) it.softKeyboard.updateOneHandedMode(event.oneHandedMode)
         }
         val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
