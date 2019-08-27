@@ -5,7 +5,6 @@ import android.view.KeyEvent
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.old_event.CommitStringEvent
 import io.github.lee0701.lboard.old_event.SetSymbolModeEvent
-import io.github.lee0701.lboard.hardkeyboard.ExtendedCode
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.MoreKeysSupportedHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.MoreKeysSupportedSoftKeyboard
@@ -46,7 +45,7 @@ abstract class CommonInputMethod: InputMethod {
         capsLock = false
         altLock = false
 
-        hardKeyboard.reset()
+        reset()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -79,6 +78,8 @@ abstract class CommonInputMethod: InputMethod {
 
     protected open fun reset() {
         hardKeyboard.reset()
+        EventBus.getDefault().post(InputResetEvent(methodId))
+        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.methodId))
     }
 
     protected open fun updateView() {

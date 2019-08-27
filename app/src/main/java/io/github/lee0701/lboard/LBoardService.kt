@@ -307,6 +307,12 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     }
 
     @Subscribe
+    fun onInputReset(event: InputResetEvent) {
+        if(event.methodId != currentMethodId) return
+        currentInputConnection?.finishComposingText()
+    }
+
+    @Subscribe
 	fun onInputProcessComplete(event: InputProcessCompleteEvent) {
         if(event.methodId != currentMethodId) return
         if(event.composingText?.commitPreviousText == true) currentInputConnection?.finishComposingText()
