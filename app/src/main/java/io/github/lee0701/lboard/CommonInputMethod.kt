@@ -3,6 +3,7 @@ package io.github.lee0701.lboard
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import io.github.lee0701.lboard.event.*
+import io.github.lee0701.lboard.hardkeyboard.ExtendedCode
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.MoreKeysSupportedHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.MoreKeysSupportedSoftKeyboard
@@ -62,8 +63,14 @@ abstract class CommonInputMethod: InputMethod {
     @Subscribe
     fun onKeyEvent(event: LBoardKeyEvent) {
         val result = when(event.actions.last().type) {
-            LBoardKeyEvent.ActionType.PRESS -> onKeyPress(event)
-            LBoardKeyEvent.ActionType.RELEASE -> onKeyRelease(event)
+            LBoardKeyEvent.ActionType.PRESS -> {
+                if(event is SoftKeyEvent) true
+                else onKeyPress(event)
+            }
+            LBoardKeyEvent.ActionType.RELEASE -> {
+                if(event is SoftKeyEvent) onKeyPress(event)
+                onKeyRelease(event)
+            }
             LBoardKeyEvent.ActionType.LONG_PRESS -> onKeyLongPress(event)
             LBoardKeyEvent.ActionType.REPEAT -> onKeyRepeat(event)
             LBoardKeyEvent.ActionType.FLICK_LEFT, LBoardKeyEvent.ActionType.FLICK_RIGHT,
@@ -176,7 +183,6 @@ abstract class CommonInputMethod: InputMethod {
     }
 
     protected open fun onKeyFlick(event: LBoardKeyEvent): Boolean {
-        /*
         if((event.keyCode and ExtendedCode.TWELVE_KEYPAD) != 0) {
             val code = event.keyCode or when(event.actions.last().type) {
                 LBoardKeyEvent.ActionType.FLICK_UP -> ExtendedCode.TWELVE_FLICK_UP
@@ -185,8 +191,8 @@ abstract class CommonInputMethod: InputMethod {
                 LBoardKeyEvent.ActionType.FLICK_RIGHT -> ExtendedCode.TWELVE_FLICK_RIGHT
                 else -> 0
             }
-            val result = onKeyPress(code)
-            if(result && onKeyRelease(code)) {
+            val result = onKeyPress(event)
+            if(result && onKeyRelease(event)) {
                 ignoreNextInput = true
                 return true
             }
@@ -195,18 +201,18 @@ abstract class CommonInputMethod: InputMethod {
         when(event.actions.last().type) {
             LBoardKeyEvent.ActionType.FLICK_UP -> {
                 if(!shift) {
-                    onKeyPress(KeyEvent.KEYCODE_SHIFT_LEFT)
-                    onKeyRelease(KeyEvent.KEYCODE_SHIFT_RIGHT)
+                    shift = true
+                    shiftPressing = false
                 }
             }
             LBoardKeyEvent.ActionType.FLICK_DOWN -> {
                 if(!alt) {
-                    onKeyPress(KeyEvent.KEYCODE_ALT_LEFT)
-                    onKeyRelease(KeyEvent.KEYCODE_ALT_LEFT)
+                    alt = true
+                    altPressing = false
                 }
             }
         }
-        */
+        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.methodId))
         return true
     }
 
