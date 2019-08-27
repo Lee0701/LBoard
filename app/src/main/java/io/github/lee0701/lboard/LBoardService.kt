@@ -436,7 +436,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
-    
+
     enum class PredefinedHangulConverter() {
         NONE, DUBEOL, DUBEOL_SINGLE_VOWEL, SEBEOL
     }

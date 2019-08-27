@@ -29,8 +29,8 @@ abstract class CommonInputMethod: InputMethod {
     var inputOnShift = false
     var inputOnAlt = false
 
-    var pressEvent: LBoardKeyEvent? = null
-    var ignoreNextInput: Boolean = false
+    protected val pressEvents: MutableMap<Int, LBoardKeyEvent> = mutableMapOf()
+    protected var ignoreNextInput: Boolean = false
 
     @Subscribe
     open fun onPreferenceChange(event: PreferenceChangeEvent) {
@@ -75,7 +75,7 @@ abstract class CommonInputMethod: InputMethod {
                         KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
                         KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> onKeyPress(event)
                         else -> {
-                            pressEvent = event
+                            pressEvents += event.keyCode to event
                             true
                         }
                     }
@@ -83,13 +83,13 @@ abstract class CommonInputMethod: InputMethod {
                 else onKeyPress(event)
             }
             LBoardKeyEvent.ActionType.RELEASE -> {
-                pressEvent?.let {
+                pressEvents[event.keyCode]?.let {
                     val result = onKeyPress(SoftKeyEvent(it.methodId, event.keyCode, it.actions))
                     if(!result) {
                         reset()
                         EventBus.getDefault().post(InputProcessCompleteEvent(methodId, it, null, false, true))
                     }
-                    pressEvent = null
+                    pressEvents -= event.keyCode
                 }
                 onKeyRelease(event)
             }
