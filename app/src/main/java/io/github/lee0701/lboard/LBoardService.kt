@@ -329,11 +329,12 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             val metaState = if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0
             val time = event.keyEvent.actions.last().time
             val action = when(event.keyEvent.actions.last().type) {
-                LBoardKeyEvent.ActionType.PRESS -> KeyEvent.ACTION_DOWN
+                LBoardKeyEvent.ActionType.PRESS, LBoardKeyEvent.ActionType.REPEAT -> KeyEvent.ACTION_DOWN
                 LBoardKeyEvent.ActionType.RELEASE -> KeyEvent.ACTION_UP
                 else -> return
             }
-            currentInputConnection?.sendKeyEvent(KeyEvent(time, time, action, keyCode, 0, metaState))
+            val repeat = event.keyEvent.actions.count { it.type == LBoardKeyEvent.ActionType.REPEAT }
+            currentInputConnection?.sendKeyEvent(KeyEvent(time, time, action, keyCode, repeat, metaState))
         } else {
             event.composingText?.newComposingText?.let { currentInputConnection?.setComposingText(it, event.composingText.newCursorPosition) }
             event.composingText?.textToCommit?.let { currentInputConnection?.commitText(it, event.composingText.newCursorPosition) }

@@ -230,7 +230,7 @@ class BasicSoftKeyboard(
 
     override fun onKeyRepeat(keyCode: Int) {
         val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))
+                LBoardKeyEvent.ActionType.REPEAT, System.currentTimeMillis()))
         EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
     }
 

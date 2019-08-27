@@ -29,6 +29,7 @@ abstract class CommonInputMethod: InputMethod {
     var inputOnShift = false
     var inputOnAlt = false
 
+    var pressEvent: LBoardKeyEvent? = null
     var ignoreNextInput: Boolean = false
 
     @Subscribe
@@ -64,11 +65,21 @@ abstract class CommonInputMethod: InputMethod {
     fun onKeyEvent(event: LBoardKeyEvent) {
         val result = when(event.actions.last().type) {
             LBoardKeyEvent.ActionType.PRESS -> {
-                if(event is SoftKeyEvent) true
+                if(event is SoftKeyEvent) {
+                    pressEvent = event
+                    true
+                }
                 else onKeyPress(event)
             }
             LBoardKeyEvent.ActionType.RELEASE -> {
-                if(event is SoftKeyEvent) onKeyPress(event)
+                pressEvent?.let {
+                    val result = onKeyPress(it)
+                    if(!result) {
+                        reset()
+                        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, it, null, false, true))
+                    }
+                    pressEvent = null
+                }
                 onKeyRelease(event)
             }
             LBoardKeyEvent.ActionType.LONG_PRESS -> onKeyLongPress(event)

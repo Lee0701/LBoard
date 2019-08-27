@@ -1,15 +1,11 @@
 package io.github.lee0701.lboard
 
-import android.content.Context
 import android.view.KeyEvent
-import android.view.View
 import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
-import io.github.lee0701.lboard.old_event.*
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
-import org.json.JSONObject
 
 class WordComposingInputMethod(
         override val methodId: String,

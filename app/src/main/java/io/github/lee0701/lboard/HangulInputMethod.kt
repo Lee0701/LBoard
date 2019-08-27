@@ -4,7 +4,6 @@ import android.view.KeyEvent
 import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.event.PreferenceChangeEvent
-import io.github.lee0701.lboard.old_event.*
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hangul.SingleVowelDubeolHangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
