@@ -74,8 +74,10 @@ class HangulInputMethod(
                 val converted = convert(event.keyCode, shift, alt)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
-                    if(converted.defaultChar)
+                    if(converted.defaultChar) {
+                        reset()
                         EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
+                    }
                 } else if(converted.resultChar == 0) {
                     reset()
                 } else {

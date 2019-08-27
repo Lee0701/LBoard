@@ -164,8 +164,10 @@ abstract class CommonInputMethod: InputMethod {
                 // TODO: Implement this.
 //                if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
                 if(converted.resultChar == null) {
-                    if(converted.defaultChar)
+                    if(converted.defaultChar) {
+                        reset()
                         EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
+                    }
                 } else if(converted.resultChar == 0) {
                     hardKeyboard.reset()
                 } else {
