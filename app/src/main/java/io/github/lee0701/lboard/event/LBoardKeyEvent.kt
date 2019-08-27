@@ -1,13 +1,15 @@
 package io.github.lee0701.lboard.event
 
+import io.github.lee0701.lboard.inputmethod.InputMethodInfo
+
 class LBoardKeyEvent(
-        methodId: String,
+        methodInfo: InputMethodInfo,
         val originalKeyCode: Int,
         val source: Source,
         val actions: List<Action>,
         val shiftPressed: Boolean = false,
         val altPressed: Boolean = false
-): InputMethodEvent(methodId) {
+): InputMethodEvent(methodInfo) {
 
     val lastKeyCode: Int get() = actions.last().keyCode
 

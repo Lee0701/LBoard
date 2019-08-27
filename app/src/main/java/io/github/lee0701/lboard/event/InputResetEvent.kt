@@ -1,5 +1,7 @@
 package io.github.lee0701.lboard.event
 
+import io.github.lee0701.lboard.inputmethod.InputMethodInfo
+
 class InputResetEvent(
-        methodId: String
-): InputMethodEvent(methodId)
+        methodInfo: InputMethodInfo
+): InputMethodEvent(methodInfo)

@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard.hardkeyboard
 
 import android.view.KeyEvent
+import io.github.lee0701.lboard.event.KeyPressEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
@@ -14,8 +15,6 @@ import org.json.JSONObject
 class CommonHardKeyboard(
         val layout: CommonKeyboardLayout
 ): MoreKeysSupportedHardKeyboard {
-
-    override lateinit var methodId: String
 
     var status: Int = 0
 
@@ -54,12 +53,8 @@ class CommonHardKeyboard(
                 backspace = true
             }
             SystemCode.KEYPRESS -> {
-                if(result and SystemCode.KEYPRESS_SHIFT != 0) sendKeyEvent(KeyEvent.KEYCODE_SHIFT_LEFT, LBoardKeyEvent.ActionType.PRESS)
-                if(result and SystemCode.KEYPRESS_ALT != 0) sendKeyEvent(KeyEvent.KEYCODE_ALT_LEFT, LBoardKeyEvent.ActionType.PRESS)
-                sendKeyEvent(result and 0x0000ffff, LBoardKeyEvent.ActionType.PRESS)
-                sendKeyEvent(result and 0x0000ffff, LBoardKeyEvent.ActionType.RELEASE)
-                if(result and SystemCode.KEYPRESS_SHIFT != 0) sendKeyEvent(KeyEvent.KEYCODE_SHIFT_LEFT, LBoardKeyEvent.ActionType.RELEASE)
-                if(result and SystemCode.KEYPRESS_ALT != 0) sendKeyEvent(KeyEvent.KEYCODE_ALT_LEFT, LBoardKeyEvent.ActionType.RELEASE)
+                sendKeyEvent(result and 0x0000ffff, result and SystemCode.KEYPRESS_SHIFT != 0, result and SystemCode.KEYPRESS_ALT != 0, LBoardKeyEvent.ActionType.PRESS)
+                sendKeyEvent(result and 0x0000ffff, result and SystemCode.KEYPRESS_SHIFT != 0, result and SystemCode.KEYPRESS_ALT != 0, LBoardKeyEvent.ActionType.RELEASE)
 
                 return HardKeyboard.ConvertResult(null, defaultChar = false)
             }
@@ -70,9 +65,8 @@ class CommonHardKeyboard(
         return HardKeyboard.ConvertResult(result, backspace)
     }
 
-    private fun sendKeyEvent(keyCode: Int, type: LBoardKeyEvent.ActionType) {
-        EventBus.getDefault().post(LBoardKeyEvent(methodId, keyCode, LBoardKeyEvent.Source.INTERNAL,
-                listOf(LBoardKeyEvent.Action(type, keyCode, System.currentTimeMillis()))))
+    private fun sendKeyEvent(keyCode: Int, shift: Boolean, alt: Boolean, type: LBoardKeyEvent.ActionType) {
+        EventBus.getDefault().post(KeyPressEvent(keyCode, shift, alt, LBoardKeyEvent.Source.INTERNAL, type))
     }
 
     override fun reset() {

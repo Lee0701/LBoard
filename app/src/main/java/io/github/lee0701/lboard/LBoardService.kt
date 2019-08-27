@@ -18,10 +18,7 @@ import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
-import io.github.lee0701.lboard.inputmethod.AlphabetInputMethod
-import io.github.lee0701.lboard.inputmethod.HangulInputMethod
-import io.github.lee0701.lboard.inputmethod.InputMethod
-import io.github.lee0701.lboard.inputmethod.WordComposingInputMethod
+import io.github.lee0701.lboard.inputmethod.*
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
@@ -32,6 +29,7 @@ import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -40,18 +38,13 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private val languageCycleTable = listOf("en", "ko")
     private var languageCycleIndex: Int = 0
 
-    private val variationCycleTable = listOf("main", "symbols")
+    private val variationCycleTable = listOf(InputMethodInfo.Type.MAIN, InputMethodInfo.Type.SYMBOLS)
     private var variationCycleIndex: Int = 0
 
     private var directInputMode: Boolean = false
 
-    private val inputMethods: MutableMap<String, InputMethod> = mutableMapOf()
-    private val currentMethodId: String get() {
-        val type = if(physicalKeyboardPresent) "physical" else "virtual"
-        val language = if(directInputMode) "en" else languageCycleTable[languageCycleIndex]
-        val variation = if(directInputMode) "direct" else variationCycleTable[variationCycleIndex]
-        return "method_%s_%s_%s".format(type, language, variation)
-    }
+    private val inputMethods: MutableMap<InputMethodInfo, InputMethod> = mutableMapOf()
+    private lateinit var currentMethod: InputMethod
 
     private var physicalKeyboardPresent: Boolean = false
     private var virtualKeyboardPresent: Boolean = false
@@ -99,25 +92,25 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
-                    "method_virtual_en_main",
+                    InputMethodInfo(language = "en", type = InputMethodInfo.Type.MAIN, direct = false),
                     BasicSoftKeyboard(softLayout.clone(), theme),
                     CommonHardKeyboard(hardLayout)
             )
-            inputMethods += methodEn.methodId to methodEn
+            inputMethods += methodEn.info to methodEn
 
             val methodEnDirect = AlphabetInputMethod(
-                    "method_virtual_en_direct",
+                    InputMethodInfo(device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = true),
                     BasicSoftKeyboard(softLayout.clone(), theme),
                     CommonHardKeyboard(hardLayout)
             )
-            inputMethods += methodEnDirect.methodId to methodEnDirect
+            inputMethods += methodEnDirect.info to methodEnDirect
 
             val methodEnSymbols = AlphabetInputMethod(
-                    "method_virtual_en_symbols",
+                    InputMethodInfo(language = "en", type = InputMethodInfo.Type.SYMBOLS),
                     BasicSoftKeyboard(symbolsSoftLayout.clone(), theme),
                     CommonHardKeyboard(symbolsHardLayout)
             )
-            inputMethods += methodEnSymbols.methodId to methodEnSymbols
+            inputMethods += methodEnSymbols.info to methodEnSymbols
         }
 
         run {
@@ -147,38 +140,39 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     }
 
             val methodKo = HangulInputMethod(
-                    "method_virtual_ko_main",
+                    InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                     BasicSoftKeyboard(softLayout.clone(), theme),
                     CommonHardKeyboard(hardLayout),
                     converter,
                     timeout
             )
-            inputMethods += methodKo.methodId to methodKo
+            inputMethods += methodKo.info to methodKo
 
             val methodKoSymbols = AlphabetInputMethod(
-                    "method_virtual_ko_symbols",
+                    InputMethodInfo(language = "ko", type = InputMethodInfo.Type.SYMBOLS),
                     BasicSoftKeyboard(symbolsSoftLayout.clone(), theme),
                     CommonHardKeyboard(symbolsHardLayout)
             )
-            inputMethods += methodKoSymbols.methodId to methodKoSymbols
+            inputMethods += methodKoSymbols.info to methodKoSymbols
         }
 
         run {
             val hardLayout = CommonHardKeyboard.LAYOUTS[pref.getString("method_en_physical_hard_layout", null)?: ""] ?: Alphabet.LAYOUT_QWERTY
 
             val methodEn = AlphabetInputMethod(
-                    "method_physical_en_main",
+                    InputMethodInfo(language = "en", device = InputMethodInfo.Device.PHYSICAL, type = InputMethodInfo.Type.MAIN, direct = false),
                     EmptySoftKeyboard(),
                     CommonHardKeyboard(hardLayout)
             )
-            inputMethods += methodEn.methodId to methodEn
+            inputMethods += methodEn.info to methodEn
 
             val methodEnDirect = AlphabetInputMethod(
-                    "method_physical_en_direct",
+                    InputMethodInfo(device = InputMethodInfo.Device.PHYSICAL, type = InputMethodInfo.Type.MAIN, direct = true),
                     EmptySoftKeyboard(),
                     CommonHardKeyboard(hardLayout)
             )
-            inputMethods += methodEnDirect.methodId to methodEnDirect
+            inputMethods += methodEnDirect.info to methodEnDirect
+
         }
 
         run {
@@ -194,18 +188,19 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     }
 
             val methodKo = HangulInputMethod(
-                    "method_physical_ko_main",
+                    InputMethodInfo(language = "ko", device = InputMethodInfo.Device.PHYSICAL, type = InputMethodInfo.Type.MAIN, direct = false),
                     EmptySoftKeyboard(),
                     CommonHardKeyboard(predefinedMethod.hardLayout),
                     converter
             )
 
-            inputMethods += methodKo.methodId to methodKo
+            inputMethods += methodKo.info to methodKo
         }
 
         inputMethods.values.forEach { it.init() }
-
         EventBus.getDefault().post(PreferenceChangeEvent(pref))
+
+        updateCurrentMethod()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -218,14 +213,14 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         return null
     }
 
-    override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
-        super.onStartInputView(info, restarting)
+    override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
+        super.onStartInputView(attribute, restarting)
 
-        when(info.inputType and EditorInfo.TYPE_MASK_CLASS) {
-            EditorInfo.TYPE_CLASS_TEXT -> when(info.inputType and EditorInfo.TYPE_MASK_VARIATION) {
+        when(attribute.inputType and EditorInfo.TYPE_MASK_CLASS) {
+            EditorInfo.TYPE_CLASS_TEXT -> when(attribute.inputType and EditorInfo.TYPE_MASK_VARIATION) {
                 EditorInfo.TYPE_TEXT_VARIATION_PASSWORD,
-                    EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
-                    EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD -> {
+                EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
+                EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD -> {
                     directInputMode = true
                 }
                 EditorInfo.TYPE_TEXT_VARIATION_URI,
@@ -238,9 +233,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             }
         }
 
-        onCreateInputView()
         EventBus.getDefault().post(InputStartEvent())
-
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
@@ -252,11 +245,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         EventBus.getDefault().post(InputStartEvent())
     }
 
-    override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
+    override fun onStartInput(attribute: EditorInfo, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
 
         EventBus.getDefault().post(ConfigurationChangeEvent(resources.configuration))
-
     }
 
     override fun onFinishInput() {
@@ -265,7 +257,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if(isSystemKey(keyCode)) return super.onKeyDown(keyCode, event)
-        EventBus.getDefault().post(LBoardKeyEvent(currentMethodId, keyCode, LBoardKeyEvent.Source.PHYSICAL_KEYBOARD,
+        EventBus.getDefault().post(LBoardKeyEvent(currentMethod.info, keyCode, LBoardKeyEvent.Source.PHYSICAL_KEYBOARD,
                 appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, keyCode, System.currentTimeMillis())),
                 event.isShiftPressed, event.isAltPressed))
         return true
@@ -273,7 +265,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         if(isSystemKey(keyCode)) return super.onKeyUp(keyCode, event)
-        EventBus.getDefault().post(LBoardKeyEvent(currentMethodId, keyCode, LBoardKeyEvent.Source.PHYSICAL_KEYBOARD,
+        EventBus.getDefault().post(LBoardKeyEvent(currentMethod.info, keyCode, LBoardKeyEvent.Source.PHYSICAL_KEYBOARD,
                 appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.RELEASE, keyCode, System.currentTimeMillis())),
                 event.isShiftPressed, event.isAltPressed))
         inputHistory -= keyCode
@@ -306,14 +298,20 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         super.onDestroy()
     }
 
+    @Subscribe(priority = 100)
+    fun onInputStart(event: InputStartEvent) {
+        updateCurrentMethod()
+        onCreateInputView()
+    }
+
     @Subscribe
 	fun onConfigurationChange(event: ConfigurationChangeEvent) {
         this.physicalKeyboardPresent = event.configuration.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
 	fun onInputViewChange(event: InputViewChangeEvent) {
-        if(event.methodId != currentMethodId) return
+        if(!matchesCurrentMethod(event.methodInfo)) return
         if(event.inputView != null) {
             (event.inputView.parent as ViewGroup?)?.removeView(event.inputView)
             setInputView(event.inputView)
@@ -330,13 +328,13 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     @Subscribe
     fun onInputReset(event: InputResetEvent) {
-        if(event.methodId != currentMethodId) return
+        if(!matchesCurrentMethod(event.methodInfo)) return
         currentInputConnection?.finishComposingText()
     }
 
     @Subscribe
 	fun onInputProcessComplete(event: InputProcessCompleteEvent) {
-        if(event.methodId != currentMethodId) return
+        if(!matchesCurrentMethod(event.methodInfo)) return
         if(event.composingText?.commitPreviousText == true) currentInputConnection?.finishComposingText()
         if(event.commitDefaultChar) {
             val keyCode = event.keyEvent.originalKeyCode
@@ -369,7 +367,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     @Subscribe
     fun onKeyPress(event: KeyPressEvent) {
         val actions = appendInputHistory(event.keyCode, LBoardKeyEvent.Action(event.type, event.keyCode, System.currentTimeMillis()))
-        EventBus.getDefault().post(LBoardKeyEvent(currentMethodId, event.keyCode, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD,
+        EventBus.getDefault().post(LBoardKeyEvent(currentMethod.info, event.keyCode, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD,
                 actions, event.shift, event.alt))
         if(event.type == LBoardKeyEvent.ActionType.RELEASE) removeInputHistory(event.keyCode)
     }
@@ -378,7 +376,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     fun onMoreKeySelect(event: MoreKeySelectEvent) {
         val actions = appendInputHistory(event.originalKeyCode,
                 LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.SELECT_MORE_KEYS, event.newKeyCode, System.currentTimeMillis()))
-        EventBus.getDefault().post(LBoardKeyEvent(currentMethodId, event.originalKeyCode, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD,
+        EventBus.getDefault().post(LBoardKeyEvent(currentMethod.info, event.originalKeyCode, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD,
                 actions, false, false))
         removeInputHistory(event.originalKeyCode)
     }
@@ -455,6 +453,18 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         if(event.originalKeyCode != KeyEvent.KEYCODE_LANGUAGE_SWITCH) inputAfterSwitch = true
     }
 
+    private fun updateCurrentMethod() {
+        currentMethod = inputMethods[InputMethodInfo.match(inputMethods.keys.toList(), InputMethodInfo(
+                language = languageCycleTable[languageCycleIndex],
+                device = if(physicalKeyboardPresent) InputMethodInfo.Device.PHYSICAL else InputMethodInfo.Device.VIRTUAL,
+                type = variationCycleTable[variationCycleIndex],
+                direct = directInputMode)).first()]!!
+    }
+
+    private fun matchesCurrentMethod(info: InputMethodInfo): Boolean {
+        return InputMethodInfo.match(inputMethods.keys.toList(), info).contains(currentMethod.info)
+    }
+
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
 
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -469,14 +479,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         }
 
         inputAfterSwitch = false
-        onCreateInputView()
         EventBus.getDefault().post(InputStartEvent())
     }
 
     private fun switchVariation() {
         if(++variationCycleIndex >= variationCycleTable.size) variationCycleIndex = 0
 
-        onCreateInputView()
         EventBus.getDefault().post(InputStartEvent())
     }
 

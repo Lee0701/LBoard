@@ -11,7 +11,7 @@ interface InputMethodModule {
 
     fun serialize(): JSONObject {
         return JSONObject().apply {
-            put("type", this@InputMethodModule.javaClass.name)
+            put("device", this@InputMethodModule.javaClass.name)
         }
     }
 }

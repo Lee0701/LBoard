@@ -4,7 +4,7 @@ import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 
 class AlphabetInputMethod(
-        override val methodId: String,
+        override val info: InputMethodInfo,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard
 ): CommonInputMethod() {

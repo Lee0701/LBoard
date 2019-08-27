@@ -6,7 +6,7 @@ import org.json.JSONObject
 
 interface InputMethod {
 
-    val methodId: String
+    val info: InputMethodInfo
 
     var shift: Boolean
     var alt: Boolean
@@ -29,13 +29,13 @@ interface InputMethod {
 
     fun serialize(): JSONObject {
         return JSONObject().apply {
-            put("type", this@InputMethod.javaClass.name)
+            put("device", this@InputMethod.javaClass.name)
         }
     }
 
     companion object {
         fun deserializeModule(json: JSONObject): InputMethodModule {
-            val type = json.getString("type")
+            val type = json.getString("device")
             return Class.forName(type).getDeclaredMethod("deserialize", JSONObject::class.java)
                     .invoke(null, json) as InputMethodModule
         }

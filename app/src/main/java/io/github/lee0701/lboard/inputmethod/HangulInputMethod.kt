@@ -17,7 +17,7 @@ import java.util.*
 import kotlin.concurrent.timerTask
 
 class HangulInputMethod(
-        override val methodId: String,
+        override val info: InputMethodInfo,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
         val hangulConverter: HangulComposer,
@@ -58,7 +58,7 @@ class HangulInputMethod(
                     hardKeyboard.reset()
                 } else {
                     reset()
-                    EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                             ComposingText(commitPreviousText = true, textToCommit = " ")))
                 }
             }
@@ -77,7 +77,7 @@ class HangulInputMethod(
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
                         reset()
-                        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
+                        EventBus.getDefault().post(InputProcessCompleteEvent(info, event, null, true))
                     }
                 } else if(converted.resultChar == 0) {
                     reset()
@@ -98,7 +98,7 @@ class HangulInputMethod(
                 if(hangulConverter is SingleVowelDubeolHangulComposer && timeout > 0) timer.schedule(timeoutTask, timeout.toLong())
             }
         }
-        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+        EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                 ComposingText(newComposingText = hangulConverter.display(lastState))))
         return true
     }

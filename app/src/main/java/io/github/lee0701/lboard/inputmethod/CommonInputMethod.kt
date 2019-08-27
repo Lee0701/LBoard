@@ -51,14 +51,13 @@ abstract class CommonInputMethod: InputMethod {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onInputViewInit(event: InputViewInitEvent) {
-        hardKeyboard.methodId = this.methodId
         if(softKeyboard.getView() == null || event.requiresInit) softKeyboard.initView(event.context)
-        EventBus.getDefault().post(InputViewChangeEvent(methodId, softKeyboard.getView()))
+        EventBus.getDefault().post(InputViewChangeEvent(info, softKeyboard.getView()))
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onInputViewRequiresUpdate(event: InputViewRequiresUpdateEvent) {
-        if(event.methodId == this.methodId) updateView()
+        if(event.methodInfo == this.info) updateView()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -84,10 +83,10 @@ abstract class CommonInputMethod: InputMethod {
             }
             LBoardKeyEvent.ActionType.RELEASE -> {
                 pressEvents[event.originalKeyCode]?.let {
-                    val result = onKeyPress(LBoardKeyEvent(it.methodId, event.actions.last().keyCode, event.source, it.actions))
+                    val result = onKeyPress(LBoardKeyEvent(it.methodInfo, event.actions.last().keyCode, event.source, it.actions))
                     if(!result) {
                         reset()
-                        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, it, null, false, true))
+                        EventBus.getDefault().post(InputProcessCompleteEvent(info, it, null, false, true))
                     }
                     pressEvents -= event.originalKeyCode
                 }
@@ -101,7 +100,7 @@ abstract class CommonInputMethod: InputMethod {
         }
         if(!result) {
             reset()
-            EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, false, true))
+            EventBus.getDefault().post(InputProcessCompleteEvent(info, event, null, false, true))
         }
     }
 
@@ -114,8 +113,8 @@ abstract class CommonInputMethod: InputMethod {
 
     protected open fun reset() {
         hardKeyboard.reset()
-        EventBus.getDefault().post(InputResetEvent(methodId))
-        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.methodId))
+        EventBus.getDefault().post(InputResetEvent(info))
+        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.info))
     }
 
     protected open fun updateView() {
@@ -133,7 +132,7 @@ abstract class CommonInputMethod: InputMethod {
             }
             KeyEvent.KEYCODE_SPACE -> {
                 hardKeyboard.reset()
-                EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                         ComposingText(commitPreviousText = true, textToCommit = " ")))
             }
             KeyEvent.KEYCODE_ENTER -> {
@@ -162,17 +161,17 @@ abstract class CommonInputMethod: InputMethod {
             }
             else -> {
                 val converted = convert(event.lastKeyCode, shift, alt)
-                if(converted.backspace) onKeyPress(LBoardKeyEvent(event.methodId, event.originalKeyCode, LBoardKeyEvent.Source.INTERNAL,
+                if(converted.backspace) onKeyPress(LBoardKeyEvent(event.methodInfo, event.originalKeyCode, LBoardKeyEvent.Source.INTERNAL,
                         event.actions + LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, KeyEvent.KEYCODE_DEL, System.currentTimeMillis())))
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
                         reset()
-                        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
+                        EventBus.getDefault().post(InputProcessCompleteEvent(info, event, null, true))
                     }
                 } else if(converted.resultChar == 0) {
                     hardKeyboard.reset()
                 } else {
-                    EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                             ComposingText(textToCommit = converted.resultChar.toChar().toString())))
                 }
                 processStickyKeysOnInput()
@@ -180,7 +179,7 @@ abstract class CommonInputMethod: InputMethod {
                 converted.altOn?.let { alt = it }
             }
         }
-        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.methodId))
+        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.info))
         return true
     }
 
@@ -195,7 +194,7 @@ abstract class CommonInputMethod: InputMethod {
                 altPressing = false
             }
         }
-        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.methodId))
+        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.info))
         ignoreNextInput = false
         return true
     }
@@ -223,8 +222,8 @@ abstract class CommonInputMethod: InputMethod {
                 LBoardKeyEvent.ActionType.FLICK_RIGHT -> ExtendedCode.TWELVE_FLICK_RIGHT
                 else -> 0
             }
-            val result = onKeyPress(LBoardKeyEvent(event.methodId, code, event.source, event.actions))
-            if(result && onKeyRelease(LBoardKeyEvent(event.methodId, code, event.source, event.actions))) {
+            val result = onKeyPress(LBoardKeyEvent(event.methodInfo, code, event.source, event.actions))
+            if(result && onKeyRelease(LBoardKeyEvent(event.methodInfo, code, event.source, event.actions))) {
                 ignoreNextInput = true
                 return true
             }
@@ -244,7 +243,7 @@ abstract class CommonInputMethod: InputMethod {
                 }
             }
         }
-        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.methodId))
+        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.info))
         return true
     }
 

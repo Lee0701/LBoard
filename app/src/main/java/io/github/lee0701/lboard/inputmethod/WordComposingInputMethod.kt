@@ -9,7 +9,7 @@ import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 
 class WordComposingInputMethod(
-        override val methodId: String,
+        override val info: InputMethodInfo,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard
 ): CommonInputMethod() {
@@ -30,7 +30,7 @@ class WordComposingInputMethod(
             }
             KeyEvent.KEYCODE_SPACE -> {
                 reset()
-                EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                         ComposingText(commitPreviousText = true, textToCommit = " ")))
                 return true
             }
@@ -49,7 +49,7 @@ class WordComposingInputMethod(
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
                         reset()
-                        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
+                        EventBus.getDefault().post(InputProcessCompleteEvent(info, event, null, true))
                     }
                 } else if(converted.resultChar == 0) {
                     reset()
@@ -61,7 +61,7 @@ class WordComposingInputMethod(
                 converted.altOn?.let { alt = it }
             }
         }
-        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+        EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                 ComposingText(newComposingText = lastState)))
         return true
     }
