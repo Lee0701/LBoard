@@ -176,6 +176,10 @@ class BasicSoftKeyboard(
         }.joinToString("")
     }
 
+    private fun validatePopupShown(keyCode: Int): Boolean {
+        return keyCode in 7 .. 19 || keyCode in 29 .. 56 || keyCode in 68 .. 78
+    }
+
     override fun updateOneHandedMode(oneHandedMode: Int) {
         this.oneHandedMode = oneHandedMode
 
@@ -196,6 +200,13 @@ class BasicSoftKeyboard(
     }
 
     override fun onKeyDown(keyCode: Int, x: Int, y: Int) {
+        val keyboardView = keyboardView
+        if(showPopups && validatePopupShown(keyCode) && keyboardView != null) {
+            val key = layout.rows.flatMap { row -> row.keys }.filter { key -> key.keyCode == keyCode }.firstOrNull() ?: return
+            val popup = BasicKeyPreviewPopup(keyboardView.context, if(oneHandedMode > 0) oneHandedMargin else 0, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
+            keyboardView.showPopup(popup)
+        }
+
         vibrator?.vibrate(vibrateDuration.toLong())
         val volume = soundVolume
 

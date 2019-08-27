@@ -7,7 +7,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 
-class BasicKeyPreviewPopup(context: Context, key: Key, background: Int, val color: Int): KeyboardPopup(context, key) {
+class BasicKeyPreviewPopup(context: Context, private val showOffset: Int, key: Key, background: Int, val color: Int): KeyboardPopup(context, key) {
 
     private val background = ContextCompat.getDrawable(context, background)!!
     private val contentView = TextView(context).apply {
@@ -24,7 +24,7 @@ class BasicKeyPreviewPopup(context: Context, key: Key, background: Int, val colo
         popupWindow.height = key.height * 2
         popupWindow.isClippingEnabled = false
         popupWindow.isTouchable = false
-        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, key.x, key.y - key.height)
+        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, key.x + showOffset, key.y - key.height)
     }
 
     override fun update() {

@@ -153,11 +153,6 @@ class BasicKeyboardView(
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
                 val key = getKey(x.toInt(), y.toInt()) ?: return super.onTouchEvent(event)
 
-                if(showPopups && validatePopupShown(key)) {
-                    val popup = BasicKeyPreviewPopup(context, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
-                    showPopup(popup)
-                }
-
                 key.onPressed { invalidate() }
 
                 val onLongClick = if(key.repeatable) timerTask {
@@ -250,7 +245,11 @@ class BasicKeyboardView(
         closePopup(popup.key.keyCode)
         popups += popup.key.keyCode to popup
         handler?.post {
-            popup.show(this)
+            try {
+                popup.show(this)
+            } catch(ex: WindowManager.BadTokenException) {
+                // View is not shown. Ignore this.
+            }
         }
     }
 
@@ -280,10 +279,6 @@ class BasicKeyboardView(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         setMeasuredDimension(keyboardWidth, keyboardHeight + marginBottom)
-    }
-
-    private fun validatePopupShown(key: Key): Boolean {
-        return key.keyCode in 7 .. 19 || key.keyCode in 29 .. 56 || key.keyCode in 68 .. 78
     }
 
     data class TouchPointer(
