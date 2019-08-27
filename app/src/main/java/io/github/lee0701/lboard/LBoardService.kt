@@ -15,7 +15,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import io.github.lee0701.lboard.event.*
-import io.github.lee0701.lboard.old_event.*
 import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
@@ -279,7 +278,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     override fun onSharedPreferenceChanged(pref: SharedPreferences, key: String) {
         EventBus.getDefault().post(PreferenceChangeEvent(pref))
         if(listOf("common_soft_one_handed_mode").contains(key)) {
-            EventBus.getDefault().post(UpdateOneHandedModeEvent(pref.getInt("common_soft_one_handed_mode", 0)))
+            EventBus.getDefault().post(OneHandedModeUpdateEvent(pref.getInt("common_soft_one_handed_mode", 0)))
         } else {
             reloadPreferences()
         }
@@ -407,7 +406,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     }
 
     @Subscribe
-	fun onUpdateOneHandedMode(event: UpdateOneHandedModeEvent) {
+	fun onUpdateOneHandedMode(event: OneHandedModeUpdateEvent) {
         allInputMethods.forEach {
             if(it is CommonInputMethod) it.softKeyboard.updateOneHandedMode(event.oneHandedMode)
         }

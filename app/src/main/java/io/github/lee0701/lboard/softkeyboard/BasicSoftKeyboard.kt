@@ -23,8 +23,7 @@ import io.github.lee0701.lboard.InputHistoryHolder
 import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.event.SoftKeyEvent
-import io.github.lee0701.lboard.old_event.SoftKeyLongClickEvent
-import io.github.lee0701.lboard.old_event.UpdateOneHandedModeEvent
+import io.github.lee0701.lboard.event.OneHandedModeUpdateEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
@@ -130,7 +129,7 @@ class BasicSoftKeyboard(
                 }
                 setBackgroundColor(Color.TRANSPARENT)
                 setOnClickListener {
-                    EventBus.getDefault().post(UpdateOneHandedModeEvent(-oneHandedMode))
+                    EventBus.getDefault().post(OneHandedModeUpdateEvent(-oneHandedMode))
                 }
                 flipButton = this
             })
@@ -139,7 +138,7 @@ class BasicSoftKeyboard(
                 setBackgroundColor(Color.TRANSPARENT)
                 setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_zoom_out_map_black_24dp))
                 setOnClickListener {
-                    EventBus.getDefault().post(UpdateOneHandedModeEvent(0))
+                    EventBus.getDefault().post(OneHandedModeUpdateEvent(0))
                 }
             })
         }
@@ -219,11 +218,14 @@ class BasicSoftKeyboard(
         val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
                 LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))
         EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+        inputHistory -= keyCode
     }
 
     override fun onKeyLongClick(keyCode: Int) {
         vibrator?.vibrate(vibrateDuration.toLong() / 2)
-        EventBus.getDefault().post(SoftKeyLongClickEvent(keyCode))
+        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
+                LBoardKeyEvent.ActionType.LONG_PRESS, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
     }
 
     override fun onKeyRepeat(keyCode: Int) {

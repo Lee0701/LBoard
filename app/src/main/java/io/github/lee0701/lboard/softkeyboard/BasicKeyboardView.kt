@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.view.*
-import io.github.lee0701.lboard.old_event.SoftKeyFlickEvent
 import java.util.*
 import kotlin.concurrent.timerTask
 import kotlin.math.abs
@@ -199,23 +198,23 @@ class BasicKeyboardView(
 
                     if(abs(pointer.dy) > abs((pointer.dx))) {
                         if((pointer.y > pointer.key.y + pointer.key.height || pointer.y > pointer.initialY && distance > threshold)
-                                && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.DOWN) {
+                                && pointer.flickDirection != FlickDirection.DOWN) {
                             onKeyListener.onKeyFlickDown(pointer.key.keyCode)
-                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.DOWN
+                            pointer.flickDirection = FlickDirection.DOWN
                         } else if((pointer.y < pointer.key.y || pointer.y < pointer.initialY && distance > threshold)
-                                && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.UP) {
+                                && pointer.flickDirection != FlickDirection.UP) {
                             onKeyListener.onKeyFlickUp(pointer.key.keyCode)
-                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.UP
+                            pointer.flickDirection = FlickDirection.UP
                         }
                     } else {
                         if((pointer.x > pointer.key.x + pointer.key.width || pointer.x > pointer.initialX && distance > threshold)
-                                && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.RIGHT) {
+                                && pointer.flickDirection != FlickDirection.RIGHT) {
                             onKeyListener.onKeyFlickRight(pointer.key.keyCode)
-                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.RIGHT
+                            pointer.flickDirection = FlickDirection.RIGHT
                         } else if((pointer.x < pointer.key.x || pointer.x < pointer.initialX && distance > threshold)
-                                        && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.LEFT) {
+                                        && pointer.flickDirection != FlickDirection.LEFT) {
                             onKeyListener.onKeyFlickLeft(pointer.key.keyCode)
-                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.LEFT
+                            pointer.flickDirection = FlickDirection.LEFT
                         }
                     }
                 }
@@ -299,7 +298,7 @@ class BasicKeyboardView(
         val dx get() = x - initialX
         val dy get() = y - initialY
 
-        var flickDirection: SoftKeyFlickEvent.FlickDirection? = null
+        var flickDirection: FlickDirection? = null
 
     }
 
@@ -312,6 +311,10 @@ class BasicKeyboardView(
         fun onKeyFlickRight(keyCode: Int)
         fun onKeyFlickUp(keyCode: Int)
         fun onKeyFlickDown(keyCode: Int)
+    }
+
+    enum class FlickDirection {
+        UP, DOWN, LEFT, RIGHT
     }
 
 }

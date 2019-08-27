@@ -1,9 +1,5 @@
 package io.github.lee0701.lboard
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.view.View
-import io.github.lee0701.lboard.old_event.SoftKeyFlickEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.EventBusException
 import org.json.JSONObject

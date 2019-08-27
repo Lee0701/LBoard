@@ -3,8 +3,6 @@ package io.github.lee0701.lboard
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import io.github.lee0701.lboard.event.*
-import io.github.lee0701.lboard.old_event.CommitStringEvent
-import io.github.lee0701.lboard.old_event.SetSymbolModeEvent
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.MoreKeysSupportedHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.MoreKeysSupportedSoftKeyboard
@@ -51,6 +49,7 @@ abstract class CommonInputMethod: InputMethod {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onInputViewInit(event: InputViewInitEvent) {
         softKeyboard.methodId = this.methodId
+        hardKeyboard.methodId = this.methodId
         if(softKeyboard.getView() == null || event.requiresInit) softKeyboard.initView(event.context)
         EventBus.getDefault().post(InputViewChangeEvent(methodId, softKeyboard.getView()))
     }
@@ -102,7 +101,6 @@ abstract class CommonInputMethod: InputMethod {
             }
             KeyEvent.KEYCODE_ENTER -> {
                 hardKeyboard.reset()
-                EventBus.getDefault().post(SetSymbolModeEvent(false))
                 return false
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
