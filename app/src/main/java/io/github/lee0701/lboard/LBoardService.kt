@@ -362,21 +362,30 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             EventBus.getDefault().cancelEventDelivery(event)
             sendDownUpKeyEvents(event.keyCode)
         }
-
-        if(event.actions.last().type == LBoardKeyEvent.ActionType.RELEASE) {
-            if(event is SoftKeyEvent) {
+        if(event is SoftKeyEvent) {
+            if(event.actions.last().type == LBoardKeyEvent.ActionType.RELEASE) {
                 if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
-                    switchInputMethod(event is SoftKeyEvent)
+                    switchInputMethod(true)
                     EventBus.getDefault().cancelEventDelivery(event)
                 }
-
                 if(event.keyCode == KeyEvent.KEYCODE_SYM) {
                     switchVariation()
                     EventBus.getDefault().cancelEventDelivery(event)
                 }
             }
-        } else {
-            if(event is HardKeyEvent) {
+
+            if(event.actions.last().type == LBoardKeyEvent.ActionType.LONG_PRESS) {
+                if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
+                    showInputMethodPicker()
+                }
+                if(event.keyCode == KeyEvent.KEYCODE_COMMA || event.keyCode == KeyEvent.KEYCODE_PERIOD) {
+                    showSettingsApp()
+                }
+            }
+        }
+
+        if(event is HardKeyEvent) {
+            if(event.actions.last().type == LBoardKeyEvent.ActionType.PRESS) {
                 if(event.keyCode == KeyEvent.KEYCODE_SYM) {
                     switchVariation()
                     EventBus.getDefault().cancelEventDelivery(event)
@@ -427,129 +436,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
-
-    /*
-    @Subscribe
-	fun onResetView(event: ResetViewEvent) {
-        reloadPreferences()
-        reset()
-        setInputView(onCreateInputView())
-    }
-
-    @Subscribe
-	fun onUpdateOneHandedMode(event: OneHandedModeUpdateEvent) {
-        allInputMethods.forEach {
-            if(it is CommonInputMethod) it.softKeyboard.updateOneHandedMode(event.oneHandedMode)
-        }
-        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        editor.putInt("common_soft_one_handed_mode", event.oneHandedMode)
-        editor.apply()
-    }
-
-    @Subscribe
-	fun onSetSymbolMode(event: SetSymbolModeEvent) {
-        setSymbolMode(event.symbolMode)
-    }
-
-    @Subscribe
-	fun onKeyPress(event: KeyPressEvent) {
-        this.onKeyDown(event.keyCode, KeyEvent(KeyEvent.ACTION_DOWN, event.keyCode))
-    }
-
-    @Subscribe
-	fun onKeyRelease(event: KeyReleaseEvent) {
-        this.onKeyUp(event.keyCode, KeyEvent(KeyEvent.ACTION_UP, event.keyCode))
-    }
-
-    @Subscribe
-	fun onSoftKeyClick(event: SoftKeyClickEvent) {
-        when(event.state) {
-            SoftKeyClickEvent.State.DOWN -> onSoftKeyDown(event)
-            SoftKeyClickEvent.State.UP -> onSoftKeyUp(event)
-        }
-    }
-
-    private fun onSoftKeyDown(event: SoftKeyClickEvent) {
-        when(event.keyCode) {
-            KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
-                switchInputMethod(this.switchBetweenApps)
-                return
-            }
-            KeyEvent.KEYCODE_SYM -> {
-                setSymbolMode(!symbolKeyboardMode)
-                return
-            }
-        }
-
-        inputAfterSwitch = true
-
-        val result = currentMethod.onKeyPress(event.keyCode)
-        // 입력 이벤트 처리가 되었으면 Release 이벤트 전송, 처리되지 않았으면 기본 처리를 수행.
-        if(!result) when(event.keyCode) {
-            KeyEvent.KEYCODE_DEL -> {
-                if(currentInputConnection.getSelectedText(0) != null) currentInputConnection.commitText("", 1)
-                else currentInputConnection.deleteSurroundingText(1, 0)
-            }
-            KeyEvent.KEYCODE_ENTER -> {
-                when(currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION) {
-                    EditorInfo.IME_ACTION_SEARCH, EditorInfo.IME_ACTION_GO -> {
-                        sendDefaultEditorAction(true)
-                    }
-                    else -> {
-                        sendKeyChar('\n')
-                    }
-                }
-            }
-            else -> {
-                sendKeyChar(KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD).get(event.keyCode, 0).toChar())
-            }
-        }
-    }
-
-    private fun onSoftKeyUp(event: SoftKeyClickEvent) {
-        currentMethod.onKeyRelease(event.keyCode)
-    }
-
-    @Subscribe
-	fun onSoftKeyLongClick(event: SoftKeyLongClickEvent) {
-        when(event.keyCode) {
-            KeyEvent.KEYCODE_SYM -> {}
-            KeyEvent.KEYCODE_LANGUAGE_SWITCH -> showInputMethodPicker()
-            KeyEvent.KEYCODE_COMMA, KeyEvent.KEYCODE_PERIOD -> showSettingsApp()
-            KeyEvent.KEYCODE_SPACE -> {}
-            KeyEvent.KEYCODE_ENTER -> {}
-            KeyEvent.KEYCODE_DEL -> {}
-            else -> {
-                currentMethod.onKeyLongPress(event.keyCode)
-                return
-            }
-        }
-    }
-
-    @Subscribe
-	fun onSoftKeyFlick(event: SoftKeyFlickEvent) {
-        if(listOf(KeyEvent.KEYCODE_SYM, KeyEvent.KEYCODE_LANGUAGE_SWITCH, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DEL)
-                        .contains(event.keyCode)) return
-        currentMethod.onKeyFlick(event.keyCode, event.direction)
-    }
-
-    @Subscribe
-	fun onCompose(event: ComposeEvent) {
-        currentInputConnection?.setComposingText(event.composing, 1)
-    }
-
-    @Subscribe
-	fun onCommitComposing(event: CommitComposingEvent) {
-        currentInputConnection?.finishComposingText()
-    }
-
-    @Subscribe
-	fun onCommitString(event: CommitStringEvent) {
-        currentInputConnection?.finishComposingText()
-        currentInputConnection?.commitText(event.string, 1)
-    }
-    */
-
+    
     enum class PredefinedHangulConverter() {
         NONE, DUBEOL, DUBEOL_SINGLE_VOWEL, SEBEOL
     }
