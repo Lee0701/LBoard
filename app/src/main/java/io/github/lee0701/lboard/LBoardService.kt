@@ -332,7 +332,8 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             val shift = if(event.keyEvent is HardKeyEvent) event.keyEvent.shiftPressed else false
             val alt = if(event.keyEvent is HardKeyEvent) event.keyEvent.altPressed else false
             val metaState = if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0
-            currentInputConnection?.commitText(KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD).get(keyCode, metaState).toChar().toString(), 1)
+            val char = KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD).get(keyCode, metaState)
+            if(char > 0) currentInputConnection?.commitText(char.toChar().toString(), 1)
         }
         if(event.sendRawInput) {
             val keyCode = event.keyEvent.keyCode
