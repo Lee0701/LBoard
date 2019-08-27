@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard
 
 import android.view.KeyEvent
+import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.event.PreferenceChangeEvent
 import io.github.lee0701.lboard.old_event.*
 import io.github.lee0701.lboard.hangul.HangulComposer
@@ -34,11 +35,11 @@ class HangulInputMethod(
         hangulConverter.setPreferences(event.preferences)
     }
 
-    override fun onKeyPress(keyCode: Int): Boolean {
-        if(isSystemKey(keyCode)) return false
+    override fun onKeyPress(event: LBoardKeyEvent): Boolean {
+        if(isSystemKey(event.keyCode)) return false
         if(ignoreNextInput) return true
         timeoutTask?.cancel()
-        when(keyCode) {
+        when(event.keyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
                 if(states.size > 0) {
@@ -62,24 +63,24 @@ class HangulInputMethod(
                 }
             }
             KeyEvent.KEYCODE_ENTER -> {
-                return super.onKeyPress(keyCode)
+                return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
-                return super.onKeyPress(keyCode)
+                return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
-                return super.onKeyPress(keyCode)
+                return super.onKeyPress(event)
             }
             else -> {
-                val converted = convert(keyCode, shift, alt)
+                val converted = convert(event.keyCode, shift, alt)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
                         EventBus.getDefault().post(CommitComposingEvent())
                         states.clear()
                         hardKeyboard.reset()
-                        val defaultChar = getDefaultChar(keyCode, shift, alt)
-                        if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(getDefaultChar(keyCode, shift, alt).toChar().toString()))
+                        val defaultChar = getDefaultChar(event.keyCode, shift, alt)
+                        if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(getDefaultChar(event.keyCode, shift, alt).toChar().toString()))
                     }
                 } else if(converted.resultChar == 0) {
                     reset()

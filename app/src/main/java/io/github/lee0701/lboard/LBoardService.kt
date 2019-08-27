@@ -241,6 +241,9 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
+
+        EventBus.getDefault().post(ConfigurationChangeEvent(resources.configuration))
+
     }
 
     override fun onFinishInput() {
@@ -303,6 +306,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     @Subscribe
 	fun onInputProcessComplete(event: InputProcessCompleteEvent) {
         if(event.methodId != currentMethodId) return
+        println(event)
         if(event.composingText?.commitPreviousText == true) currentInputConnection?.finishComposingText()
         if(event.sendRawInput) {
             val keyCode = event.keyEvent.keyCode

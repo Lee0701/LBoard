@@ -59,9 +59,9 @@ abstract class CommonInputMethod: InputMethod {
     @Subscribe
     fun onKeyEvent(event: LBoardKeyEvent) {
         val result = when(event.actions.last().type) {
-            LBoardKeyEvent.ActionType.PRESS -> onKeyPress(event.keyCode)
-            LBoardKeyEvent.ActionType.RELEASE -> onKeyRelease(event.keyCode)
-            LBoardKeyEvent.ActionType.LONG_PRESS -> onKeyPress(event.keyCode)
+            LBoardKeyEvent.ActionType.PRESS -> onKeyPress(event)
+            LBoardKeyEvent.ActionType.RELEASE -> onKeyRelease(event)
+            LBoardKeyEvent.ActionType.LONG_PRESS -> onKeyPress(event)
             LBoardKeyEvent.ActionType.FLICK_LEFT, LBoardKeyEvent.ActionType.FLICK_RIGHT,
                 LBoardKeyEvent.ActionType.FLICK_UP, LBoardKeyEvent.ActionType.FLICK_DOWN -> onKeyFlick(event)
             else -> true
@@ -79,9 +79,9 @@ abstract class CommonInputMethod: InputMethod {
         softKeyboard.updateLabels(hardKeyboard.getLabels(shift, alt))
     }
 
-    protected open fun onKeyPress(keyCode: Int): Boolean {
+    protected open fun onKeyPress(event: LBoardKeyEvent): Boolean {
         if(ignoreNextInput) return true
-        when(keyCode) {
+        when(event.keyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
                 return false
@@ -117,18 +117,20 @@ abstract class CommonInputMethod: InputMethod {
                 inputOnAlt = false
             }
             else -> {
-                val converted = convert(keyCode, shift, alt)
-                if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
+                val converted = convert(event.keyCode, shift, alt)
+                // TODO: Implement this.
+//                if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
                         hardKeyboard.reset()
-                        val defaultChar = getDefaultChar(keyCode, shift, alt)
+                        val defaultChar = getDefaultChar(event.keyCode, shift, alt)
                         if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(defaultChar.toChar().toString()))
                     }
                 } else if(converted.resultChar == 0) {
                     hardKeyboard.reset()
                 } else {
-                    EventBus.getDefault().post(CommitStringEvent(converted.resultChar.toChar().toString()))
+                    EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                            ComposingText(textToCommit = converted.resultChar.toChar().toString())))
                 }
                 processStickyKeysOnInput(converted.resultChar ?: 0)
                 converted.shiftOn?.let { shift = it }
@@ -139,8 +141,8 @@ abstract class CommonInputMethod: InputMethod {
         return true
     }
 
-    protected open fun onKeyRelease(keyCode: Int): Boolean {
-        when(keyCode) {
+    protected open fun onKeyRelease(event: LBoardKeyEvent): Boolean {
+        when(event.keyCode) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
                 if(shift && !capsLock) shift = !inputOnShift
                 shiftPressing = false
@@ -155,17 +157,18 @@ abstract class CommonInputMethod: InputMethod {
         return true
     }
 
-    protected open fun onKeyLongPress(keyCode: Int): Boolean {
+    protected open fun onKeyLongPress(event: LBoardKeyEvent): Boolean {
         if(hardKeyboard is MoreKeysSupportedHardKeyboard) {
-            val moreKeys = (hardKeyboard as MoreKeysSupportedHardKeyboard).getMoreKeys(keyCode, shift, alt)
+            val moreKeys = (hardKeyboard as MoreKeysSupportedHardKeyboard).getMoreKeys(event.keyCode, shift, alt)
             if(softKeyboard is MoreKeysSupportedSoftKeyboard) {
-                (softKeyboard as MoreKeysSupportedSoftKeyboard).showMoreKeysKeyboard(keyCode, moreKeys)
+                (softKeyboard as MoreKeysSupportedSoftKeyboard).showMoreKeysKeyboard(event.keyCode, moreKeys)
             }
         }
         return true
     }
 
     protected open fun onKeyFlick(event: LBoardKeyEvent): Boolean {
+        /*
         if((event.keyCode and ExtendedCode.TWELVE_KEYPAD) != 0) {
             val code = event.keyCode or when(event.actions.last().type) {
                 LBoardKeyEvent.ActionType.FLICK_UP -> ExtendedCode.TWELVE_FLICK_UP
@@ -195,6 +198,7 @@ abstract class CommonInputMethod: InputMethod {
                 }
             }
         }
+        */
         return true
     }
 
