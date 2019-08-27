@@ -72,7 +72,6 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
     private fun reloadPreferences() {
         inputMethods.values.forEach { it.destroy() }
-
         inputMethods.clear()
 
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -293,6 +292,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             EventBus.getDefault().post(OneHandedModeUpdateEvent(pref.getInt("common_soft_one_handed_mode", 0)))
         } else {
             reloadPreferences()
+            onCreateInputView()
         }
     }
 
