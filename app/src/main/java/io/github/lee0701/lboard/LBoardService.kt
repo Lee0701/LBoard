@@ -299,7 +299,6 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     @Subscribe
 	fun onInputViewChange(event: InputViewChangeEvent) {
         if(event.methodId != currentMethodId) return
-        println(event.inputView)
         if(event.inputView != null) {
             (event.inputView.parent as ViewGroup?)?.removeView(event.inputView)
             setInputView(event.inputView)
@@ -335,15 +334,17 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             sendDownUpKeyEvents(event.keyCode)
         }
 
-        if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
-            switchInputMethod(event is SoftKeyEvent)
-            EventBus.getDefault().cancelEventDelivery(event)
-        }
-
-        if(event is HardKeyEvent) {
-            if(event.keyCode == KeyEvent.KEYCODE_SPACE && event.shiftPressed) {
-                switchInputMethod(false)
+        if(event.actions.last().type == LBoardKeyEvent.ActionType.PRESS) {
+            if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
+                switchInputMethod(event is SoftKeyEvent)
                 EventBus.getDefault().cancelEventDelivery(event)
+            }
+
+            if(event is HardKeyEvent) {
+                if(event.keyCode == KeyEvent.KEYCODE_SPACE && event.shiftPressed) {
+                    switchInputMethod(false)
+                    EventBus.getDefault().cancelEventDelivery(event)
+                }
             }
         }
 

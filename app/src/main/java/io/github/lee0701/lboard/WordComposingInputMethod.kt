@@ -3,6 +3,7 @@ package io.github.lee0701.lboard
 import android.content.Context
 import android.view.KeyEvent
 import android.view.View
+import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.old_event.*
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
@@ -31,12 +32,9 @@ class WordComposingInputMethod(
                 }
             }
             KeyEvent.KEYCODE_SPACE -> {
-                EventBus.getDefault().post(CommitComposingEvent())
-                states.clear()
-                hardKeyboard.reset()
-                EventBus.getDefault().post(UpdateViewEvent())
-                EventBus.getDefault().post(SetSymbolModeEvent(false))
-                EventBus.getDefault().post(CommitStringEvent(" "))
+                reset()
+                EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                        ComposingText(commitPreviousText = true, textToCommit = " ")))
                 return true
             }
             KeyEvent.KEYCODE_ENTER -> {
@@ -63,8 +61,8 @@ class WordComposingInputMethod(
                 converted.altOn?.let { alt = it }
             }
         }
-        EventBus.getDefault().post(ComposeEvent(lastState))
-        EventBus.getDefault().post(UpdateViewEvent())
+        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                ComposingText(newComposingText = lastState)))
         return true
     }
 

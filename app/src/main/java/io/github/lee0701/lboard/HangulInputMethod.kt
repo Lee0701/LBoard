@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard
 
 import android.view.KeyEvent
+import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.event.PreferenceChangeEvent
 import io.github.lee0701.lboard.old_event.*
@@ -57,8 +58,8 @@ class HangulInputMethod(
                     hardKeyboard.reset()
                 } else {
                     reset()
-                    EventBus.getDefault().post(SetSymbolModeEvent(false))
-                    EventBus.getDefault().post(CommitStringEvent(" "))
+                    EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                            ComposingText(commitPreviousText = true, textToCommit = " ")))
                 }
             }
             KeyEvent.KEYCODE_ENTER -> {
@@ -74,13 +75,7 @@ class HangulInputMethod(
                 val converted = convert(event.keyCode, shift, alt)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
-                    if(converted.defaultChar) {
-                        EventBus.getDefault().post(CommitComposingEvent())
-                        states.clear()
-                        hardKeyboard.reset()
-                        val defaultChar = getDefaultChar(event.keyCode, shift, alt)
-                        if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(getDefaultChar(event.keyCode, shift, alt).toChar().toString()))
-                    }
+                    if(converted.defaultChar) return false
                 } else if(converted.resultChar == 0) {
                     reset()
                 } else {
@@ -100,8 +95,8 @@ class HangulInputMethod(
                 if(hangulConverter is SingleVowelDubeolHangulComposer && timeout > 0) timer.schedule(timeoutTask, timeout.toLong())
             }
         }
-        EventBus.getDefault().post(ComposeEvent(hangulConverter.display(lastState)))
-        EventBus.getDefault().post(UpdateViewEvent())
+        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                ComposingText(newComposingText = hangulConverter.display(lastState))))
         return true
     }
 

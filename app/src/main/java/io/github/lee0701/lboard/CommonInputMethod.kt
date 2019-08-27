@@ -56,6 +56,11 @@ abstract class CommonInputMethod: InputMethod {
         EventBus.getDefault().post(InputViewChangeEvent(methodId, softKeyboard.getView()))
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onInputViewRequiresUpdate(event: InputViewRequiresUpdateEvent) {
+        if(event.methodId == this.methodId) updateView()
+    }
+
     @Subscribe
     fun onKeyEvent(event: LBoardKeyEvent) {
         val result = when(event.actions.last().type) {
@@ -66,7 +71,10 @@ abstract class CommonInputMethod: InputMethod {
                 LBoardKeyEvent.ActionType.FLICK_UP, LBoardKeyEvent.ActionType.FLICK_DOWN -> onKeyFlick(event)
             else -> true
         }
-        if(!result) EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
+        if(!result) {
+            reset()
+            EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
+        }
     }
 
     protected open fun reset() {
@@ -121,11 +129,7 @@ abstract class CommonInputMethod: InputMethod {
                 // TODO: Implement this.
 //                if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
                 if(converted.resultChar == null) {
-                    if(converted.defaultChar) {
-                        hardKeyboard.reset()
-                        val defaultChar = getDefaultChar(event.keyCode, shift, alt)
-                        if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(defaultChar.toChar().toString()))
-                    }
+                    if(converted.defaultChar) return false
                 } else if(converted.resultChar == 0) {
                     hardKeyboard.reset()
                 } else {
@@ -137,7 +141,7 @@ abstract class CommonInputMethod: InputMethod {
                 converted.altOn?.let { alt = it }
             }
         }
-        updateView()
+        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.methodId))
         return true
     }
 
@@ -152,7 +156,7 @@ abstract class CommonInputMethod: InputMethod {
                 altPressing = false
             }
         }
-        updateView()
+        EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.methodId))
         ignoreNextInput = false
         return true
     }
