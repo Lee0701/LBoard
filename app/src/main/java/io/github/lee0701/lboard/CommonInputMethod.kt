@@ -65,14 +65,14 @@ abstract class CommonInputMethod: InputMethod {
         val result = when(event.actions.last().type) {
             LBoardKeyEvent.ActionType.PRESS -> onKeyPress(event)
             LBoardKeyEvent.ActionType.RELEASE -> onKeyRelease(event)
-            LBoardKeyEvent.ActionType.LONG_PRESS -> onKeyPress(event)
+            LBoardKeyEvent.ActionType.LONG_PRESS -> onKeyLongPress(event)
+            LBoardKeyEvent.ActionType.REPEAT -> onKeyRepeat(event)
             LBoardKeyEvent.ActionType.FLICK_LEFT, LBoardKeyEvent.ActionType.FLICK_RIGHT,
                 LBoardKeyEvent.ActionType.FLICK_UP, LBoardKeyEvent.ActionType.FLICK_DOWN -> onKeyFlick(event)
-            else -> true
         }
         if(!result) {
             reset()
-            EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
+            EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, false, true))
         }
     }
 
@@ -97,8 +97,8 @@ abstract class CommonInputMethod: InputMethod {
             }
             KeyEvent.KEYCODE_SPACE -> {
                 hardKeyboard.reset()
-                EventBus.getDefault().post(SetSymbolModeEvent(false))
-                EventBus.getDefault().post(CommitStringEvent(" "))
+                EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                        ComposingText(commitPreviousText = true, textToCommit = " ")))
             }
             KeyEvent.KEYCODE_ENTER -> {
                 hardKeyboard.reset()
@@ -130,14 +130,15 @@ abstract class CommonInputMethod: InputMethod {
                 // TODO: Implement this.
 //                if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
                 if(converted.resultChar == null) {
-                    if(converted.defaultChar) return false
+                    if(converted.defaultChar)
+                        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
                 } else if(converted.resultChar == 0) {
                     hardKeyboard.reset()
                 } else {
                     EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
                             ComposingText(textToCommit = converted.resultChar.toChar().toString())))
                 }
-                processStickyKeysOnInput(converted.resultChar ?: 0)
+                processStickyKeysOnInput()
                 converted.shiftOn?.let { shift = it }
                 converted.altOn?.let { alt = it }
             }
@@ -170,6 +171,10 @@ abstract class CommonInputMethod: InputMethod {
             }
         }
         return true
+    }
+
+    protected open fun onKeyRepeat(event: LBoardKeyEvent): Boolean {
+        return onKeyPress(event)
     }
 
     protected open fun onKeyFlick(event: LBoardKeyEvent): Boolean {
@@ -217,7 +222,7 @@ abstract class CommonInputMethod: InputMethod {
                 .get(keyCode, metaState)
     }
 
-    protected fun processStickyKeysOnInput(resultChar: Int) {
+    protected fun processStickyKeysOnInput() {
         if(shift && !capsLock && !shiftPressing) {
             shift = false
         } else {

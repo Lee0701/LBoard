@@ -316,14 +316,25 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 	fun onInputProcessComplete(event: InputProcessCompleteEvent) {
         if(event.methodId != currentMethodId) return
         if(event.composingText?.commitPreviousText == true) currentInputConnection?.finishComposingText()
+        if(event.commitDefaultChar) {
+            val keyCode = event.keyEvent.keyCode
+            val shift = if(event.keyEvent is HardKeyEvent) event.keyEvent.shiftPressed else false
+            val alt = if(event.keyEvent is HardKeyEvent) event.keyEvent.altPressed else false
+            val metaState = if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0
+            currentInputConnection?.commitText(KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD).get(keyCode, metaState).toChar().toString(), 1)
+        }
         if(event.sendRawInput) {
             val keyCode = event.keyEvent.keyCode
+            val shift = if(event.keyEvent is HardKeyEvent) event.keyEvent.shiftPressed else false
+            val alt = if(event.keyEvent is HardKeyEvent) event.keyEvent.altPressed else false
+            val metaState = if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0
+            val time = event.keyEvent.actions.last().time
             val action = when(event.keyEvent.actions.last().type) {
                 LBoardKeyEvent.ActionType.PRESS -> KeyEvent.ACTION_DOWN
                 LBoardKeyEvent.ActionType.RELEASE -> KeyEvent.ACTION_UP
                 else -> return
             }
-            currentInputConnection?.sendKeyEvent(KeyEvent(action, keyCode))
+            currentInputConnection?.sendKeyEvent(KeyEvent(time, time, action, keyCode, 0, metaState))
         } else {
             event.composingText?.newComposingText?.let { currentInputConnection?.setComposingText(it, event.composingText.newCursorPosition) }
             event.composingText?.textToCommit?.let { currentInputConnection?.commitText(it, event.composingText.newCursorPosition) }

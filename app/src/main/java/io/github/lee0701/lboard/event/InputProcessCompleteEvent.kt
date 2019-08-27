@@ -6,5 +6,6 @@ open class InputProcessCompleteEvent(
         methodId: String,
         val keyEvent: LBoardKeyEvent,
         val composingText: ComposingText?,
+        val commitDefaultChar: Boolean = false,
         val sendRawInput: Boolean = false
 ): InputMethodEvent(methodId)
