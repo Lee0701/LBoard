@@ -1,17 +1,22 @@
 package io.github.lee0701.lboard.softkeyboard
 
+import android.app.Service
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
+import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
 
 class BasicMoreKeyPopup(context: Context, val showOffset: Int, key: io.github.lee0701.lboard.softkeyboard.Key,
                         val list: List<Pair<Int, String>>, val theme: KeyboardTheme
 ): KeyboardPopup(context, key) {
+
+    private val displayMetrics = DisplayMetrics()
 
     private val background = ContextCompat.getDrawable(context, theme.previewBackground)!!
     private val keys = list.map { Key(it.first, it.second) }
@@ -23,9 +28,11 @@ class BasicMoreKeyPopup(context: Context, val showOffset: Int, key: io.github.le
     private var offsetX = 0
     private var offsetY = 0
 
-    var keyCode: Int? = null
+    var resultKeyCode: Int? = null
 
     override fun show(parent: View) {
+        (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
+
         popupWindow.setBackgroundDrawable(background)
         popupWindow.width = keyboardView.keyboardWidth
         popupWindow.height = keyboardView.keyboardHeight
@@ -34,6 +41,7 @@ class BasicMoreKeyPopup(context: Context, val showOffset: Int, key: io.github.le
         popupWindow.isTouchable = true
 
         offsetX = key.x - popupWindow.width/2
+        if(layout.width % 2 == 0 && key.x < displayMetrics.widthPixels/2) offsetX += key.width
         if(layout.width % 2 == 1) offsetX += key.width/2
         while(offsetX < 0) offsetX += key.width
         while(offsetX + popupWindow.width > parent.width) offsetX -= key.width
@@ -58,7 +66,7 @@ class BasicMoreKeyPopup(context: Context, val showOffset: Int, key: io.github.le
 
         firstTouchedKey?.let {
             it.active = true
-            keyCode = it.keyCode
+            resultKeyCode = it.keyCode
         }
 
     }
@@ -71,14 +79,14 @@ class BasicMoreKeyPopup(context: Context, val showOffset: Int, key: io.github.le
         val innerX = x - offsetX
         val innerY = y - offsetY
 
-        keyCode = null
+        resultKeyCode = null
 
         var changed = false
         keys.forEach { key ->
             val active = key.touchableRect.contains(innerX, innerY)
             if(key.active != active) changed = true
             key.active = active
-            if(active) keyCode = key.keyCode
+            if(active) resultKeyCode = key.keyCode
         }
         if(changed) keyboardView.invalidate()
     }

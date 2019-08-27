@@ -235,7 +235,7 @@ class BasicKeyboardView(
                         if(alpha == 0f && popup != null) closePopup(popup.key.keyCode)
                     }
 
-                    val popupKeycode = if(popup is BasicMoreKeyPopup) popup.keyCode else null
+                    val popupKeycode = if(popup is BasicMoreKeyPopup) popup.resultKeyCode else null
 
                     if(popupKeycode != null) onKeyListener.onMoreKeySelect(pointer.key.keyCode, popupKeycode)
                     else onKeyListener.onKeyUp(pointer.key.keyCode, pointer.x, pointer.y)
