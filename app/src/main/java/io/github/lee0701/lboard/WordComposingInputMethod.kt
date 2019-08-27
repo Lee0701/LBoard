@@ -20,7 +20,6 @@ class WordComposingInputMethod(
     val lastState: String get() = if(states.isEmpty()) "" else states.last()
 
     override fun onKeyPress(event: LBoardKeyEvent): Boolean {
-        if(isSystemKey(event.keyCode)) return false
         if(ignoreNextInput) return true
         when(event.keyCode) {
             KeyEvent.KEYCODE_DEL -> {

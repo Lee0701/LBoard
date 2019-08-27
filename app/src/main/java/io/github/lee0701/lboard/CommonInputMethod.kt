@@ -225,8 +225,6 @@ abstract class CommonInputMethod: InputMethod {
         }
     }
 
-    fun isSystemKey(keyCode: Int): Boolean = keyCode in 0 .. 6 || keyCode in 24 .. 28 || keyCode in 79 .. 85
-
     override fun serialize(): JSONObject {
         return super.serialize().apply {
             put("soft-keyboard", softKeyboard.serialize())

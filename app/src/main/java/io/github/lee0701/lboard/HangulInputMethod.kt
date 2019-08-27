@@ -36,7 +36,6 @@ class HangulInputMethod(
     }
 
     override fun onKeyPress(event: LBoardKeyEvent): Boolean {
-        if(isSystemKey(event.keyCode)) return false
         if(ignoreNextInput) return true
         timeoutTask?.cancel()
         when(event.keyCode) {

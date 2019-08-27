@@ -252,13 +252,15 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         EventBus.getDefault().post(HardKeyEvent(currentMethodId, keyCode,
-                appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, System.currentTimeMillis()))))
+                appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, System.currentTimeMillis())),
+                event.isShiftPressed, event.isAltPressed))
         return true
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         EventBus.getDefault().post(HardKeyEvent(currentMethodId, keyCode,
-                appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))))
+                appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis())),
+                event.isShiftPressed, event.isAltPressed))
         inputHistory -= keyCode
         return true
     }
@@ -323,9 +325,27 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
     }
 
-    @Subscribe
+    @Subscribe(priority = 100)
     fun onKeyEvent(event: LBoardKeyEvent) {
         inputAfterSwitch = true
+
+        if(isSystemKey(event.keyCode)) {
+            EventBus.getDefault().cancelEventDelivery(event)
+            sendDownUpKeyEvents(event.keyCode)
+        }
+
+        if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
+            switchInputMethod(event is SoftKeyEvent)
+            EventBus.getDefault().cancelEventDelivery(event)
+        }
+
+        if(event is HardKeyEvent) {
+            if(event.keyCode == KeyEvent.KEYCODE_SPACE && event.shiftPressed) {
+                switchInputMethod(false)
+                EventBus.getDefault().cancelEventDelivery(event)
+            }
+        }
+
     }
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
@@ -343,7 +363,10 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
         inputAfterSwitch = false
         onCreateInputView()
+        EventBus.getDefault().post(InputStartEvent())
     }
+
+    private fun isSystemKey(keyCode: Int): Boolean = keyCode in 0 .. 6 || keyCode in 24 .. 28 || keyCode in 79 .. 85
 
     private fun showInputMethodPicker() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
