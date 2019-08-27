@@ -79,7 +79,7 @@ abstract class CommonInputMethod: InputMethod {
             }
             LBoardKeyEvent.ActionType.RELEASE -> {
                 pressEvent?.let {
-                    val result = onKeyPress(it)
+                    val result = onKeyPress(SoftKeyEvent(it.methodId, event.keyCode, it.actions))
                     if(!result) {
                         reset()
                         EventBus.getDefault().post(InputProcessCompleteEvent(methodId, it, null, false, true))
