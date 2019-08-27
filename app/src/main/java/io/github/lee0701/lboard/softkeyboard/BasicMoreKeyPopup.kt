@@ -10,16 +10,15 @@ import android.view.Gravity
 import android.view.View
 
 class BasicMoreKeyPopup(context: Context, val showOffset: Int, key: io.github.lee0701.lboard.softkeyboard.Key,
-                        val list: List<Pair<Int, String>>,
-                        background: Int, backgroundActive: Int, val color: Int
+                        val list: List<Pair<Int, String>>, val theme: KeyboardTheme
 ): KeyboardPopup(context, key) {
 
-    private val background = ContextCompat.getDrawable(context, background)!!
+    private val background = ContextCompat.getDrawable(context, theme.previewBackground)!!
     private val keys = list.map { Key(it.first, it.second) }
     private val layout = createKeyboardLayout(keys)
     private val keyboardView = KeyboardView(context, layout,
             key.width * layout.width, key.height * layout.height,
-            ContextCompat.getDrawable(context, backgroundActive)!!, color)
+            ContextCompat.getDrawable(context, theme.keyTheme[null]?.backgroundPressed!!)!!, theme.keyTheme[null]?.textColor!!)
 
     private var offsetX = 0
     private var offsetY = 0

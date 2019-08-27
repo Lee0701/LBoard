@@ -271,8 +271,7 @@ class BasicSoftKeyboard(
         val keyboardView = keyboardView ?: return
         val list = moreKeys.map { it to (currentLabels[it] ?: it.toString()) }
         if(list.isEmpty()) return
-        val popup = BasicMoreKeyPopup(keyboardView.context, if(oneHandedMode > 0) oneHandedMargin else 0, key, list,
-                theme.previewBackground, theme.keyTheme[null]?.backgroundPressed!!, theme.keyTheme[null]?.textColor!!)
+        val popup = BasicMoreKeyPopup(keyboardView.context, if(oneHandedMode > 0) oneHandedMargin else 0, key, list, theme)
         keyboardView.showPopup(popup)
     }
 
