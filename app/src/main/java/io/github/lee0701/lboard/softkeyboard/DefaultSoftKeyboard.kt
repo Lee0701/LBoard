@@ -4,19 +4,14 @@ import android.content.Context
 import android.inputmethodservice.Keyboard
 import android.inputmethodservice.KeyboardView
 import android.view.View
-import io.github.lee0701.lboard.InputHistoryHolder
 import io.github.lee0701.lboard.event.LBoardKeyEvent
-import io.github.lee0701.lboard.event.SoftKeyEvent
+import io.github.lee0701.lboard.event.KeyPressEvent
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
 class DefaultSoftKeyboard(
         val layoutResId: String
-): SoftKeyboard, InputHistoryHolder, KeyboardView.OnKeyboardActionListener {
-
-    override lateinit var methodId: String
-
-    override val inputHistory: MutableMap<Int, MutableList<LBoardKeyEvent.Action>> = mutableMapOf()
+): SoftKeyboard, KeyboardView.OnKeyboardActionListener {
 
     var keyboardView: KeyboardView? = null
 
@@ -46,11 +41,8 @@ class DefaultSoftKeyboard(
     }
 
     override fun onKey(primaryCode: Int, keyCodes: IntArray) {
-        val press = appendInputHistory(primaryCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, primaryCode, press))
-        val release = appendInputHistory(primaryCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, primaryCode, release))
-        inputHistory -= primaryCode
+        EventBus.getDefault().post(KeyPressEvent(primaryCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.PRESS))
+        EventBus.getDefault().post(KeyPressEvent(primaryCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.RELEASE))
     }
 
     override fun updateLabels(labels: Map<Int, String>) {

@@ -6,8 +6,6 @@ import io.github.lee0701.lboard.inputmethod.InputMethodModule
 
 interface SoftKeyboard: InputMethodModule {
 
-    var methodId: String
-
     var shift: Int
     var alt: Int
 

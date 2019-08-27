@@ -19,11 +19,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import io.github.lee0701.lboard.InputHistoryHolder
 import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.event.MoreKeySelectEvent
-import io.github.lee0701.lboard.event.SoftKeyEvent
+import io.github.lee0701.lboard.event.KeyPressEvent
 import io.github.lee0701.lboard.event.OneHandedModeUpdateEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.layouts.soft.*
@@ -34,9 +33,7 @@ import org.json.JSONObject
 class BasicSoftKeyboard(
         val layout: Layout,
         val theme: KeyboardTheme
-): MoreKeysSupportedSoftKeyboard, InputHistoryHolder, BasicKeyboardView.OnKeyListener {
-
-    override lateinit var methodId: String
+): MoreKeysSupportedSoftKeyboard, BasicKeyboardView.OnKeyListener {
 
     var keyboardViewHolder: ViewGroup? = null
 
@@ -46,8 +43,6 @@ class BasicSoftKeyboard(
 
     lateinit var leftDrawable: Drawable
     lateinit var rightDrawable: Drawable
-
-    override val inputHistory: MutableMap<Int, MutableList<LBoardKeyEvent.Action>> = mutableMapOf()
 
     var currentLabels: Map<Int, String> = mapOf()
 
@@ -213,9 +208,7 @@ class BasicSoftKeyboard(
         (if(keyCode == KeyEvent.KEYCODE_SPACE && upSound != null) upSound else downSound)?.let { soundPool?.play(it, volume, volume, 1, 0, 1f) }
         pressTime = System.currentTimeMillis()
 
-        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.PRESS, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+        EventBus.getDefault().post(KeyPressEvent(keyCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.PRESS))
     }
 
     override fun onKeyUp(keyCode: Int, x: Int, y: Int) {
@@ -227,54 +220,36 @@ class BasicSoftKeyboard(
         val volume = timeRatio * soundVolume
         upSound?.let { soundPool?.play(it, volume, volume, 1, 0, 1f) }
 
-        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
-        inputHistory -= keyCode
+        EventBus.getDefault().post(KeyPressEvent(keyCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.RELEASE))
     }
 
     override fun onKeyLongClick(keyCode: Int) {
         vibrator?.vibrate(vibrateDuration.toLong() / 2)
-        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.LONG_PRESS, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+        EventBus.getDefault().post(KeyPressEvent(keyCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.LONG_PRESS))
     }
 
     override fun onKeyRepeat(keyCode: Int) {
-        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.REPEAT, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+        EventBus.getDefault().post(KeyPressEvent(keyCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.REPEAT))
     }
 
     override fun onMoreKeySelect(originalKeyCode: Int, keyCode: Int) {
-        val actions = appendInputHistory(originalKeyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))
-        EventBus.getDefault().post(MoreKeySelectEvent(methodId, originalKeyCode, keyCode, SoftKeyEvent(methodId, keyCode, actions)))
-        inputHistory -= originalKeyCode
+        EventBus.getDefault().post(MoreKeySelectEvent(originalKeyCode, keyCode))
     }
 
     override fun onKeyFlickLeft(keyCode: Int) {
-        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.FLICK_LEFT, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+        EventBus.getDefault().post(KeyPressEvent(keyCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.FLICK_LEFT))
     }
 
     override fun onKeyFlickRight(keyCode: Int) {
-        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.FLICK_RIGHT, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+        EventBus.getDefault().post(KeyPressEvent(keyCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.FLICK_RIGHT))
     }
 
     override fun onKeyFlickUp(keyCode: Int) {
-        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.FLICK_UP, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+        EventBus.getDefault().post(KeyPressEvent(keyCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.FLICK_UP))
     }
 
     override fun onKeyFlickDown(keyCode: Int) {
-        val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
-                LBoardKeyEvent.ActionType.FLICK_DOWN, System.currentTimeMillis()))
-        EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+        EventBus.getDefault().post(KeyPressEvent(keyCode, shift > 0, alt > 0, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD, LBoardKeyEvent.ActionType.FLICK_DOWN))
     }
 
     override fun showMoreKeysKeyboard(keyCode: Int, moreKeys: List<Int>) {

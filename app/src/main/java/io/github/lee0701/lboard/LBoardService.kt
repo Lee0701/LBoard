@@ -33,9 +33,9 @@ import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences.OnSharedPreferenceChangeListener {
+class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    override val inputHistory: MutableMap<Int, MutableList<LBoardKeyEvent.Action>> = mutableMapOf()
+    val inputHistory: MutableMap<Int, MutableList<LBoardKeyEvent.Action>> = mutableMapOf()
 
     private val languageCycleTable = listOf("en", "ko")
     private var languageCycleIndex: Int = 0
@@ -265,16 +265,16 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if(isSystemKey(keyCode)) return super.onKeyDown(keyCode, event)
-        EventBus.getDefault().post(HardKeyEvent(currentMethodId, keyCode,
-                appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, System.currentTimeMillis())),
+        EventBus.getDefault().post(LBoardKeyEvent(currentMethodId, keyCode, LBoardKeyEvent.Source.PHYSICAL_KEYBOARD,
+                appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, keyCode, System.currentTimeMillis())),
                 event.isShiftPressed, event.isAltPressed))
         return true
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         if(isSystemKey(keyCode)) return super.onKeyUp(keyCode, event)
-        EventBus.getDefault().post(HardKeyEvent(currentMethodId, keyCode,
-                appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis())),
+        EventBus.getDefault().post(LBoardKeyEvent(currentMethodId, keyCode, LBoardKeyEvent.Source.PHYSICAL_KEYBOARD,
+                appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.RELEASE, keyCode, System.currentTimeMillis())),
                 event.isShiftPressed, event.isAltPressed))
         inputHistory -= keyCode
         return true
@@ -339,17 +339,17 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
         if(event.methodId != currentMethodId) return
         if(event.composingText?.commitPreviousText == true) currentInputConnection?.finishComposingText()
         if(event.commitDefaultChar) {
-            val keyCode = event.keyEvent.keyCode
-            val shift = if(event.keyEvent is HardKeyEvent) event.keyEvent.shiftPressed else false
-            val alt = if(event.keyEvent is HardKeyEvent) event.keyEvent.altPressed else false
+            val keyCode = event.keyEvent.originalKeyCode
+            val shift = event.keyEvent.shiftPressed
+            val alt = event.keyEvent.altPressed
             val metaState = if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0
             val char = KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD).get(keyCode, metaState)
             if(char > 0) currentInputConnection?.commitText(char.toChar().toString(), 1)
         }
         if(event.sendRawInput) {
-            val keyCode = event.keyEvent.keyCode
-            val shift = if(event.keyEvent is HardKeyEvent) event.keyEvent.shiftPressed else false
-            val alt = if(event.keyEvent is HardKeyEvent) event.keyEvent.altPressed else false
+            val keyCode = event.keyEvent.originalKeyCode
+            val shift = event.keyEvent.shiftPressed
+            val alt = event.keyEvent.altPressed
             val metaState = if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0
             val time = event.keyEvent.actions.last().time
             val action = when(event.keyEvent.actions.last().type) {
@@ -366,21 +366,38 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
     }
 
+    @Subscribe
+    fun onKeyPress(event: KeyPressEvent) {
+        val actions = appendInputHistory(event.keyCode, LBoardKeyEvent.Action(event.type, event.keyCode, System.currentTimeMillis()))
+        EventBus.getDefault().post(LBoardKeyEvent(currentMethodId, event.keyCode, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD,
+                actions, event.shift, event.alt))
+        if(event.type == LBoardKeyEvent.ActionType.RELEASE) removeInputHistory(event.keyCode)
+    }
+
+    @Subscribe
+    fun onMoreKeySelect(event: MoreKeySelectEvent) {
+        val actions = appendInputHistory(event.originalKeyCode,
+                LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.SELECT_MORE_KEYS, event.newKeyCode, System.currentTimeMillis()))
+        EventBus.getDefault().post(LBoardKeyEvent(currentMethodId, event.originalKeyCode, LBoardKeyEvent.Source.VIRTUAL_KEYBOARD,
+                actions, false, false))
+        removeInputHistory(event.originalKeyCode)
+    }
+
     @Subscribe(priority = 100)
     fun onKeyEvent(event: LBoardKeyEvent) {
-        if(isSystemKey(event.keyCode)) {
+        if(isSystemKey(event.originalKeyCode)) {
             EventBus.getDefault().cancelEventDelivery(event)
-            sendDownUpKeyEvents(event.keyCode)
+            sendDownUpKeyEvents(event.originalKeyCode)
             return
         }
-        if(event is SoftKeyEvent) {
+        if(event.source == LBoardKeyEvent.Source.VIRTUAL_KEYBOARD) {
             when(event.actions.last().type) {
                 LBoardKeyEvent.ActionType.FLICK_UP, LBoardKeyEvent.ActionType.FLICK_DOWN,
                 LBoardKeyEvent.ActionType.FLICK_LEFT, LBoardKeyEvent.ActionType.FLICK_RIGHT -> {
                     if(listOf(KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_DEL,
                                     KeyEvent.KEYCODE_SYM, KeyEvent.KEYCODE_LANGUAGE_SWITCH,
                                     KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT)
-                                    .contains(event.keyCode)) {
+                                    .contains(event.originalKeyCode)) {
                         EventBus.getDefault().cancelEventDelivery(event)
                         return
                     }
@@ -388,29 +405,29 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             }
 
             if(event.actions.last().type == LBoardKeyEvent.ActionType.LONG_PRESS) {
-                if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
+                if(event.originalKeyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
                     showInputMethodPicker()
                     return
                 }
-                if(event.keyCode == KeyEvent.KEYCODE_COMMA || event.keyCode == KeyEvent.KEYCODE_PERIOD) {
+                if(event.originalKeyCode == KeyEvent.KEYCODE_COMMA || event.originalKeyCode == KeyEvent.KEYCODE_PERIOD) {
                     showSettingsApp()
                     return
                 }
             }
             if(event.actions.find { it.type == LBoardKeyEvent.ActionType.LONG_PRESS } != null) {
-                if(listOf(KeyEvent.KEYCODE_LANGUAGE_SWITCH, KeyEvent.KEYCODE_COMMA, KeyEvent.KEYCODE_PERIOD).contains(event.keyCode)) {
+                if(listOf(KeyEvent.KEYCODE_LANGUAGE_SWITCH, KeyEvent.KEYCODE_COMMA, KeyEvent.KEYCODE_PERIOD).contains(event.originalKeyCode)) {
                     EventBus.getDefault().cancelEventDelivery(event)
                     return
                 }
             }
 
             if(event.actions.last().type == LBoardKeyEvent.ActionType.RELEASE) {
-                if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
+                if(event.originalKeyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
                     switchInputMethod(true)
                     EventBus.getDefault().cancelEventDelivery(event)
                     return
                 }
-                if(event.keyCode == KeyEvent.KEYCODE_SYM) {
+                if(event.originalKeyCode == KeyEvent.KEYCODE_SYM) {
                     switchVariation()
                     EventBus.getDefault().cancelEventDelivery(event)
                     return
@@ -419,15 +436,15 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
         }
 
-        if(event is HardKeyEvent) {
+        if(event.source == LBoardKeyEvent.Source.PHYSICAL_KEYBOARD) {
             if(event.actions.last().type == LBoardKeyEvent.ActionType.PRESS) {
-                if(event.keyCode == KeyEvent.KEYCODE_SYM) {
+                if(event.originalKeyCode == KeyEvent.KEYCODE_SYM) {
                     switchVariation()
                     EventBus.getDefault().cancelEventDelivery(event)
                     return
                 }
 
-                if(event.keyCode == KeyEvent.KEYCODE_SPACE && event.shiftPressed) {
+                if(event.originalKeyCode == KeyEvent.KEYCODE_SPACE && event.shiftPressed) {
                     switchInputMethod(false)
                     EventBus.getDefault().cancelEventDelivery(event)
                     return
@@ -435,7 +452,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             }
         }
 
-        if(event.keyCode != KeyEvent.KEYCODE_LANGUAGE_SWITCH) inputAfterSwitch = true
+        if(event.originalKeyCode != KeyEvent.KEYCODE_LANGUAGE_SWITCH) inputAfterSwitch = true
     }
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
@@ -474,6 +491,17 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
         val intent = Intent(this, SettingsActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    private fun appendInputHistory(keyCode: Int, action: LBoardKeyEvent.Action): List<LBoardKeyEvent.Action> {
+        val history = inputHistory[keyCode] ?: mutableListOf()
+        history += action
+        inputHistory += keyCode to history
+        return history.toList()
+    }
+
+    private fun removeInputHistory(keyCode: Int) {
+        inputHistory -= keyCode
     }
 
     enum class PredefinedHangulConverter() {

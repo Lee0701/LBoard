@@ -19,7 +19,7 @@ class WordComposingInputMethod(
 
     override fun onKeyPress(event: LBoardKeyEvent): Boolean {
         if(ignoreNextInput) return true
-        when(event.keyCode) {
+        when(event.lastKeyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
                 if(states.size > 0) {
@@ -44,7 +44,7 @@ class WordComposingInputMethod(
                 return super.onKeyPress(event)
             }
             else -> {
-                val converted = convert(event.keyCode, shift, alt)
+                val converted = convert(event.lastKeyCode, shift, alt)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {

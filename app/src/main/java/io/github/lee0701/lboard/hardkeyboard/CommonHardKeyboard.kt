@@ -1,7 +1,6 @@
 package io.github.lee0701.lboard.hardkeyboard
 
 import android.view.KeyEvent
-import io.github.lee0701.lboard.event.HardKeyEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
@@ -72,8 +71,8 @@ class CommonHardKeyboard(
     }
 
     private fun sendKeyEvent(keyCode: Int, type: LBoardKeyEvent.ActionType) {
-        EventBus.getDefault().post(HardKeyEvent(methodId, keyCode,
-                listOf(LBoardKeyEvent.Action(type, System.currentTimeMillis()))))
+        EventBus.getDefault().post(LBoardKeyEvent(methodId, keyCode, LBoardKeyEvent.Source.INTERNAL,
+                listOf(LBoardKeyEvent.Action(type, keyCode, System.currentTimeMillis()))))
     }
 
     override fun reset() {

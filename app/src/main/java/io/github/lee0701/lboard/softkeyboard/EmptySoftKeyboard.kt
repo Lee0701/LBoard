@@ -8,8 +8,6 @@ import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 
 class EmptySoftKeyboard: SoftKeyboard {
 
-    override lateinit var methodId: String
-
     override var shift = 0
     override var alt = 0
 
