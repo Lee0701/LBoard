@@ -364,6 +364,17 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             sendDownUpKeyEvents(event.keyCode)
         }
         if(event is SoftKeyEvent) {
+            when(event.actions.last().type) {
+                LBoardKeyEvent.ActionType.FLICK_UP, LBoardKeyEvent.ActionType.FLICK_DOWN,
+                LBoardKeyEvent.ActionType.FLICK_LEFT, LBoardKeyEvent.ActionType.FLICK_RIGHT -> {
+                    if(listOf(KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_DEL,
+                                    KeyEvent.KEYCODE_SYM, KeyEvent.KEYCODE_LANGUAGE_SWITCH,
+                                    KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT)
+                                    .contains(event.keyCode))
+                        EventBus.getDefault().cancelEventDelivery(event)
+                }
+            }
+
             if(event.actions.last().type == LBoardKeyEvent.ActionType.RELEASE) {
                 if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
                     switchInputMethod(true)
