@@ -376,6 +376,23 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
                 }
             }
 
+            if(event.actions.last().type == LBoardKeyEvent.ActionType.LONG_PRESS) {
+                if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
+                    showInputMethodPicker()
+                    return
+                }
+                if(event.keyCode == KeyEvent.KEYCODE_COMMA || event.keyCode == KeyEvent.KEYCODE_PERIOD) {
+                    showSettingsApp()
+                    return
+                }
+            }
+            if(event.actions.find { it.type == LBoardKeyEvent.ActionType.LONG_PRESS } != null) {
+                if(listOf(KeyEvent.KEYCODE_LANGUAGE_SWITCH, KeyEvent.KEYCODE_COMMA, KeyEvent.KEYCODE_PERIOD).contains(event.keyCode)) {
+                    EventBus.getDefault().cancelEventDelivery(event)
+                    return
+                }
+            }
+
             if(event.actions.last().type == LBoardKeyEvent.ActionType.RELEASE) {
                 if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
                     switchInputMethod(true)
@@ -389,16 +406,6 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
                 }
             }
 
-            if(event.actions.last().type == LBoardKeyEvent.ActionType.LONG_PRESS) {
-                if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
-                    showInputMethodPicker()
-                    return
-                }
-                if(event.keyCode == KeyEvent.KEYCODE_COMMA || event.keyCode == KeyEvent.KEYCODE_PERIOD) {
-                    showSettingsApp()
-                    return
-                }
-            }
         }
 
         if(event is HardKeyEvent) {
