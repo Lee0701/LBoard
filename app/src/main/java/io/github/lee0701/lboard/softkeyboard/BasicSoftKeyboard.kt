@@ -22,6 +22,7 @@ import android.widget.LinearLayout
 import io.github.lee0701.lboard.InputHistoryHolder
 import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.LBoardKeyEvent
+import io.github.lee0701.lboard.event.MoreKeySelectEvent
 import io.github.lee0701.lboard.event.SoftKeyEvent
 import io.github.lee0701.lboard.event.OneHandedModeUpdateEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
@@ -232,6 +233,13 @@ class BasicSoftKeyboard(
         val actions = appendInputHistory(keyCode, LBoardKeyEvent.Action(
                 LBoardKeyEvent.ActionType.REPEAT, System.currentTimeMillis()))
         EventBus.getDefault().post(SoftKeyEvent(methodId, keyCode, actions))
+    }
+
+    override fun onMoreKeySelect(originalKeyCode: Int, keyCode: Int) {
+        val actions = appendInputHistory(originalKeyCode, LBoardKeyEvent.Action(
+                LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))
+        EventBus.getDefault().post(MoreKeySelectEvent(methodId, originalKeyCode, keyCode, SoftKeyEvent(methodId, keyCode, actions)))
+        inputHistory -= originalKeyCode
     }
 
     override fun onKeyFlickLeft(keyCode: Int) {

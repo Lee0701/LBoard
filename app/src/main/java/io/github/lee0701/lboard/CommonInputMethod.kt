@@ -104,6 +104,13 @@ abstract class CommonInputMethod: InputMethod {
         }
     }
 
+    @Subscribe
+    fun onMoreKeySelect(event: MoreKeySelectEvent) {
+        pressEvents -= event.originalKeyCode
+        onKeyPress(event.keyEvent)
+        onKeyRelease(event.keyEvent)
+    }
+
     protected open fun reset() {
         hardKeyboard.reset()
         EventBus.getDefault().post(InputResetEvent(methodId))

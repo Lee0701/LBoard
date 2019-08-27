@@ -237,7 +237,8 @@ class BasicKeyboardView(
 
                     val popupKeycode = if(popup is BasicMoreKeyPopup) popup.keyCode else null
 
-                    onKeyListener.onKeyUp(popupKeycode ?: pointer.key.keyCode, pointer.x, pointer.y)
+                    if(popupKeycode != null) onKeyListener.onMoreKeySelect(pointer.key.keyCode, popupKeycode)
+                    else onKeyListener.onKeyUp(pointer.key.keyCode, pointer.x, pointer.y)
                 }
                 return true
             }
@@ -307,6 +308,7 @@ class BasicKeyboardView(
         fun onKeyUp(keyCode: Int, x: Int, y: Int)
         fun onKeyLongClick(keyCode: Int)
         fun onKeyRepeat(keyCode: Int)
+        fun onMoreKeySelect(originalKeyCode: Int, keyCode: Int)
         fun onKeyFlickLeft(keyCode: Int)
         fun onKeyFlickRight(keyCode: Int)
         fun onKeyFlickUp(keyCode: Int)
