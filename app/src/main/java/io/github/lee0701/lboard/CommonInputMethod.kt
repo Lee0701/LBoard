@@ -66,8 +66,14 @@ abstract class CommonInputMethod: InputMethod {
         val result = when(event.actions.last().type) {
             LBoardKeyEvent.ActionType.PRESS -> {
                 if(event is SoftKeyEvent) {
-                    pressEvent = event
-                    true
+                    when(event.keyCode) {
+                        KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
+                        KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> onKeyPress(event)
+                        else -> {
+                            pressEvent = event
+                            true
+                        }
+                    }
                 }
                 else onKeyPress(event)
             }
