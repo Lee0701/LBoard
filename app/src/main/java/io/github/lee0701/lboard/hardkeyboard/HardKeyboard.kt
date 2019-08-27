@@ -1,6 +1,6 @@
 package io.github.lee0701.lboard.hardkeyboard
 
-import io.github.lee0701.lboard.InputMethodModule
+import io.github.lee0701.lboard.inputmethod.InputMethodModule
 
 interface HardKeyboard: InputMethodModule {
 

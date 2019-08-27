@@ -1,7 +1,8 @@
-package io.github.lee0701.lboard
+package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
+import io.github.lee0701.lboard.ComposingText
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hardkeyboard.ExtendedCode
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard

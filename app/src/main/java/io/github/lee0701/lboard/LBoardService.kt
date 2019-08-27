@@ -18,6 +18,10 @@ import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
+import io.github.lee0701.lboard.inputmethod.AlphabetInputMethod
+import io.github.lee0701.lboard.inputmethod.HangulInputMethod
+import io.github.lee0701.lboard.inputmethod.InputMethod
+import io.github.lee0701.lboard.inputmethod.WordComposingInputMethod
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*

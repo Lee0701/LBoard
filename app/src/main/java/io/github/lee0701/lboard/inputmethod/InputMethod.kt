@@ -1,4 +1,4 @@
-package io.github.lee0701.lboard
+package io.github.lee0701.lboard.inputmethod
 
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.EventBusException

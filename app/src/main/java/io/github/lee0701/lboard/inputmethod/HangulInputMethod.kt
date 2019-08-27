@@ -1,6 +1,7 @@
-package io.github.lee0701.lboard
+package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyEvent
+import io.github.lee0701.lboard.ComposingText
 import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.event.PreferenceChangeEvent

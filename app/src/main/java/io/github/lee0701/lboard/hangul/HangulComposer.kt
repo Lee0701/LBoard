@@ -1,6 +1,6 @@
 package io.github.lee0701.lboard.hangul
 
-import io.github.lee0701.lboard.InputMethodModule
+import io.github.lee0701.lboard.inputmethod.InputMethodModule
 import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
