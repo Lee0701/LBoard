@@ -357,11 +357,10 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
     @Subscribe(priority = 100)
     fun onKeyEvent(event: LBoardKeyEvent) {
-        inputAfterSwitch = true
-
         if(isSystemKey(event.keyCode)) {
             EventBus.getDefault().cancelEventDelivery(event)
             sendDownUpKeyEvents(event.keyCode)
+            return
         }
         if(event is SoftKeyEvent) {
             when(event.actions.last().type) {
@@ -370,8 +369,10 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
                     if(listOf(KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_DEL,
                                     KeyEvent.KEYCODE_SYM, KeyEvent.KEYCODE_LANGUAGE_SWITCH,
                                     KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT)
-                                    .contains(event.keyCode))
+                                    .contains(event.keyCode)) {
                         EventBus.getDefault().cancelEventDelivery(event)
+                        return
+                    }
                 }
             }
 
@@ -379,19 +380,23 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
                 if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
                     switchInputMethod(true)
                     EventBus.getDefault().cancelEventDelivery(event)
+                    return
                 }
                 if(event.keyCode == KeyEvent.KEYCODE_SYM) {
                     switchVariation()
                     EventBus.getDefault().cancelEventDelivery(event)
+                    return
                 }
             }
 
             if(event.actions.last().type == LBoardKeyEvent.ActionType.LONG_PRESS) {
                 if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
                     showInputMethodPicker()
+                    return
                 }
                 if(event.keyCode == KeyEvent.KEYCODE_COMMA || event.keyCode == KeyEvent.KEYCODE_PERIOD) {
                     showSettingsApp()
+                    return
                 }
             }
         }
@@ -401,14 +406,18 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
                 if(event.keyCode == KeyEvent.KEYCODE_SYM) {
                     switchVariation()
                     EventBus.getDefault().cancelEventDelivery(event)
+                    return
                 }
 
                 if(event.keyCode == KeyEvent.KEYCODE_SPACE && event.shiftPressed) {
                     switchInputMethod(false)
                     EventBus.getDefault().cancelEventDelivery(event)
+                    return
                 }
             }
         }
+
+        if(event.keyCode != KeyEvent.KEYCODE_LANGUAGE_SWITCH) inputAfterSwitch = true
     }
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
