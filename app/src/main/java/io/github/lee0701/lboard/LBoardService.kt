@@ -196,6 +196,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
 
         inputMethods.values.forEach { it.init() }
 
+        EventBus.getDefault().post(PreferenceChangeEvent(pref))
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -298,6 +299,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     @Subscribe
 	fun onInputViewChange(event: InputViewChangeEvent) {
         if(event.methodId != currentMethodId) return
+        println(event.inputView)
         if(event.inputView != null) {
             (event.inputView.parent as ViewGroup?)?.removeView(event.inputView)
             setInputView(event.inputView)
@@ -308,7 +310,6 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     @Subscribe
 	fun onInputProcessComplete(event: InputProcessCompleteEvent) {
         if(event.methodId != currentMethodId) return
-        println(event)
         if(event.composingText?.commitPreviousText == true) currentInputConnection?.finishComposingText()
         if(event.sendRawInput) {
             val keyCode = event.keyEvent.keyCode
