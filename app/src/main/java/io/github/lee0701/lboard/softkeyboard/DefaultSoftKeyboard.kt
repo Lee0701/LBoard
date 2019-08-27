@@ -4,11 +4,19 @@ import android.content.Context
 import android.inputmethodservice.Keyboard
 import android.inputmethodservice.KeyboardView
 import android.view.View
-import io.github.lee0701.lboard.event.SoftKeyClickEvent
+import io.github.lee0701.lboard.InputHistoryHolder
+import io.github.lee0701.lboard.event.LBoardKeyEvent
+import io.github.lee0701.lboard.event.SoftKeyEvent
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
-class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.OnKeyboardActionListener {
+class DefaultSoftKeyboard(
+        val layoutResId: String
+): SoftKeyboard, InputHistoryHolder, KeyboardView.OnKeyboardActionListener {
+
+    override lateinit var methodId: String
+
+    override val inputHistory: MutableMap<Int, MutableList<LBoardKeyEvent.Action>> = mutableMapOf()
 
     var keyboardView: KeyboardView? = null
 
@@ -38,11 +46,14 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
     }
 
     override fun onKey(primaryCode: Int, keyCodes: IntArray) {
-        EventBus.getDefault().post(SoftKeyClickEvent(primaryCode, SoftKeyClickEvent.State.DOWN))
-        EventBus.getDefault().post(SoftKeyClickEvent(primaryCode, SoftKeyClickEvent.State.UP))
+        val press = appendInputHistory(primaryCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, primaryCode, press))
+        val release = appendInputHistory(primaryCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis()))
+        EventBus.getDefault().post(SoftKeyEvent(methodId, primaryCode, release))
+        inputHistory -= primaryCode
     }
 
-    override fun setLabels(labels: Map<Int, String>) {
+    override fun updateLabels(labels: Map<Int, String>) {
         keyboardView?.keyboard?.keys?.forEach {
             it.label = labels[it.codes[0]] ?: it.label
         }
@@ -79,9 +90,6 @@ class DefaultSoftKeyboard(val layoutResId: String): SoftKeyboard, KeyboardView.O
     }
 
     companion object {
-        @JvmStatic fun deserialize(json: JSONObject): DefaultSoftKeyboard? {
-            return DefaultSoftKeyboard(json.getString("layout"))
-        }
     }
 
 }

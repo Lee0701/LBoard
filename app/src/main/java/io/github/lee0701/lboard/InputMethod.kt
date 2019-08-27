@@ -1,30 +1,30 @@
 package io.github.lee0701.lboard
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.view.View
-import io.github.lee0701.lboard.event.SoftKeyFlickEvent
-import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
-import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.EventBusException
 import org.json.JSONObject
 
 interface InputMethod {
 
+    val methodId: String
+
     var shift: Boolean
     var alt: Boolean
 
-    fun initView(context: Context): View?
-    fun updateView(context: Context): View?
+    fun init() {
+        try {
+            EventBus.getDefault().register(this)
+        } catch(ex: EventBusException) {
+            // Do nothing.
+        }
+    }
 
-    fun onKeyPress(keyCode: Int): Boolean
-    fun onKeyRelease(keyCode: Int): Boolean
-    fun onKeyLongPress(keyCode: Int): Boolean
-    fun onKeyFlick(keyCode: Int, direction: SoftKeyFlickEvent.FlickDirection): Boolean
-
-    fun reset()
-
-    fun setPreferences(pref: SharedPreferences) {
-
+    fun destroy() {
+        try {
+            EventBus.getDefault().unregister(this)
+        } catch(ex: EventBusException) {
+            // Do nothing.
+        }
     }
 
     fun serialize(): JSONObject {

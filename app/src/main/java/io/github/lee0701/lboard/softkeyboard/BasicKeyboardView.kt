@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.view.*
-import io.github.lee0701.lboard.event.SoftKeyFlickEvent
 import java.util.*
 import kotlin.concurrent.timerTask
 import kotlin.math.abs
@@ -162,8 +161,7 @@ class BasicKeyboardView(
                 key.onPressed { invalidate() }
 
                 val onLongClick = if(key.repeatable) timerTask {
-                    onKeyListener.onKeyDown(key.keyCode, x.toInt(), y.toInt(), true)
-                    onKeyListener.onKeyUp(key.keyCode, x.toInt(), y.toInt(), true)
+                    onKeyListener.onKeyRepeat(key.keyCode)
                 } else timerTask {
                     onKeyListener.onKeyLongClick(key.keyCode)
                 }
@@ -200,23 +198,23 @@ class BasicKeyboardView(
 
                     if(abs(pointer.dy) > abs((pointer.dx))) {
                         if((pointer.y > pointer.key.y + pointer.key.height || pointer.y > pointer.initialY && distance > threshold)
-                                && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.DOWN) {
+                                && pointer.flickDirection != FlickDirection.DOWN) {
                             onKeyListener.onKeyFlickDown(pointer.key.keyCode)
-                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.DOWN
+                            pointer.flickDirection = FlickDirection.DOWN
                         } else if((pointer.y < pointer.key.y || pointer.y < pointer.initialY && distance > threshold)
-                                && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.UP) {
+                                && pointer.flickDirection != FlickDirection.UP) {
                             onKeyListener.onKeyFlickUp(pointer.key.keyCode)
-                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.UP
+                            pointer.flickDirection = FlickDirection.UP
                         }
                     } else {
                         if((pointer.x > pointer.key.x + pointer.key.width || pointer.x > pointer.initialX && distance > threshold)
-                                && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.RIGHT) {
+                                && pointer.flickDirection != FlickDirection.RIGHT) {
                             onKeyListener.onKeyFlickRight(pointer.key.keyCode)
-                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.RIGHT
+                            pointer.flickDirection = FlickDirection.RIGHT
                         } else if((pointer.x < pointer.key.x || pointer.x < pointer.initialX && distance > threshold)
-                                        && pointer.flickDirection != SoftKeyFlickEvent.FlickDirection.LEFT) {
+                                        && pointer.flickDirection != FlickDirection.LEFT) {
                             onKeyListener.onKeyFlickLeft(pointer.key.keyCode)
-                            pointer.flickDirection = SoftKeyFlickEvent.FlickDirection.LEFT
+                            pointer.flickDirection = FlickDirection.LEFT
                         }
                     }
                 }
@@ -239,7 +237,8 @@ class BasicKeyboardView(
 
                     val popupKeycode = if(popup is BasicMoreKeyPopup) popup.keyCode else null
 
-                    onKeyListener.onKeyUp(popupKeycode ?: pointer.key.keyCode, pointer.x, pointer.y)
+                    if(popupKeycode != null) onKeyListener.onMoreKeySelect(pointer.key.keyCode, popupKeycode)
+                    else onKeyListener.onKeyUp(pointer.key.keyCode, pointer.x, pointer.y)
                 }
                 return true
             }
@@ -300,18 +299,24 @@ class BasicKeyboardView(
         val dx get() = x - initialX
         val dy get() = y - initialY
 
-        var flickDirection: SoftKeyFlickEvent.FlickDirection? = null
+        var flickDirection: FlickDirection? = null
 
     }
 
     interface OnKeyListener {
-        fun onKeyDown(keyCode: Int, x: Int, y: Int, repeated: Boolean = false)
-        fun onKeyUp(keyCode: Int, x: Int, y: Int, repeated: Boolean = false)
+        fun onKeyDown(keyCode: Int, x: Int, y: Int)
+        fun onKeyUp(keyCode: Int, x: Int, y: Int)
         fun onKeyLongClick(keyCode: Int)
+        fun onKeyRepeat(keyCode: Int)
+        fun onMoreKeySelect(originalKeyCode: Int, keyCode: Int)
         fun onKeyFlickLeft(keyCode: Int)
         fun onKeyFlickRight(keyCode: Int)
         fun onKeyFlickUp(keyCode: Int)
         fun onKeyFlickDown(keyCode: Int)
+    }
+
+    enum class FlickDirection {
+        UP, DOWN, LEFT, RIGHT
     }
 
 }

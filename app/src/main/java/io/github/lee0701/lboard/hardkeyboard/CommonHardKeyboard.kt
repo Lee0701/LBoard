@@ -1,8 +1,8 @@
 package io.github.lee0701.lboard.hardkeyboard
 
 import android.view.KeyEvent
-import io.github.lee0701.lboard.event.KeyPressEvent
-import io.github.lee0701.lboard.event.KeyReleaseEvent
+import io.github.lee0701.lboard.event.HardKeyEvent
+import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
@@ -12,7 +12,11 @@ import io.github.lee0701.lboard.layouts.symbols.Symbols
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
-class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHardKeyboard {
+class CommonHardKeyboard(
+        val layout: CommonKeyboardLayout
+): MoreKeysSupportedHardKeyboard {
+
+    override lateinit var methodId: String
 
     var status: Int = 0
 
@@ -51,12 +55,12 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHar
                 backspace = true
             }
             SystemCode.KEYPRESS -> {
-                if(result and SystemCode.KEYPRESS_SHIFT != 0) EventBus.getDefault().post(KeyPressEvent(KeyEvent.KEYCODE_SHIFT_LEFT))
-                if(result and SystemCode.KEYPRESS_ALT != 0) EventBus.getDefault().post(KeyPressEvent(KeyEvent.KEYCODE_ALT_LEFT))
-                EventBus.getDefault().post(KeyPressEvent(result and 0x0000ffff))
-                EventBus.getDefault().post(KeyReleaseEvent(result and 0x0000ffff))
-                if(result and SystemCode.KEYPRESS_SHIFT != 0) EventBus.getDefault().post(KeyReleaseEvent(KeyEvent.KEYCODE_SHIFT_LEFT))
-                if(result and SystemCode.KEYPRESS_ALT != 0) EventBus.getDefault().post(KeyReleaseEvent(KeyEvent.KEYCODE_ALT_LEFT))
+                if(result and SystemCode.KEYPRESS_SHIFT != 0) sendKeyEvent(KeyEvent.KEYCODE_SHIFT_LEFT, LBoardKeyEvent.ActionType.PRESS)
+                if(result and SystemCode.KEYPRESS_ALT != 0) sendKeyEvent(KeyEvent.KEYCODE_ALT_LEFT, LBoardKeyEvent.ActionType.PRESS)
+                sendKeyEvent(result and 0x0000ffff, LBoardKeyEvent.ActionType.PRESS)
+                sendKeyEvent(result and 0x0000ffff, LBoardKeyEvent.ActionType.RELEASE)
+                if(result and SystemCode.KEYPRESS_SHIFT != 0) sendKeyEvent(KeyEvent.KEYCODE_SHIFT_LEFT, LBoardKeyEvent.ActionType.RELEASE)
+                if(result and SystemCode.KEYPRESS_ALT != 0) sendKeyEvent(KeyEvent.KEYCODE_ALT_LEFT, LBoardKeyEvent.ActionType.RELEASE)
 
                 return HardKeyboard.ConvertResult(null, defaultChar = false)
             }
@@ -65,6 +69,11 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHar
         lastChar = result
 
         return HardKeyboard.ConvertResult(result, backspace)
+    }
+
+    private fun sendKeyEvent(keyCode: Int, type: LBoardKeyEvent.ActionType) {
+        EventBus.getDefault().post(HardKeyEvent(methodId, keyCode,
+                listOf(LBoardKeyEvent.Action(type, System.currentTimeMillis()))))
     }
 
     override fun reset() {
@@ -105,11 +114,6 @@ class CommonHardKeyboard(val layout: CommonKeyboardLayout): MoreKeysSupportedHar
     companion object {
 
         const val MASK_SYSTEM_CODE = 0x70000000
-
-        @JvmStatic fun deserialize(json: JSONObject): CommonHardKeyboard? {
-            val layout = LAYOUTS[json.getString("layout")] ?: return null
-            return CommonHardKeyboard(layout)
-        }
 
         val LAYOUTS = mapOf<String, CommonKeyboardLayout>(
                 "symbols-a" to Symbols.LAYOUT_SYMBOLS_A,

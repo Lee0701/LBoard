@@ -1,23 +1,22 @@
 package io.github.lee0701.lboard
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.view.KeyCharacterMap
 import android.view.KeyEvent
-import android.view.View
-import io.github.lee0701.lboard.event.*
+import io.github.lee0701.lboard.event.InputProcessCompleteEvent
+import io.github.lee0701.lboard.event.LBoardKeyEvent
+import io.github.lee0701.lboard.event.PreferenceChangeEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
-import io.github.lee0701.lboard.hangul.SebeolHangulComposer
 import io.github.lee0701.lboard.hangul.SingleVowelDubeolHangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
 import java.util.*
 import kotlin.concurrent.timerTask
 
 class HangulInputMethod(
+        override val methodId: String,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
         val hangulConverter: HangulComposer,
@@ -30,15 +29,16 @@ class HangulInputMethod(
     private val timer = Timer()
     private var timeoutTask: TimerTask? = null
 
-    override fun initView(context: Context): View? {
-        return softKeyboard.initView(context)
+    @Subscribe
+    override fun onPreferenceChange(event: PreferenceChangeEvent) {
+        super.onPreferenceChange(event)
+        hangulConverter.setPreferences(event.preferences)
     }
 
-    override fun onKeyPress(keyCode: Int): Boolean {
-        if(isSystemKey(keyCode)) return false
+    override fun onKeyPress(event: LBoardKeyEvent): Boolean {
         if(ignoreNextInput) return true
         timeoutTask?.cancel()
-        when(keyCode) {
+        when(event.keyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
                 if(states.size > 0) {
@@ -57,29 +57,26 @@ class HangulInputMethod(
                     hardKeyboard.reset()
                 } else {
                     reset()
-                    EventBus.getDefault().post(SetSymbolModeEvent(false))
-                    EventBus.getDefault().post(CommitStringEvent(" "))
+                    EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                            ComposingText(commitPreviousText = true, textToCommit = " ")))
                 }
             }
             KeyEvent.KEYCODE_ENTER -> {
-                return super.onKeyPress(keyCode)
+                return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
-                return super.onKeyPress(keyCode)
+                return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> {
-                return super.onKeyPress(keyCode)
+                return super.onKeyPress(event)
             }
             else -> {
-                val converted = convert(keyCode, shift, alt)
+                val converted = convert(event.keyCode, shift, alt)
                 if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
-                        EventBus.getDefault().post(CommitComposingEvent())
-                        states.clear()
-                        hardKeyboard.reset()
-                        val defaultChar = getDefaultChar(keyCode, shift, alt)
-                        if(defaultChar != 0) EventBus.getDefault().post(CommitStringEvent(getDefaultChar(keyCode, shift, alt).toChar().toString()))
+                        reset()
+                        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event, null, true))
                     }
                 } else if(converted.resultChar == 0) {
                     reset()
@@ -88,7 +85,7 @@ class HangulInputMethod(
                     states += composed
                     updateShinStatus(composed)
                 }
-                processStickyKeysOnInput(converted.resultChar ?: 0)
+                processStickyKeysOnInput()
                 converted.shiftOn?.let { shift = it }
                 converted.altOn?.let { alt = it }
                 
@@ -100,8 +97,8 @@ class HangulInputMethod(
                 if(hangulConverter is SingleVowelDubeolHangulComposer && timeout > 0) timer.schedule(timeoutTask, timeout.toLong())
             }
         }
-        EventBus.getDefault().post(ComposeEvent(hangulConverter.display(lastState)))
-        EventBus.getDefault().post(UpdateViewEvent())
+        EventBus.getDefault().post(InputProcessCompleteEvent(methodId, event,
+                ComposingText(newComposingText = hangulConverter.display(lastState))))
         return true
     }
 
@@ -111,14 +108,8 @@ class HangulInputMethod(
     }
 
     override fun reset() {
-        EventBus.getDefault().post(CommitComposingEvent())
         states.clear()
         super.reset()
-    }
-
-    override fun setPreferences(pref: SharedPreferences) {
-        super.setPreferences(pref)
-        hangulConverter.setPreferences(pref)
     }
 
     override fun serialize(): JSONObject {
@@ -128,12 +119,7 @@ class HangulInputMethod(
     }
 
     companion object {
-        @JvmStatic fun deserialize(json: JSONObject): HangulInputMethod? {
-            val softKeyboard = InputMethod.deserializeModule(json.getJSONObject("soft-keyboard")) as SoftKeyboard
-            val hardKeyboard = InputMethod.deserializeModule(json.getJSONObject("hard-keyboard")) as HardKeyboard
-            val hangulConverter = InputMethod.deserializeModule(json.getJSONObject("hangul-converter")) as SebeolHangulComposer
-            return HangulInputMethod(softKeyboard, hardKeyboard, hangulConverter)
-        }
+
     }
 
 }

@@ -4,6 +4,8 @@ import io.github.lee0701.lboard.InputMethodModule
 
 interface HardKeyboard: InputMethodModule {
 
+    var methodId: String
+
     fun convert(keyCode: Int, shift: Boolean, alt: Boolean): ConvertResult
 
     fun reset()

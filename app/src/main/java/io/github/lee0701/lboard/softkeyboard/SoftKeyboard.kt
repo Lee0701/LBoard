@@ -6,6 +6,8 @@ import io.github.lee0701.lboard.InputMethodModule
 
 interface SoftKeyboard: InputMethodModule {
 
+    var methodId: String
+
     var shift: Int
     var alt: Int
 
@@ -13,7 +15,6 @@ interface SoftKeyboard: InputMethodModule {
     fun getView(): View?
 
     fun updateOneHandedMode(oneHandedMode: Int)
-
-    fun setLabels(labels: Map<Int, String>)
+    fun updateLabels(labels: Map<Int, String>)
 
 }
