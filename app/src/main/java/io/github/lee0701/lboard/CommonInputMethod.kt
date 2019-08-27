@@ -61,6 +61,11 @@ abstract class CommonInputMethod: InputMethod {
         if(event.methodId == this.methodId) updateView()
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onOneHandedModeUpdate(event: OneHandedModeUpdateEvent) {
+        softKeyboard.updateOneHandedMode(event.oneHandedMode)
+    }
+
     @Subscribe
     fun onKeyEvent(event: LBoardKeyEvent) {
         val result = when(event.actions.last().type) {

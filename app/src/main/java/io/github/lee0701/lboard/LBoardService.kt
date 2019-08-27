@@ -311,6 +311,13 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     }
 
     @Subscribe
+    fun onOneHandedModeUpdate(event: OneHandedModeUpdateEvent) {
+        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        editor.putInt("common_soft_one_handed_mode", event.oneHandedMode)
+        editor.apply()
+    }
+
+    @Subscribe
     fun onInputReset(event: InputResetEvent) {
         if(event.methodId != currentMethodId) return
         currentInputConnection?.finishComposingText()
