@@ -261,6 +261,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if(isSystemKey(keyCode)) return super.onKeyDown(keyCode, event)
         EventBus.getDefault().post(HardKeyEvent(currentMethodId, keyCode,
                 appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, System.currentTimeMillis())),
                 event.isShiftPressed, event.isAltPressed))
@@ -268,6 +269,7 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if(isSystemKey(keyCode)) return super.onKeyUp(keyCode, event)
         EventBus.getDefault().post(HardKeyEvent(currentMethodId, keyCode,
                 appendInputHistory(keyCode, LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.RELEASE, System.currentTimeMillis())),
                 event.isShiftPressed, event.isAltPressed))
