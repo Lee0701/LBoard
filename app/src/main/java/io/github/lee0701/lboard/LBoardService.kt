@@ -466,6 +466,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
+        variationCycleIndex = 0
 
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val token = window.window.attributes.token
