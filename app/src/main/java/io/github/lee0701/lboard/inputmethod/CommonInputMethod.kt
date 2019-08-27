@@ -162,8 +162,8 @@ abstract class CommonInputMethod: InputMethod {
             }
             else -> {
                 val converted = convert(event.lastKeyCode, shift, alt)
-                // TODO: Implement this.
-//                if(converted.backspace) onKeyPress(KeyEvent.KEYCODE_DEL)
+                if(converted.backspace) onKeyPress(LBoardKeyEvent(event.methodId, event.originalKeyCode, LBoardKeyEvent.Source.INTERNAL,
+                        event.actions + LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, KeyEvent.KEYCODE_DEL, System.currentTimeMillis())))
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
                         reset()
