@@ -39,14 +39,15 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     private val variationCycleTable = listOf("main", "symbols")
     private var variationCycleIndex: Int = 0
 
+    private var directInputMode: Boolean = false
+
     private val inputMethods: MutableMap<String, InputMethod> = mutableMapOf()
     private val currentMethodId: String get() {
         val type = if(physicalKeyboardPresent) "physical" else "virtual"
-        val language = languageCycleTable[languageCycleIndex]
-        val variation = variationCycleTable[variationCycleIndex]
+        val language = if(directInputMode) "en" else languageCycleTable[languageCycleIndex]
+        val variation = if(directInputMode) "direct" else variationCycleTable[variationCycleIndex]
         return "method_%s_%s_%s".format(type, language, variation)
     }
-    private val currentMethod: InputMethod? get() = inputMethods[currentMethodId]
 
     private var physicalKeyboardPresent: Boolean = false
     private var virtualKeyboardPresent: Boolean = false
@@ -167,8 +168,14 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
                     EmptySoftKeyboard(),
                     CommonHardKeyboard(hardLayout)
             )
-
             inputMethods += methodEn.methodId to methodEn
+
+            val methodEnDirect = AlphabetInputMethod(
+                    "method_physical_en_direct",
+                    EmptySoftKeyboard(),
+                    CommonHardKeyboard(hardLayout)
+            )
+            inputMethods += methodEnDirect.methodId to methodEnDirect
         }
 
         run {
@@ -211,9 +218,6 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
     override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
         super.onStartInputView(info, restarting)
 
-        EventBus.getDefault().post(InputStartEvent())
-
-        /*
         when(info.inputType and EditorInfo.TYPE_MASK_CLASS) {
             EditorInfo.TYPE_CLASS_TEXT -> when(info.inputType and EditorInfo.TYPE_MASK_VARIATION) {
                 EditorInfo.TYPE_TEXT_VARIATION_PASSWORD,
@@ -231,8 +235,9 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             }
         }
 
-        currentMethod.reset()
-        */
+        onCreateInputView()
+        EventBus.getDefault().post(InputStartEvent())
+
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
