@@ -351,20 +351,31 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
             sendDownUpKeyEvents(event.keyCode)
         }
 
-        if(event.actions.last().type == LBoardKeyEvent.ActionType.PRESS) {
-            if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
-                switchInputMethod(event is SoftKeyEvent)
-                EventBus.getDefault().cancelEventDelivery(event)
-            }
+        if(event.actions.last().type == LBoardKeyEvent.ActionType.RELEASE) {
+            if(event is SoftKeyEvent) {
+                if(event.keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
+                    switchInputMethod(event is SoftKeyEvent)
+                    EventBus.getDefault().cancelEventDelivery(event)
+                }
 
+                if(event.keyCode == KeyEvent.KEYCODE_SYM) {
+                    switchVariation()
+                    EventBus.getDefault().cancelEventDelivery(event)
+                }
+            }
+        } else {
             if(event is HardKeyEvent) {
+                if(event.keyCode == KeyEvent.KEYCODE_SYM) {
+                    switchVariation()
+                    EventBus.getDefault().cancelEventDelivery(event)
+                }
+
                 if(event.keyCode == KeyEvent.KEYCODE_SPACE && event.shiftPressed) {
                     switchInputMethod(false)
                     EventBus.getDefault().cancelEventDelivery(event)
                 }
             }
         }
-
     }
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
@@ -381,6 +392,13 @@ class LBoardService: InputMethodService(), InputHistoryHolder, SharedPreferences
         }
 
         inputAfterSwitch = false
+        onCreateInputView()
+        EventBus.getDefault().post(InputStartEvent())
+    }
+
+    private fun switchVariation() {
+        if(++variationCycleIndex >= variationCycleTable.size) variationCycleIndex = 0
+
         onCreateInputView()
         EventBus.getDefault().post(InputStartEvent())
     }
