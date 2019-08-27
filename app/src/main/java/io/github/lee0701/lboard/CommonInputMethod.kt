@@ -202,8 +202,8 @@ abstract class CommonInputMethod: InputMethod {
                 LBoardKeyEvent.ActionType.FLICK_RIGHT -> ExtendedCode.TWELVE_FLICK_RIGHT
                 else -> 0
             }
-            val result = onKeyPress(event)
-            if(result && onKeyRelease(event)) {
+            val result = onKeyPress(SoftKeyEvent(event.methodId, code, event.actions))
+            if(result && onKeyRelease(SoftKeyEvent(event.methodId, code, event.actions))) {
                 ignoreNextInput = true
                 return true
             }
