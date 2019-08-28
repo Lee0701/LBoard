@@ -37,6 +37,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     private val languageCycleTable = listOf("en", "ko")
     private var languageCycleIndex: Int = 0
+    private var contextLanguageIndex: Int? = null
 
     private val variationCycleTable = listOf(InputMethodInfo.Type.MAIN, InputMethodInfo.Type.SYMBOLS)
     private var variationCycleIndex: Int = 0
@@ -216,6 +217,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
 
+        directInputMode = false
+        contextLanguageIndex = null
+
         when(attribute.inputType and EditorInfo.TYPE_MASK_CLASS) {
             EditorInfo.TYPE_CLASS_TEXT -> when(attribute.inputType and EditorInfo.TYPE_MASK_VARIATION) {
                 EditorInfo.TYPE_TEXT_VARIATION_PASSWORD,
@@ -225,10 +229,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 }
                 EditorInfo.TYPE_TEXT_VARIATION_URI,
                 EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS -> {
-                    directInputMode = true
-                }
-                else -> {
-                    directInputMode = false
+                    contextLanguageIndex = 0
                 }
             }
         }
@@ -456,7 +457,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     private fun updateCurrentMethod() {
         currentMethod = inputMethods[InputMethodInfo.match(inputMethods.keys.toList(), InputMethodInfo(
-                language = languageCycleTable[languageCycleIndex],
+                language = languageCycleTable[contextLanguageIndex ?: languageCycleIndex],
                 device = if(physicalKeyboardPresent) InputMethodInfo.Device.PHYSICAL else InputMethodInfo.Device.VIRTUAL,
                 type = variationCycleTable[variationCycleIndex],
                 direct = directInputMode)).first()]!!
@@ -468,6 +469,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {
         variationCycleIndex = 0
+
+        // If context language is set, unset it.
+        contextLanguageIndex?.let { index ->
+            languageCycleIndex = index
+            contextLanguageIndex = null
+        }
 
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val token = window.window.attributes.token
