@@ -134,12 +134,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val converter =
                     when(predefinedMethod.hangulConverter) {
-                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable)
-                        PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL -> SingleVowelDubeolHangulComposer(combinationTable, virtualJamoTable)
-                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable)
+                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, false)
+                        PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL -> SingleVowelDubeolHangulComposer(combinationTable, virtualJamoTable, false)
+                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable, false)
                     }
 
-            val methodKo = HangulInputMethod(
+            val methodKo = AmbiguousHangulInputMethod(
                     InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                     BasicSoftKeyboard(softLayout.clone(), theme),
                     CommonHardKeyboard(hardLayout),
@@ -182,8 +182,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val converter =
                     when(predefinedMethod.hangulConverter) {
-                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable)
-                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable)
+                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, false)
+                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable, false)
                     }
 
             val methodKo = HangulInputMethod(

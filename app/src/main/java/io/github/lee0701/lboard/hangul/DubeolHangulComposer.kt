@@ -1,11 +1,10 @@
 package io.github.lee0701.lboard.hangul
 
-import org.json.JSONObject
-
 class DubeolHangulComposer(
         combinationTable: CombinationTable,
-        virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
-): HangulComposer(combinationTable, virtualJamoTable) {
+        virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf()),
+        moajugi: Boolean
+): HangulComposer(combinationTable, virtualJamoTable, moajugi) {
 
     val reversedCombinations = combinationTable.combinations.map { it.value to it.key }.toMap()
 
@@ -22,11 +21,18 @@ class DubeolHangulComposer(
             else if(composing.jung != null && isVowel(composing.jung)) composing.copy(jung = toJung(composing.jung))
             else composing
 
-    private fun consonant(composing: State, input: Int): State =
-            if(composing.jong != null) combinationTable.combinations[composing.jong to toJong(input)]?.let { composing.copy(jong = it) } ?: State(other = display(composing), cho = toCho(input))
-            else if(composing.cho != null && composing.jung != null) toJong(input).let { if(it == 0x20) State(other = display(composing), cho = toCho(input)) else composing.copy(jong = it) }
-            else if(composing.cho != null) combinationTable.combinations[composing.cho to toCho(input)]?.let { composing.copy(cho = it) } ?: State(other = display(composing), cho = toCho(input))
-            else composing.copy(cho = toCho(input))
+    private fun consonant(composing: State, input: Int): State {
+        if(composing.jong != null) {
+            return combinationTable.combinations[composing.jong to toJong(input)]?.let { composing.copy(jong = it) }
+                    ?: State(other = display(composing), cho = toCho(input))
+        } else if(composing.cho != null) {
+            if(composing.jung != null) return toJong(input).let { if(it == 0x20) State(other = display(composing), cho = toCho(input)) else composing.copy(jong = it) }
+            else return combinationTable.combinations[composing.cho to toCho(input)]?.let { composing.copy(cho = it) } ?: State(other = display(composing), cho = toCho(input))
+        } else {
+            if(moajugi || composing.jung == null) return composing.copy(cho = toCho(input))
+            else return State(other = display(composing), cho = toCho(input))
+        }
+    }
 
     private fun vowel(composing: State, input: Int): State =
             if(composing.jong != null) reversedCombinations[composing.jong]?.let { State(other = display(composing.copy(jong = it.first)), cho = ghostLight(it.second), jung = toJung(input)) }
@@ -43,12 +49,6 @@ class DubeolHangulComposer(
         fun toJong(char: Int) = (char and 0x7f000000) or CONVERT_JONG[COMPAT_CHO.indexOf(char.toChar())].toInt()
 
         fun ghostLight(char: Int) = (char and 0x7f000000) or toCho(COMPAT_CHO[CONVERT_JONG.indexOf(char.toChar())].toInt())
-
-        @JvmStatic fun deserialize(json: JSONObject): HangulComposer? {
-            val combinationTable = COMBINATION_TABLES[json.optString("combination-table")] ?: CombinationTable(mapOf())
-            val virtualJamoTable = VIRTUAL_JAMO_TABLES[json.optString("virtual-jamo-table")] ?: VirtualJamoTable(mapOf())
-            return DubeolHangulComposer(combinationTable, virtualJamoTable)
-        }
 
     }
 

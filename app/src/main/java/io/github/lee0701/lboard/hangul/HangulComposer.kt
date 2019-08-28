@@ -10,7 +10,8 @@ import java.text.Normalizer
 
 abstract class HangulComposer(
         val combinationTable: CombinationTable,
-        val virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
+        val virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf()),
+        val moajugi: Boolean
 ): InputMethodModule {
 
     abstract fun compose(composing: State, input: Int): State

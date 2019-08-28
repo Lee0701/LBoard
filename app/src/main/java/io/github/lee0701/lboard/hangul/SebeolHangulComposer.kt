@@ -4,8 +4,9 @@ import org.json.JSONObject
 
 open class SebeolHangulComposer(
         combinationTable: CombinationTable,
-        virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
-): HangulComposer(combinationTable, virtualJamoTable) {
+        virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf()),
+        moajugi: Boolean
+): HangulComposer(combinationTable, virtualJamoTable, moajugi) {
 
     override fun compose(composing: State, input: Int): State =
         if(isCho(input)) cho(composing, input)
@@ -24,11 +25,6 @@ open class SebeolHangulComposer(
             if(composing.jong != null) combinationTable.combinations[composing.jong to input]?.let { composing.copy(jong = it) } ?: State(other = display(composing), jong = input) else composing.copy(jong = input)
 
     companion object {
-        @JvmStatic fun deserialize(json: JSONObject): HangulComposer? {
-            val combinationTable = COMBINATION_TABLES[json.optString("combination-table")] ?: CombinationTable(mapOf())
-            val virtualJamoTable = VIRTUAL_JAMO_TABLES[json.optString("virtual-jamo-table")] ?: VirtualJamoTable(mapOf())
-            return SebeolHangulComposer(combinationTable, virtualJamoTable)
-        }
 
     }
 
