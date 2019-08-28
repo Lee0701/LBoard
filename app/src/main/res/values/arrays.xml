@@ -73,11 +73,13 @@
     <string-array name="method_en_physical_hard_layouts">
         <item>@string/pref_method_hard_layout_alphabet_qwerty</item>
         <item>@string/pref_method_hard_layout_alphabet_dvorak</item>
+        <item>@string/pref_method_hard_layout_alphabet_colemak</item>
     </string-array>
 
     <string-array name="method_en_physical_hard_layout_ids">
         <item>alphabet-qwerty</item>
         <item>alphabet-dvorak</item>
+        <item>alphabet-colemak</item>
     </string-array>
 
     <string-array name="method_en_predefined_layouts">
