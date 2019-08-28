@@ -77,6 +77,7 @@ abstract class CommonInputMethod: InputMethod {
 
     @Subscribe
     fun onKeyEvent(event: LBoardKeyEvent) {
+        if(!event.methodInfo.match(this.info)) return
         val result = when(event.actions.last().type) {
             LBoardKeyEvent.ActionType.PRESS -> {
                 if(event.source == LBoardKeyEvent.Source.VIRTUAL_KEYBOARD) {
@@ -172,8 +173,10 @@ abstract class CommonInputMethod: InputMethod {
             }
             else -> {
                 val converted = convert(event.lastKeyCode, shift, alt)
-                if(converted.backspace) onKeyPress(LBoardKeyEvent(event.methodInfo, event.originalKeyCode, LBoardKeyEvent.Source.INTERNAL,
-                        event.actions + LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS, KeyEvent.KEYCODE_DEL, System.currentTimeMillis())))
+                if(converted.backspace) EventBus.getDefault().post(InputProcessCompleteEvent(event.methodInfo,
+                        LBoardKeyEvent(event.methodInfo, event.originalKeyCode, LBoardKeyEvent.Source.INTERNAL,
+                                event.actions + LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS,
+                                        KeyEvent.KEYCODE_DEL, System.currentTimeMillis())), sendRawInput = true))
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
                         reset()

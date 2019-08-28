@@ -94,7 +94,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
             val methodEn = WordComposingInputMethod(
-                    InputMethodInfo(language = "en", type = InputMethodInfo.Type.MAIN, direct = false),
+                    InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                     BasicSoftKeyboard(softLayout.clone(), theme),
                     CommonHardKeyboard(hardLayout)
             )
@@ -310,7 +310,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     @Subscribe(threadMode = ThreadMode.MAIN)
 	fun onInputViewChange(event: InputViewChangeEvent) {
-        if(!matchesCurrentMethod(event.methodInfo)) return
+        if(!event.methodInfo.match(currentMethod.info)) return
         if(event.inputView != null) {
             (event.inputView.parent as ViewGroup?)?.removeView(event.inputView)
             setInputView(event.inputView)
@@ -327,13 +327,13 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     @Subscribe
     fun onInputReset(event: InputResetEvent) {
-        if(!matchesCurrentMethod(event.methodInfo)) return
+        if(!event.methodInfo.match(currentMethod.info)) return
         currentInputConnection?.finishComposingText()
     }
 
     @Subscribe
 	fun onInputProcessComplete(event: InputProcessCompleteEvent) {
-        if(!matchesCurrentMethod(event.methodInfo)) return
+        if(!event.methodInfo.match(currentMethod.info)) return
         if(event.composingText?.commitPreviousText == true) currentInputConnection?.finishComposingText()
         if(event.commitDefaultChar) {
             val keyCode = event.keyEvent.lastKeyCode
@@ -459,10 +459,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 device = if(physicalKeyboardPresent) InputMethodInfo.Device.PHYSICAL else InputMethodInfo.Device.VIRTUAL,
                 type = variationCycleTable[variationCycleIndex],
                 direct = directInputMode)).first()]!!
-    }
-
-    private fun matchesCurrentMethod(info: InputMethodInfo): Boolean {
-        return InputMethodInfo.match(inputMethods.keys.toList(), info).contains(currentMethod.info)
     }
 
     private fun switchInputMethod(switchBetweenApps: Boolean = false) {

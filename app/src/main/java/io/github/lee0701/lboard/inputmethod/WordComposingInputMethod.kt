@@ -33,9 +33,7 @@ class WordComposingInputMethod(
             }
             KeyEvent.KEYCODE_SPACE -> {
                 reset()
-                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                        ComposingText(commitPreviousText = true, textToCommit = " ")))
-                return true
+                return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_ENTER -> {
                 return super.onKeyPress(event)
