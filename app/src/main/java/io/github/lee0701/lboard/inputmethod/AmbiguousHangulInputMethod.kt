@@ -109,8 +109,8 @@ class AmbiguousHangulInputMethod(
         var result = listOf(HangulComposer.State())
         converted.forEachIndexed { i, chars ->
             var newResult = result.flatMap { composing -> chars.map { c -> hangulConverter.compose(composing, c) } }
-            newResult = newResult.sortedByDescending { scorer.calculateScore(hangulConverter.display(it)) }
-            if(i > 3) newResult = newResult.take(3)
+            newResult = newResult.sortedByDescending { scorer.calculateScore(hangulConverter.display(if(DOUBLES.contains(it.jong)) it.copy(jong = null) else it)) }
+            if(i > 4) newResult = newResult.take(3)
             result = newResult
         }
         return result.map { state -> hangulConverter.display(state) }
@@ -129,6 +129,7 @@ class AmbiguousHangulInputMethod(
     }
 
     companion object {
+        val DOUBLES = "ᆪᆬᆭᆰᆱᆲᆳᆴᆵᆶᆹ".map { it.toInt() }
 
     }
 
