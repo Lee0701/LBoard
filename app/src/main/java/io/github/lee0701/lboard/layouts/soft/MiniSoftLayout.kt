@@ -40,7 +40,7 @@ object MiniSoftLayout {
             Key(keyCode = 62, keyWidth = 4/10f),
             Key(keyCode = 56, label = ".", keyWidth = 1/10f),
             Key(keyCode = 66, label = "RETURN", keyWidth = 0.15f)
-    ), Row.Type.BOTTOM)), keyWidth = 1/8f, key = "mini-7cols", nameStringKey = R.string.pref_method_soft_layout_mini_7cols)
+    ), Row.Type.BOTTOM)), keyWidth = 1/8f, key = "mini-7cols", nameStringKey = R.string.pref_method_soft_layout_mini_8cols)
 
     val LAYOUT_MINI_7COLS = Layout(listOf(Row(listOf(
             Key(0x2010),
