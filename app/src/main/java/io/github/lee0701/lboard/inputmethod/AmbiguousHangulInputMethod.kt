@@ -8,14 +8,15 @@ import io.github.lee0701.lboard.event.PreferenceChangeEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
-import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
-import io.github.lee0701.lboard.inputmethod.ambiguous.Hangul2350Scorer
 import io.github.lee0701.lboard.inputmethod.ambiguous.HangulSyllableFrequencyScorer
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.jetbrains.anko.AnkoAsyncContext
+import org.jetbrains.anko.doAsync
 import org.json.JSONObject
+import java.util.concurrent.Future
 
 class AmbiguousHangulInputMethod(
         override val info: InputMethodInfo,
@@ -26,6 +27,7 @@ class AmbiguousHangulInputMethod(
 
     val states: MutableList<Pair<Int, Boolean>> = mutableListOf()
     val scorer: Scorer = HangulSyllableFrequencyScorer()
+    var convertTask: Future<Unit>? = null
 
     var candidates: List<String> = listOf()
     var candidateIndex: Int = 0
@@ -52,6 +54,7 @@ class AmbiguousHangulInputMethod(
             }
             KeyEvent.KEYCODE_SPACE -> {
                 if(candidates.isNotEmpty()) {
+                    while(convertTask?.isDone != true);
                     if(++candidateIndex >= candidates.size) candidateIndex = 0
                     if(candidates.isNotEmpty()) {
                         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
@@ -65,6 +68,7 @@ class AmbiguousHangulInputMethod(
             }
             KeyEvent.KEYCODE_ENTER -> {
                 if(candidates.isNotEmpty()) {
+                    while(convertTask?.isDone != true);
                     reset()
                     return true
                 } else {
@@ -86,13 +90,16 @@ class AmbiguousHangulInputMethod(
             }
         }
 
-        candidates = convertAll()
-        candidateIndex = -1
-
-        if(candidates.isNotEmpty()) {
-            EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                    ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex])))
+        convertTask?.cancel(true)
+        convertTask = doAsync {
+            candidates = convertAll()
+            candidateIndex = -1
+            if(candidates.isNotEmpty()) {
+                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                        ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex])))
+            }
         }
+
         return true
     }
 
