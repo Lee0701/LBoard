@@ -8,7 +8,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 import io.github.lee0701.lboard.hardkeyboard.SystemCode
 
-object TwelveDubeolHangul {
+object MobileDubeolHangul {
     
     val LAYOUT_CHEONJIIN = CommonKeyboardLayout(LayoutLayer(mapOf(
             0x2001 to LayoutItem(listOf(0x3163)),

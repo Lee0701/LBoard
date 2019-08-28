@@ -1,13 +1,12 @@
 package io.github.lee0701.lboard.hardkeyboard
 
-import android.view.KeyEvent
 import io.github.lee0701.lboard.event.KeyPressEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
-import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
+import io.github.lee0701.lboard.layouts.hangul.MobileDubeolHangul
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
@@ -129,8 +128,8 @@ class CommonHardKeyboard(
                 "sebeol-shin-original" to ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL,
                 "sebeol-shin-edit" to ShinSebeolHangul.LAYOUT_SHIN_EDIT,
 
-                "dubeol-cheonjiin" to TwelveDubeolHangul.LAYOUT_CHEONJIIN,
-                "dubeol-naratgeul" to TwelveDubeolHangul.LAYOUT_NARATGEUL
+                "dubeol-cheonjiin" to MobileDubeolHangul.LAYOUT_CHEONJIIN,
+                "dubeol-naratgeul" to MobileDubeolHangul.LAYOUT_NARATGEUL
         )
         val REVERSE_LAYOUTS = LAYOUTS.map { it.value to it.key }.toMap()
     }

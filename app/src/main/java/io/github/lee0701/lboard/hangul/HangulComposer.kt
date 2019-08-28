@@ -4,7 +4,7 @@ import io.github.lee0701.lboard.inputmethod.InputMethodModule
 import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
-import io.github.lee0701.lboard.layouts.hangul.TwelveDubeolHangul
+import io.github.lee0701.lboard.layouts.hangul.MobileDubeolHangul
 import org.json.JSONObject
 import java.text.Normalizer
 
@@ -74,13 +74,13 @@ abstract class HangulComposer(
                 "sebeol-391" to SebeolHangul.COMBINATION_SEBEOL_391,
                 "sebeol-shin-original" to ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL,
                 "dubeol-standard" to DubeolHangul.COMBINATION_DUBEOL_STANDARD,
-                "dubeol-cheonjiin" to TwelveDubeolHangul.COMBINATION_CHEONJIIN,
-                "dubeol-naratgeul" to TwelveDubeolHangul.COMBINATION_NARATGEUL
+                "dubeol-cheonjiin" to MobileDubeolHangul.COMBINATION_CHEONJIIN,
+                "dubeol-naratgeul" to MobileDubeolHangul.COMBINATION_NARATGEUL
         )
         val REVERSE_COMBINATION_TABLES = COMBINATION_TABLES.map { it.value to it.key }.toMap()
 
         val VIRTUAL_JAMO_TABLES = mapOf(
-                "dubeol-cheonjiin" to TwelveDubeolHangul.VIRTUAL_CHEONJIIN
+                "dubeol-cheonjiin" to MobileDubeolHangul.VIRTUAL_CHEONJIIN
         )
         val REVERSE_VIRTUAL_JAMO_TABLES = VIRTUAL_JAMO_TABLES.map { it.value to it.key }.toMap()
 

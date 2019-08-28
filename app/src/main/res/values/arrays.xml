@@ -85,6 +85,8 @@
         <item>@string/pref_method_hard_layout_alphabet_dvorak</item>
         <item>@string/pref_method_hard_layout_alphabet_colemak</item>
         <item>@string/pref_method_hard_layout_alphabet_7cols_wert</item>
+        <item>@string/pref_method_hard_layout_alphabet_12key_a</item>
+        <item>@string/pref_method_hard_layout_alphabet_15key_qwerty_a</item>
     </string-array>
 
     <string-array name="method_en_predefined_layout_ids">
@@ -92,6 +94,8 @@
         <item>alphabet-dvorak</item>
         <item>alphabet-colemak</item>
         <item>alphabet-7cols-wert</item>
+        <item>alphabet-12key-a</item>
+        <item>alphabet-15key-qwerty-a</item>
     </string-array>
 
     <string-array name="method_en_more_keys_layouts">

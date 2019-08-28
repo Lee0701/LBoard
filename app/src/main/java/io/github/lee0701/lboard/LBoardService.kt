@@ -20,6 +20,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.inputmethod.*
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
+import io.github.lee0701.lboard.layouts.alphabet.MobileAlphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
@@ -537,6 +538,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
         val SOFT_LAYOUT_MODE_MOBILE = listOf(
                 MobileSoftLayout.LAYOUT_12KEY_4COLS,
+                MobileSoftLayout.LAYOUT_15KEY_A,
                 MiniSoftLayout.LAYOUT_MINI_7COLS,
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
                 SoftLayout.LAYOUT_10COLS_MOBILE,
@@ -562,6 +564,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
         val SOFT_LAYOUT_12KEY = listOf(
                 MobileSoftLayout.LAYOUT_12KEY_4COLS
+        )
+
+        val SOFT_LAYOUT_15KEY = listOf(
+                MobileSoftLayout.LAYOUT_15KEY_A
         )
 
         val SOFT_LAYOUT_UNIVERSAL = listOf(
@@ -621,6 +627,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 "alphabet-dvorak" to PredefinedMethod(SOFT_LAYOUT_DVORAK, Alphabet.LAYOUT_DVORAK),
                 "alphabet-colemak" to PredefinedMethod(SOFT_LAYOUT_COLEMAK, Alphabet.LAYOUT_COLEMAK),
                 "alphabet-7cols-wert" to PredefinedMethod(SOFT_LAYOUT_MINI_7COLS, Alphabet.LAYOUT_7COLS_WERT),
+                "alphabet-12key-a" to PredefinedMethod(SOFT_LAYOUT_12KEY, MobileAlphabet.LAYOUT_TWELVE_ALPHABET_A),
+                "alphabet-15key-qwerty-a" to PredefinedMethod(SOFT_LAYOUT_15KEY, MobileAlphabet.LAYOUT_FIFTEEN_QWERTY_A),
 
                 "dubeol-standard" to PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, DubeolHangul.LAYOUT_DUBEOL_STANDARD, PredefinedHangulConverter.DUBEOL, DubeolHangul.COMBINATION_DUBEOL_STANDARD),
                 "sebeol-390" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_GONG, SebeolHangul.LAYOUT_SEBEOL_390, PredefinedHangulConverter.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),
@@ -630,8 +638,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 "sebeol-shin-edit" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_SHIN, ShinSebeolHangul.LAYOUT_SHIN_EDIT, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL),
                 "sebeol-mini-shin" to PredefinedMethod(SOFT_LAYOUT_MINI_7COLS, ShinSebeolHangul.LAYOUT_MINI_SHIN_EXPERIMENTAL, PredefinedHangulConverter.SEBEOL, ShinSebeolHangul.COMBINATION_MINI_SHIN_EXPERIMENTAL),
                 "dubeol-google" to PredefinedMethod(SOFT_LAYOUT_MINI_8COLS, DubeolHangul.LAYOUT_DUBEOL_GOOGLE, PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL, DubeolHangul.COMBINATION_DUBEOL_GOOGLE),
-                "dubeol-cheonjiin" to PredefinedMethod(SOFT_LAYOUT_12KEY, TwelveDubeolHangul.LAYOUT_CHEONJIIN, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_CHEONJIIN),
-                "dubeol-naratgeul" to PredefinedMethod(SOFT_LAYOUT_12KEY, TwelveDubeolHangul.LAYOUT_NARATGEUL, PredefinedHangulConverter.DUBEOL, TwelveDubeolHangul.COMBINATION_NARATGEUL)
+                "dubeol-cheonjiin" to PredefinedMethod(SOFT_LAYOUT_12KEY, MobileDubeolHangul.LAYOUT_CHEONJIIN, PredefinedHangulConverter.DUBEOL, MobileDubeolHangul.COMBINATION_CHEONJIIN),
+                "dubeol-naratgeul" to PredefinedMethod(SOFT_LAYOUT_12KEY, MobileDubeolHangul.LAYOUT_NARATGEUL, PredefinedHangulConverter.DUBEOL, MobileDubeolHangul.COMBINATION_NARATGEUL)
         )
 
         fun getMode(modeName: String): List<Layout> {
