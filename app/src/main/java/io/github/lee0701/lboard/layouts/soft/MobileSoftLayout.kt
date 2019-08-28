@@ -49,7 +49,7 @@ object MobileSoftLayout {
             Key(0x200e, "m"),
             Key(67, "DEL", repeatable = true)
     ), Row.Type.ODD), Row(listOf(
-            Key(57, "123"),
+            Key(63, "123"),
             Key(204, "ABC"),
             Key(62, " "),
             Key(59, "SFT"),
