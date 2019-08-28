@@ -68,6 +68,11 @@ class BasicKeyboardView(
 
     }
 
+    fun reset() {
+        pointers.values.forEach { it.longClickHandler.cancel() }
+        pointers.clear()
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 

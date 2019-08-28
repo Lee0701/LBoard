@@ -36,6 +36,10 @@ class DefaultSoftKeyboard(
         return keyboardView
     }
 
+    override fun reset() {
+
+    }
+
     override fun updateOneHandedMode(oneHandedMode: Int) {
 
     }

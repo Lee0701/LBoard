@@ -149,6 +149,10 @@ class BasicSoftKeyboard(
         return keyboardViewHolder
     }
 
+    override fun reset() {
+        keyboardView?.reset()
+    }
+
     override fun updateLabels(labels: Map<Int, String>) {
         this.currentLabels = labels
         layout.rows.forEach { row ->

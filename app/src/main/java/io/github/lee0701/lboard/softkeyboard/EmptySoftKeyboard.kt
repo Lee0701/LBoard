@@ -22,6 +22,10 @@ class EmptySoftKeyboard: SoftKeyboard {
         return inputView
     }
 
+    override fun reset() {
+
+    }
+
     override fun updateOneHandedMode(oneHandedMode: Int) {
 
     }

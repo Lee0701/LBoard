@@ -67,7 +67,7 @@ abstract class CommonInputMethod: InputMethod {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onInputViewRequiresUpdate(event: InputViewRequiresUpdateEvent) {
-        if(event.methodInfo == this.info) updateView()
+        if(event.methodInfo.match(this.info)) updateView()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -110,7 +110,6 @@ abstract class CommonInputMethod: InputMethod {
                 LBoardKeyEvent.ActionType.FLICK_UP, LBoardKeyEvent.ActionType.FLICK_DOWN -> onKeyFlick(event)
         }
         if(!result) {
-            reset()
             EventBus.getDefault().post(InputProcessCompleteEvent(info, event, null, false, true))
         }
     }
@@ -124,6 +123,7 @@ abstract class CommonInputMethod: InputMethod {
 
     protected open fun reset() {
         hardKeyboard.reset()
+        softKeyboard.reset()
         EventBus.getDefault().post(InputResetEvent(info))
         EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.info))
     }

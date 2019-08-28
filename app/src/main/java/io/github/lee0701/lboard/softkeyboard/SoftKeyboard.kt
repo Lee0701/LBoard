@@ -12,6 +12,8 @@ interface SoftKeyboard: InputMethodModule {
     fun initView(context: Context): View?
     fun getView(): View?
 
+    fun reset()
+
     fun updateOneHandedMode(oneHandedMode: Int)
     fun updateLabels(labels: Map<Int, String>)
 
