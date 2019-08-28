@@ -355,7 +355,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 else -> return
             }
             val repeat = event.keyEvent.actions.count { it.type == LBoardKeyEvent.ActionType.REPEAT }
-            if(keyCode == KeyEvent.KEYCODE_ENTER) sendDefaultEditorAction(true)
+            val imeAction = currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
+            if(keyCode == KeyEvent.KEYCODE_ENTER &&
+                    listOf(EditorInfo.IME_ACTION_SEARCH, EditorInfo.IME_ACTION_GO).contains(imeAction))
+                sendDefaultEditorAction(true)
             else currentInputConnection?.sendKeyEvent(KeyEvent(time, time, action, keyCode, repeat, metaState))
         } else {
             event.composingText?.newComposingText?.let { currentInputConnection?.setComposingText(it, event.composingText.newCursorPosition) }
