@@ -86,13 +86,23 @@ class HangulInputMethod(
                 processStickyKeysOnInput()
                 converted.shiftOn?.let { shift = it }
                 converted.altOn?.let { alt = it }
-                
-                timeoutTask = timerTask {
-                    val state = lastState
-                    states.remove(state)
-                    states += hangulConverter.timeout(state)
+
+
+                if(hardKeyboard is CommonHardKeyboard && hardKeyboard.layout.timeout && timeout > 0) {
+                    timeoutTask = timerTask {
+                        hardKeyboard.reset()
+                    }
+                    timer.schedule(timeoutTask, timeout.toLong())
                 }
-                if(hangulConverter is SingleVowelDubeolHangulComposer && timeout > 0) timer.schedule(timeoutTask, timeout.toLong())
+
+                if(hangulConverter is SingleVowelDubeolHangulComposer && timeout > 0) {
+                    timeoutTask = timerTask {
+                        val state = lastState
+                        states.remove(state)
+                        states += hangulConverter.timeout(state)
+                    }
+                    timer.schedule(timeoutTask, timeout.toLong())
+                }
             }
         }
         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,

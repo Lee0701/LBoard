@@ -207,5 +207,22 @@ object MobileDubeolHangul {
             0x11b8 to 0x11ba to 0x11b9	// ㅄ
 //            0x11ba to 0x11ba to 0x11bb	// ㅆ
     ))
-    
+
+    val LAYOUT_FIFTEEN_DUBEOL = CommonKeyboardLayout(LayoutLayer(mapOf(
+            0x2001 to LayoutItem("ㅂㅛㅃ".map { it.toInt() }),
+            0x2002 to LayoutItem("ㅈㅕㅉ".map { it.toInt() }),
+            0x2003 to LayoutItem("ㄷㅑㄸ".map { it.toInt() }),
+            0x2004 to LayoutItem("ㄱㅐㄲㅒ".map { it.toInt() }),
+            0x2005 to LayoutItem("ㅅㅔㅆㅖ".map { it.toInt() }),
+            0x2006 to LayoutItem("ㅁ".map { it.toInt() }),
+            0x2007 to LayoutItem("ㄴㅗ".map { it.toInt() }),
+            0x2008 to LayoutItem("ㅇㅓ".map { it.toInt() }),
+            0x2009 to LayoutItem("ㄹㅏ".map { it.toInt() }),
+            0x200a to LayoutItem("ㅎㅣ".map { it.toInt() }),
+            0x200b to LayoutItem("ㅋ".map { it.toInt() }),
+            0x200c to LayoutItem("ㅌㅠ".map { it.toInt() }),
+            0x200d to LayoutItem("ㅊㅜ".map { it.toInt() }),
+            0x200e to LayoutItem("ㅍㅡ".map { it.toInt() })
+    )), timeout = true)
+
 }
