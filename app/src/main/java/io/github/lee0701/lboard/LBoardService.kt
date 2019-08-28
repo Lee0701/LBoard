@@ -118,8 +118,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         run {
             val predefinedMethod = PREDEFINED_METHODS[pref.getString("method_ko_predefined", null)?: ""] ?: PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, DubeolHangul.LAYOUT_DUBEOL_STANDARD)
 
-            val timeout = pref.getInt("method_ko_timeout", 0)
-
             val symbolsSoftLayout = BasicSoftKeyboard.LAYOUTS[pref.getString("method_ko_symbols_soft_layout", null)?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
             val symbolsHardLayout = CommonHardKeyboard.LAYOUTS[pref.getString("method_ko_symbols_hard_layout", null)?: ""] ?: Symbols.LAYOUT_SYMBOLS_B
             val layer10SymbolsHardLayout = CommonKeyboardLayout(10, symbolsHardLayout[0] ?: CommonKeyboardLayout.LayoutLayer(mapOf()))
@@ -145,8 +143,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                     BasicSoftKeyboard(softLayout.clone(), theme),
                     CommonHardKeyboard(hardLayout),
-                    converter,
-                    timeout
+                    converter
             )
             inputMethods += methodKo.info to methodKo
 

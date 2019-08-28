@@ -4,9 +4,11 @@ import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
 import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
+import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
+import kotlin.concurrent.timerTask
 
 class WordComposingInputMethod(
         override val info: InputMethodInfo,
@@ -19,6 +21,7 @@ class WordComposingInputMethod(
 
     override fun onKeyPress(event: LBoardKeyEvent): Boolean {
         if(ignoreNextInput) return true
+        timeoutTask?.cancel()
         when(event.lastKeyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
@@ -59,6 +62,13 @@ class WordComposingInputMethod(
                 processStickyKeysOnInput()
                 converted.shiftOn?.let { shift = it }
                 converted.altOn?.let { alt = it }
+
+                if(hardKeyboard is CommonHardKeyboard && hardKeyboard.layout.timeout && timeout > 0) {
+                    timeoutTask = timerTask {
+                        hardKeyboard.reset()
+                    }
+                    timer.schedule(timeoutTask, timeout.toLong())
+                }
             }
         }
         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,

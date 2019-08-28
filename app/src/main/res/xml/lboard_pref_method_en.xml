@@ -38,6 +38,11 @@
             android:entries="@array/method_symbols_hard_layouts"
             android:entryValues="@array/method_symbols_hard_layout_ids"
             android:defaultValue="symbols-b" />
+        <io.github.lee0701.lboard.settings.IntEditTextPreference
+            android:key="method_en_timeout"
+            android:title="@string/pref_method_hard_timeout_title"
+            android:summary="@string/pref_method_hard_timeout_summary"
+            android:defaultValue="200" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_method_physical_title">

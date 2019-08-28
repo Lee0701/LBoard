@@ -138,7 +138,7 @@
     <string name="pref_method_more_keys_layout_romanization">Hangul Romanization</string>
 
     <string name="pref_method_hard_timeout_title">Composition Timeout</string>
-    <string name="pref_method_hard_timeout_summary">Set composition timeout for danmoeum layouts in milliseconds.</string>
+    <string name="pref_method_hard_timeout_summary">Set composition timeout in milliseconds.</string>
 
     <string name="pref_method_symbols_soft_layout_title">Symbols Soft Layout</string>
     <string name="pref_method_symbols_soft_layout_summary">Choose a symbols soft keyboard layout.</string>

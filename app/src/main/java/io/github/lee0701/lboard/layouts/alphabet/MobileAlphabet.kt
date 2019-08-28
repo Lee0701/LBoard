@@ -28,7 +28,7 @@ object MobileAlphabet {
             0x2007 to "PQRS",
             0x2008 to "TUV",
             0x2009 to "WXYZ"
-    )))
+    )), timeout = true)
 
     val LAYOUT_FIFTEEN_QWERTY_A = CommonKeyboardLayout(LayoutLayer(mapOf(
             0x2001 to LayoutItem("qw".map { it.toInt() }, "QW".map { it.toInt() }),
@@ -45,6 +45,6 @@ object MobileAlphabet {
             0x200c to LayoutItem("cv".map { it.toInt() }, "CV".map { it.toInt() }),
             0x200d to LayoutItem("bn".map { it.toInt() }, "BN".map { it.toInt() }),
             0x200e to LayoutItem("m".map { it.toInt() }, "M".map { it.toInt() })
-    )))
+    )), timeout = true)
 
 }

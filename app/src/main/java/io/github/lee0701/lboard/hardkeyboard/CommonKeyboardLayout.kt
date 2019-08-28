@@ -4,14 +4,15 @@ data class CommonKeyboardLayout(
         val layers: Map<Int, LayoutLayer> = mapOf(0 to LayoutLayer()),
         val strokes: List<StrokeTable> = listOf(),
         val cycle: Boolean = true,
+        val timeout: Boolean = false,
         val spaceForSeparation: Boolean = false
 ) {
 
-    constructor(layerId: Int, main: LayoutLayer, strokes: List<StrokeTable> = listOf(), cycle: Boolean = true, spaceForSeparation: Boolean = false):
-            this(mapOf(layerId to main), strokes, cycle, spaceForSeparation)
+    constructor(layerId: Int, main: LayoutLayer, strokes: List<StrokeTable> = listOf(), cycle: Boolean = true, timeout: Boolean = false, spaceForSeparation: Boolean = false):
+            this(mapOf(layerId to main), strokes, cycle, timeout, spaceForSeparation)
 
-    constructor(main: LayoutLayer, strokes: List<StrokeTable> = listOf(), cycle: Boolean = true, spaceForSeparation: Boolean = false):
-            this(0, main, strokes, cycle, spaceForSeparation)
+    constructor(main: LayoutLayer, strokes: List<StrokeTable> = listOf(), cycle: Boolean = true, timeout: Boolean = false, spaceForSeparation: Boolean = false):
+            this(0, main, strokes, cycle, timeout, spaceForSeparation)
 
     operator fun get(i: Int): LayoutLayer? = layers[i]
 
@@ -20,6 +21,7 @@ data class CommonKeyboardLayout(
                 (this.layers + other.layers).map { it.key to (this[it.key] ?: LayoutLayer(mapOf())) + (other[it.key] ?: LayoutLayer(mapOf())) }.toMap(),
                 other.strokes,
                 other.cycle,
+                other.timeout,
                 other.spaceForSeparation
         )
     }
@@ -29,6 +31,7 @@ data class CommonKeyboardLayout(
                 (this.layers + other.layers).map { it.key to (this[it.key] ?: this[0] ?: LayoutLayer(mapOf())) + (other[it.key] ?: LayoutLayer(mapOf())) }.toMap(),
                 other.strokes,
                 other.cycle,
+                other.timeout,
                 other.spaceForSeparation
         )
     }

@@ -20,20 +20,17 @@ class HangulInputMethod(
         override val info: InputMethodInfo,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
-        val hangulConverter: HangulComposer,
-        val timeout: Int = 0
+        val hangulConverter: HangulComposer
 ): CommonInputMethod() {
 
     val states: MutableList<HangulComposer.State> = mutableListOf()
     val lastState: HangulComposer.State get() = if(states.isEmpty()) HangulComposer.State() else states.last()
 
-    private val timer = Timer()
-    private var timeoutTask: TimerTask? = null
-
     @Subscribe
     override fun onPreferenceChange(event: PreferenceChangeEvent) {
         super.onPreferenceChange(event)
         hangulConverter.setPreferences(event.preferences)
+        timeout = event.preferences.getInt("method_ko_timeout", 0)
     }
 
     override fun onKeyPress(event: LBoardKeyEvent): Boolean {

@@ -4,6 +4,7 @@ import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
 import io.github.lee0701.lboard.event.*
+import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.ExtendedCode
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.MoreKeysSupportedHardKeyboard
@@ -13,6 +14,8 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
+import java.util.*
+import kotlin.concurrent.timerTask
 
 abstract class CommonInputMethod: InputMethod {
 
@@ -30,13 +33,20 @@ abstract class CommonInputMethod: InputMethod {
     var inputOnShift = false
     var inputOnAlt = false
 
+    protected val timer = Timer()
+    protected var timeoutTask: TimerTask? = null
+
     protected val pressEvents: MutableMap<Int, LBoardKeyEvent> = mutableMapOf()
     protected var ignoreNextInput: Boolean = false
+
+    protected var timeout: Int = 0
 
     @Subscribe
     open fun onPreferenceChange(event: PreferenceChangeEvent) {
         softKeyboard.setPreferences(event.preferences)
         hardKeyboard.setPreferences(event.preferences)
+
+        timeout = event.preferences.getInt("method_en_timeout", 0)
     }
 
     @Subscribe
@@ -70,11 +80,11 @@ abstract class CommonInputMethod: InputMethod {
         val result = when(event.actions.last().type) {
             LBoardKeyEvent.ActionType.PRESS -> {
                 if(event.source == LBoardKeyEvent.Source.VIRTUAL_KEYBOARD) {
-                    when(event.originalKeyCode) {
+                    when(event.lastKeyCode) {
                         KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT,
                         KeyEvent.KEYCODE_ALT_LEFT, KeyEvent.KEYCODE_ALT_RIGHT -> onKeyPress(event)
                         else -> {
-                            pressEvents += event.originalKeyCode to event
+                            pressEvents += event.lastKeyCode to event
                             true
                         }
                     }
@@ -125,6 +135,7 @@ abstract class CommonInputMethod: InputMethod {
 
     protected open fun onKeyPress(event: LBoardKeyEvent): Boolean {
         if(ignoreNextInput) return true
+        timeoutTask?.cancel()
         when(event.lastKeyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
@@ -177,6 +188,13 @@ abstract class CommonInputMethod: InputMethod {
                 processStickyKeysOnInput()
                 converted.shiftOn?.let { shift = it }
                 converted.altOn?.let { alt = it }
+
+                if(hardKeyboard is CommonHardKeyboard && (hardKeyboard as CommonHardKeyboard).layout.timeout && timeout > 0) {
+                    timeoutTask = timerTask {
+                        hardKeyboard.reset()
+                    }
+                    timer.schedule(timeoutTask, timeout.toLong())
+                }
             }
         }
         EventBus.getDefault().post(InputViewRequiresUpdateEvent(this.info))
