@@ -98,20 +98,15 @@ class AmbiguousHangulInputMethod(
 
     private fun convertAll(): List<String> {
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return listOf()
-        return convertRecursive(layout, 0, HangulComposer.State())
-                .map { state -> hangulConverter.display(state) }
-                .sortedByDescending { scorer.calculateScore(it) }
-    }
-
-    private fun convertRecursive(layout: CommonKeyboardLayout.LayoutLayer, index: Int, state: HangulComposer.State): List<HangulComposer.State> {
-        if(index >= states.size) return listOf(state)
-        val codes = layout[states[index]] ?: return listOf(state)
-        return codes.normal.map { code -> hangulConverter.compose(state, code) }
-                .sortedByDescending { scorer.calculateScore(hangulConverter.display(it)) }
-                .let {
-                    it.take(3)
-                }
-                .flatMap { convertRecursive(layout, index + 1, it) }
+        val converted = states.map { layout[it]?.normal ?: listOf() }
+        var result = listOf(HangulComposer.State())
+        converted.forEachIndexed { i, chars ->
+            var newResult = result.flatMap { composing -> chars.map { c -> hangulConverter.compose(composing, c) } }
+            newResult = newResult.sortedByDescending { scorer.calculateScore(hangulConverter.display(it)) }
+            if(i > 3) newResult = newResult.take(3)
+            result = newResult
+        }
+        return result.map { state -> hangulConverter.display(state) }
     }
 
     override fun reset() {
