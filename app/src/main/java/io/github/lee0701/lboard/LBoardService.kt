@@ -536,7 +536,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     companion object {
 
         val SOFT_LAYOUT_MODE_MOBILE = listOf(
-                TwelveSoftLayout.LAYOUT_12KEY_4COLS,
+                MobileSoftLayout.LAYOUT_12KEY_4COLS,
                 MiniSoftLayout.LAYOUT_MINI_7COLS,
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
                 SoftLayout.LAYOUT_10COLS_MOBILE,
@@ -561,7 +561,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         )
 
         val SOFT_LAYOUT_12KEY = listOf(
-                TwelveSoftLayout.LAYOUT_12KEY_4COLS
+                MobileSoftLayout.LAYOUT_12KEY_4COLS
         )
 
         val SOFT_LAYOUT_UNIVERSAL = listOf(
