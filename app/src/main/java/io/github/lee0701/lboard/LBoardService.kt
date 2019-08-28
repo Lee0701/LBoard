@@ -337,7 +337,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         if(!matchesCurrentMethod(event.methodInfo)) return
         if(event.composingText?.commitPreviousText == true) currentInputConnection?.finishComposingText()
         if(event.commitDefaultChar) {
-            val keyCode = event.keyEvent.originalKeyCode
+            val keyCode = event.keyEvent.lastKeyCode
             val shift = event.keyEvent.shiftPressed
             val alt = event.keyEvent.altPressed
             val metaState = if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0
@@ -345,7 +345,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             if(char > 0) currentInputConnection?.commitText(char.toChar().toString(), 1)
         }
         if(event.sendRawInput) {
-            val keyCode = event.keyEvent.originalKeyCode
+            val keyCode = event.keyEvent.lastKeyCode
             val shift = event.keyEvent.shiftPressed
             val alt = event.keyEvent.altPressed
             val metaState = if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0
@@ -356,7 +356,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 else -> return
             }
             val repeat = event.keyEvent.actions.count { it.type == LBoardKeyEvent.ActionType.REPEAT }
-            currentInputConnection?.sendKeyEvent(KeyEvent(time, time, action, keyCode, repeat, metaState))
+            if(keyCode == KeyEvent.KEYCODE_ENTER) sendDefaultEditorAction(true)
+            else currentInputConnection?.sendKeyEvent(KeyEvent(time, time, action, keyCode, repeat, metaState))
         } else {
             event.composingText?.newComposingText?.let { currentInputConnection?.setComposingText(it, event.composingText.newCursorPosition) }
             event.composingText?.textToCommit?.let { currentInputConnection?.commitText(it, event.composingText.newCursorPosition) }
