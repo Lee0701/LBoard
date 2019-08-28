@@ -24,7 +24,7 @@ class AmbiguousHangulInputMethod(
         val hangulConverter: HangulComposer
 ): CommonInputMethod() {
 
-    val states: MutableList<Int> = mutableListOf()
+    val states: MutableList<Pair<Int, Boolean>> = mutableListOf()
     val scorer: Scorer = HangulSyllableFrequencyScorer()
 
     var candidates: List<String> = listOf()
@@ -80,7 +80,7 @@ class AmbiguousHangulInputMethod(
             else -> {
                 if(candidateIndex >= 0) reset()
 
-                states += event.lastKeyCode
+                states += event.lastKeyCode to shift
 
                 processStickyKeysOnInput()
             }
@@ -98,7 +98,7 @@ class AmbiguousHangulInputMethod(
 
     private fun convertAll(): List<String> {
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return listOf()
-        val converted = states.map { layout[it]?.normal ?: listOf() }
+        val converted = states.map { layout[it.first]?.let { item -> if(it.second) item.shift else item.normal } ?: listOf() }
         var result = listOf(HangulComposer.State())
         converted.forEachIndexed { i, chars ->
             var newResult = result.flatMap { composing -> chars.map { c -> hangulConverter.compose(composing, c) } }

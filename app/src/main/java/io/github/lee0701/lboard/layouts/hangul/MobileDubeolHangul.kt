@@ -209,11 +209,11 @@ object MobileDubeolHangul {
     ))
 
     val LAYOUT_FIFTEEN_DUBEOL = CommonKeyboardLayout(LayoutLayer(mapOf(
-            0x2001 to LayoutItem("ㅂㅛㅃ".map { it.toInt() }),
-            0x2002 to LayoutItem("ㅈㅕㅉ".map { it.toInt() }),
-            0x2003 to LayoutItem("ㄷㅑㄸ".map { it.toInt() }),
-            0x2004 to LayoutItem("ㄱㅐㄲㅒ".map { it.toInt() }),
-            0x2005 to LayoutItem("ㅅㅔㅆㅖ".map { it.toInt() }),
+            0x2001 to LayoutItem("ㅂㅛ".map { it.toInt() }, "ㅃ".map { it.toInt() }),
+            0x2002 to LayoutItem("ㅈㅕ".map { it.toInt() }, "ㅉ".map { it.toInt() }),
+            0x2003 to LayoutItem("ㄷㅑ".map { it.toInt() }, "ㄸ".map { it.toInt() }),
+            0x2004 to LayoutItem("ㄱㅐ".map { it.toInt() }, "ㄲㅒ".map { it.toInt() }),
+            0x2005 to LayoutItem("ㅅㅔ".map { it.toInt() }, "ㅆㅖ".map { it.toInt() }),
             0x2006 to LayoutItem("ㅁ".map { it.toInt() }),
             0x2007 to LayoutItem("ㄴㅗ".map { it.toInt() }),
             0x2008 to LayoutItem("ㅇㅓ".map { it.toInt() }),
@@ -223,6 +223,21 @@ object MobileDubeolHangul {
             0x200c to LayoutItem("ㅌㅠ".map { it.toInt() }),
             0x200d to LayoutItem("ㅊㅜ".map { it.toInt() }),
             0x200e to LayoutItem("ㅍㅡ".map { it.toInt() })
+    ), labels = mapOf(
+            0x2001 to "ㅂㅛ",
+            0x2002 to "ㅈㅕ",
+            0x2003 to "ㄷㅑ",
+            0x2004 to "ㄱㅐ",
+            0x2005 to "ㅅㅔ",
+            0x2006 to "ㅁ",
+            0x2007 to "ㄴㅗ",
+            0x2008 to "ㅇㅓ",
+            0x2009 to "ㄹㅏ",
+            0x200a to "ㅎㅣ",
+            0x200b to "ㅋ",
+            0x200c to "ㅌㅠ",
+            0x200d to "ㅊㅜ",
+            0x200e to "ㅍㅡ"
     )), timeout = true)
 
 }
