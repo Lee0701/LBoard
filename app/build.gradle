@@ -10,8 +10,8 @@ android {
         applicationId "io.github.lee0701.lboard"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 2
-        versionName "0.0.2-alpha.1"
+        versionCode 3
+        versionName "0.0.3-alpha.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     applicationVariants.all { variant ->
