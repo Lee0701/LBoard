@@ -351,7 +351,7 @@ object Alphabet {
 
             56 to LayoutItem(listOf(0x002e, 0x002c), listOf(0x003f, 0x0021))
     ), labels = mapOf(
-            0x2030 to "aA"
+            0x2030 to ("aA" to "aA")
     )), cycle = false)
 
 }

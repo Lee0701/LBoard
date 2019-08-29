@@ -127,7 +127,7 @@
         <item>@string/pref_method_hard_layout_dubeol_google</item>
         <item>@string/pref_method_hard_layout_dubeol_cheonjiin</item>
         <item>@string/pref_method_hard_layout_dubeol_naratgeul</item>
-        <item>T15 Dubeolsik Standard Compact</item>
+        <item>@string/pref_method_hard_layout_dubeol_compact</item>
     </string-array>
 
     <string-array name="method_ko_predefined_layout_ids">

@@ -38,7 +38,7 @@ data class CommonKeyboardLayout(
 
     data class LayoutLayer(
             val layout: Map<Int, LayoutItem> = mapOf(),
-            val labels: Map<Int, String> = mapOf()
+            val labels: Map<Int, Pair<String, String>> = mapOf()
     ) {
         operator fun get(i: Int): LayoutItem? = layout[i]
         operator fun plus(other: LayoutLayer): LayoutLayer {

@@ -69,12 +69,12 @@ object MobileDubeolHangul {
             0x2402 to LayoutItem(0x3155),   // ㅕ
             0x2502 to LayoutItem(0x3151)    // ㅑ
     ), labels = mapOf(
-            0x2004 to "ㄱㅋ",
-            0x2006 to "ㄷㅌ",
-            0x2007 to "ㅂㅍ",
-            0x2008 to "ㅅㅎ",
-            0x2009 to "ㅈㅊ",
-            0x200c to "간격"
+            0x2004 to ("ㄱㅋ" to ""),
+            0x2006 to ("ㄷㅌ" to ""),
+            0x2007 to ("ㅂㅍ" to ""),
+            0x2008 to ("ㅅㅎ" to ""),
+            0x2009 to ("ㅈㅊ" to ""),
+            0x200c to ("간격" to "")
     )), spaceForSeparation = true)
     
     val COMBINATION_CHEONJIIN = CombinationTable(mapOf(
@@ -143,8 +143,8 @@ object MobileDubeolHangul {
             0x200b to LayoutItem(listOf(0x70000000)),
             0x200c to LayoutItem(listOf(0x70000001))
     ), labels = mapOf(
-            0x200b to "획추가",
-            0x200c to "쌍자음"
+            0x200b to ("획추가" to ""),
+            0x200c to ("쌍자음" to "")
     )), listOf(
             StrokeTable(mapOf(
                     0x3131 to 0x314b,   // ㄱ-ㅋ
@@ -224,20 +224,20 @@ object MobileDubeolHangul {
             0x200d to LayoutItem("ㅊㅜ".map { it.toInt() }),
             0x200e to LayoutItem("ㅍㅡ".map { it.toInt() })
     ), labels = mapOf(
-            0x2001 to "ㅂㅛ",
-            0x2002 to "ㅈㅕ",
-            0x2003 to "ㄷㅑ",
-            0x2004 to "ㄱㅐ",
-            0x2005 to "ㅅㅔ",
-            0x2006 to "ㅁ",
-            0x2007 to "ㄴㅗ",
-            0x2008 to "ㅇㅓ",
-            0x2009 to "ㄹㅏ",
-            0x200a to "ㅎㅣ",
-            0x200b to "ㅋ",
-            0x200c to "ㅌㅠ",
-            0x200d to "ㅊㅜ",
-            0x200e to "ㅍㅡ"
+            0x2001 to ("ㅂㅛ" to "ㅃ"),
+            0x2002 to ("ㅈㅕ" to "ㅉ"),
+            0x2003 to ("ㄷㅑ" to "ㄸ"),
+            0x2004 to ("ㄱㅐ" to "ㄲㅒ"),
+            0x2005 to ("ㅅㅔ" to "ㅆㅖ"),
+            0x2006 to ("ㅁ" to "ㅁ"),
+            0x2007 to ("ㄴㅗ" to "ㄴㅗ"),
+            0x2008 to ("ㅇㅓ" to "ㅇㅓ"),
+            0x2009 to ("ㄹㅏ" to "ㄹㅏ"),
+            0x200a to ("ㅎㅣ" to "ㅎㅣ"),
+            0x200b to ("ㅋ" to "ㅋ"),
+            0x200c to ("ㅌㅠ" to "ㅌㅠ"),
+            0x200d to ("ㅊㅜ" to "ㅊㅜ"),
+            0x200e to ("ㅍㅡ" to "ㅍㅡ")
     )), timeout = true)
 
 }

@@ -19,15 +19,15 @@ object MobileAlphabet {
             0x200b to LayoutItem(listOf()),
             0x200c to LayoutItem(listOf())
     ), labels = mapOf(
-            0x2001 to ".",
-            0x2002 to "ABC",
-            0x2003 to "DEF",
-            0x2004 to "GHI",
-            0x2005 to "JKL",
-            0x2006 to "MNO",
-            0x2007 to "PQRS",
-            0x2008 to "TUV",
-            0x2009 to "WXYZ"
+            0x2001 to ("." to "."),
+            0x2002 to ("abc" to "ABC"),
+            0x2003 to ("def" to "DEF"),
+            0x2004 to ("ghi" to "GHI"),
+            0x2005 to ("jkl" to "JKL"),
+            0x2006 to ("mno" to "MNO"),
+            0x2007 to ("pqrs" to "PQRS"),
+            0x2008 to ("tuv" to "TUV"),
+            0x2009 to ("wxyz" to "WXYZ")
     )), timeout = true)
 
     val LAYOUT_FIFTEEN_QWERTY_A = CommonKeyboardLayout(LayoutLayer(mapOf(

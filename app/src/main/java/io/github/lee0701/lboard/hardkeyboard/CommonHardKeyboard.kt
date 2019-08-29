@@ -83,7 +83,7 @@ class CommonHardKeyboard(
         val layer = if(alt) altLayer else currentLayer
         return layer.layout.map { item ->
             item.key to (if(shift) item.value.shift else item.value.normal).map { it.toChar() }.joinToString("")
-        }.toMap() + currentLayer.labels
+        }.toMap() + currentLayer.labels.mapValues { if(shift) it.value.second else it.value.first }
     }
 
     override fun getMoreKeys(keyCode: Int, shift: Boolean, alt: Boolean): List<Int> {
