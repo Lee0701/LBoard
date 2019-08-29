@@ -13,7 +13,6 @@ import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import org.jetbrains.anko.AnkoAsyncContext
 import org.jetbrains.anko.doAsync
 import org.json.JSONObject
 import java.util.concurrent.Future
@@ -106,14 +105,34 @@ class AmbiguousHangulInputMethod(
     private fun convertAll(): List<String> {
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return listOf()
         val converted = states.map { layout[it.first]?.let { item -> if(it.second) item.shift else item.normal } ?: listOf() }
-        var result = listOf(HangulComposer.State())
-        converted.forEachIndexed { i, chars ->
-            var newResult = result.flatMap { composing -> chars.map { c -> hangulConverter.compose(composing, c) } }
-            newResult = newResult.sortedByDescending { scorer.calculateScore(hangulConverter.display(if(DOUBLES.contains(it.jong)) it.copy(jong = null) else it)) }
-            if(i > 4) newResult = newResult.take(3)
-            result = newResult
+
+        val syllables = converted.mapIndexed { i, chars ->
+            val result = mutableListOf<Pair<HangulComposer.State, Int>>()
+            var current = listOf(HangulComposer.State() to 0)
+            converted.slice(i until Math.min(i+6, converted.size)).forEach { list ->
+                current = current.flatMap { item -> list.map { c -> hangulConverter.compose(item.first, c) to item.second + 1} }
+                        .filter { it.first.other.isEmpty() }
+                        .ifEmpty { return@forEach }
+                result += current
+            }
+            result.map { hangulConverter.display(it.first) to it.second }
+                    .map { it.first[0] to (scorer.calculateScore(it.first) to it.second) }
+                    .sortedByDescending { it.second.first }
         }
-        return result.map { state -> hangulConverter.display(state) }
+
+        val result = mutableListOf("" to (0f to 0))
+
+        syllables.map { list -> list.filter { it.first in '가' .. '힣'} }.forEachIndexed { i, list ->
+            val targets = result.filter { it.second.second == i }
+            result -= targets
+            result += targets.flatMap { target ->
+                list.map { target.first + it.first to (target.second.first + it.second.first to target.second.second + it.second.second) }
+            }
+        }
+
+        return result.map { it.first to it.second.first / it.first.length }
+                .sortedByDescending { it.second }
+                .map { it.first }
     }
 
     override fun reset() {

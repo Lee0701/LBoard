@@ -1,7 +1,5 @@
 package io.github.lee0701.lboard.inputmethod.ambiguous
 
-import java.text.Normalizer
-
 class HangulSyllableFrequencyScorer: Scorer {
     override fun calculateScore(string: String): Float {
         return string
