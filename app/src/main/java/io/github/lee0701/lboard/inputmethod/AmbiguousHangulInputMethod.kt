@@ -8,7 +8,6 @@ import io.github.lee0701.lboard.event.PreferenceChangeEvent
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
-import io.github.lee0701.lboard.inputmethod.ambiguous.HangulSyllableFrequencyScorer
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
@@ -21,11 +20,12 @@ class AmbiguousHangulInputMethod(
         override val info: InputMethodInfo,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
-        val hangulConverter: HangulComposer
+        val hangulConverter: HangulComposer,
+        val conversionScorer: Scorer,
+        val finalScorer: Scorer
 ): CommonInputMethod() {
 
     val states: MutableList<Pair<Int, Boolean>> = mutableListOf()
-    val scorer: Scorer = HangulSyllableFrequencyScorer()
     var convertTask: Future<Unit>? = null
 
     var candidates: List<String> = listOf()
@@ -106,7 +106,7 @@ class AmbiguousHangulInputMethod(
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return listOf()
         val converted = states.map { layout[it.first]?.let { item -> if(it.second) item.shift else item.normal } ?: listOf() }
 
-        val syllables = converted.mapIndexed { i, chars ->
+        val syllables = converted.mapIndexed { i, _ ->
             val result = mutableListOf<Pair<HangulComposer.State, Int>>()
             var current = listOf(HangulComposer.State() to 0)
             converted.slice(i until Math.min(i+6, converted.size)).forEach { list ->
@@ -116,7 +116,7 @@ class AmbiguousHangulInputMethod(
                 result += current
             }
             result.map { hangulConverter.display(it.first) to it.second }
-                    .map { it.first[0] to (scorer.calculateScore(it.first) to it.second) }
+                    .map { it.first[0] to (conversionScorer.calculateScore(it.first) to it.second) }
                     .sortedByDescending { it.second.first }
         }
 
@@ -131,7 +131,9 @@ class AmbiguousHangulInputMethod(
         }
 
         return result.map { it.first to it.second.first / it.first.length }
-                .sortedByDescending { it.second }
+                .sortedByDescending { conversionScorer.calculateScore(it.first) }
+                .take(10)
+                .sortedByDescending { finalScorer.calculateScore(it.first) }
                 .map { it.first }
     }
 

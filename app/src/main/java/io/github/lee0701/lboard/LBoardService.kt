@@ -14,12 +14,16 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import io.github.lee0701.lboard.dictionary.Dictionary
+import io.github.lee0701.lboard.dictionary.FlatTrieDictionary
 import io.github.lee0701.lboard.dictionary.SQLiteDictionary
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.inputmethod.*
+import io.github.lee0701.lboard.inputmethod.ambiguous.HangulSyllableFrequencyScorer
+import io.github.lee0701.lboard.inputmethod.ambiguous.KoreanDictionaryScorer
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.alphabet.MobileAlphabet
 import io.github.lee0701.lboard.layouts.hangul.*
@@ -33,6 +37,7 @@ import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.text.Normalizer
 
 class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -68,6 +73,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
 
         reloadPreferences()
+
+        val data = assets.open("dict.ko/dict.bin").readBytes()
+        val dictionary: Dictionary = FlatTrieDictionary(data)
+        println(dictionary.search(Normalizer.normalize("왜", Normalizer.Form.NFD)))
 
     }
 
@@ -148,7 +157,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                         InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                         BasicSoftKeyboard(softLayout.clone(), theme),
                         CommonHardKeyboard(hardLayout),
-                        converter)
+                        converter,
+                        HangulSyllableFrequencyScorer(),
+                        KoreanDictionaryScorer(FlatTrieDictionary(assets.open("dict.ko/dict.bin").readBytes())))
                 else -> HangulInputMethod(
                         InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                         BasicSoftKeyboard(softLayout.clone(), theme),
