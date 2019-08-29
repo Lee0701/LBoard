@@ -134,17 +134,24 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val converter =
                     when(predefinedMethod.hangulConverter) {
-                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, false)
-                        PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL -> SingleVowelDubeolHangulComposer(combinationTable, virtualJamoTable, false)
-                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable, false)
+                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, true)
+                        PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL -> SingleVowelDubeolHangulComposer(combinationTable, virtualJamoTable, true)
+                        PredefinedHangulConverter.DUBEOL_AMBIGUOUS -> DubeolHangulComposer(combinationTable, virtualJamoTable, false)
+                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable, true)
                     }
 
-            val methodKo = AmbiguousHangulInputMethod(
-                    InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
-                    BasicSoftKeyboard(softLayout.clone(), theme),
-                    CommonHardKeyboard(hardLayout),
-                    converter
-            )
+            val methodKo = when(predefinedMethod.hangulConverter) {
+                PredefinedHangulConverter.DUBEOL_AMBIGUOUS -> AmbiguousHangulInputMethod(
+                        InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
+                        BasicSoftKeyboard(softLayout.clone(), theme),
+                        CommonHardKeyboard(hardLayout),
+                        converter)
+                else -> HangulInputMethod(
+                        InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
+                        BasicSoftKeyboard(softLayout.clone(), theme),
+                        CommonHardKeyboard(hardLayout),
+                        converter)
+            }
             inputMethods += methodKo.info to methodKo
 
             val methodKoSymbols = AlphabetInputMethod(
@@ -182,8 +189,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val converter =
                     when(predefinedMethod.hangulConverter) {
-                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, false)
-                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable, false)
+                        PredefinedHangulConverter.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, true)
+                        else -> SebeolHangulComposer(combinationTable, virtualJamoTable, true)
                     }
 
             val methodKo = HangulInputMethod(
@@ -519,7 +526,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     enum class PredefinedHangulConverter() {
-        NONE, DUBEOL, DUBEOL_SINGLE_VOWEL, SEBEOL
+        NONE, DUBEOL, DUBEOL_SINGLE_VOWEL, SEBEOL,
+        DUBEOL_AMBIGUOUS
     }
 
     data class PredefinedMethod(
@@ -636,7 +644,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 "dubeol-google" to PredefinedMethod(SOFT_LAYOUT_MINI_8COLS, DubeolHangul.LAYOUT_DUBEOL_GOOGLE, PredefinedHangulConverter.DUBEOL_SINGLE_VOWEL, DubeolHangul.COMBINATION_DUBEOL_GOOGLE),
                 "dubeol-cheonjiin" to PredefinedMethod(SOFT_LAYOUT_12KEY, MobileDubeolHangul.LAYOUT_CHEONJIIN, PredefinedHangulConverter.DUBEOL, MobileDubeolHangul.COMBINATION_CHEONJIIN),
                 "dubeol-naratgeul" to PredefinedMethod(SOFT_LAYOUT_12KEY, MobileDubeolHangul.LAYOUT_NARATGEUL, PredefinedHangulConverter.DUBEOL, MobileDubeolHangul.COMBINATION_NARATGEUL),
-                "dubeol-fifteen-compact" to PredefinedMethod(SOFT_LAYOUT_15KEY, MobileDubeolHangul.LAYOUT_FIFTEEN_DUBEOL, PredefinedHangulConverter.DUBEOL, DubeolHangul.COMBINATION_DUBEOL_STANDARD)
+                "dubeol-fifteen-compact" to PredefinedMethod(SOFT_LAYOUT_15KEY, MobileDubeolHangul.LAYOUT_FIFTEEN_DUBEOL, PredefinedHangulConverter.DUBEOL_AMBIGUOUS, DubeolHangul.COMBINATION_DUBEOL_STANDARD)
         )
 
         fun getMode(modeName: String): List<Layout> {
