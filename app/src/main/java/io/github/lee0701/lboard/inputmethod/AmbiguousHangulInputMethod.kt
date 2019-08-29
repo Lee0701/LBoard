@@ -46,7 +46,7 @@ class AmbiguousHangulInputMethod(
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
                 if(states.size > 0) {
-                    states.remove(states.last())
+                    states.removeAt(states.size-1)
                 } else {
                     candidates = listOf()
                     return false
