@@ -104,11 +104,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val softLayout = BasicSoftKeyboard.LAYOUTS[pref.getString("method_en_soft_layout", null) ?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
             val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
-            val methodEn = PredictiveInputMethod(
+            val methodEn = WordComposingInputMethod(
                     InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                     BasicSoftKeyboard(softLayout.clone(), theme),
-                    CommonHardKeyboard(hardLayout),
-                    SQLiteDictionaryPredictor(SQLiteDictionary.getInstance(this), 0)
+                    CommonHardKeyboard(hardLayout)
             )
             inputMethods += methodEn.info to methodEn
 
