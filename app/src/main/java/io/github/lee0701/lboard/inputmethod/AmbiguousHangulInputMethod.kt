@@ -44,7 +44,7 @@ class AmbiguousHangulInputMethod(
         when(event.lastKeyCode) {
             KeyEvent.KEYCODE_DEL -> {
                 hardKeyboard.reset()
-                if(states.size > 0) {
+                if(states.size > 0 && candidateIndex < 0) {
                     states.removeAt(states.size-1)
                 } else {
                     candidates = listOf()
@@ -57,7 +57,7 @@ class AmbiguousHangulInputMethod(
                     if(++candidateIndex >= candidates.size) candidateIndex = 0
                     if(candidates.isNotEmpty()) {
                         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                                ComposingText(newComposingText = candidates[candidateIndex])))
+                                ComposingText(newComposingText = candidates[candidateIndex] + " ")))
                     }
                 } else {
                     EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
@@ -66,13 +66,7 @@ class AmbiguousHangulInputMethod(
                 return true
             }
             KeyEvent.KEYCODE_ENTER -> {
-                if(candidates.isNotEmpty()) {
-                    while(convertTask?.isDone != true);
-                    reset()
-                    return true
-                } else {
-                    return super.onKeyPress(event)
-                }
+                return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
                 return super.onKeyPress(event)
