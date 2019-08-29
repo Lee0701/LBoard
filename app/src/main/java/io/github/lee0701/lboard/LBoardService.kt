@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import io.github.lee0701.lboard.dictionary.SQLiteDictionary
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
@@ -24,6 +25,7 @@ import io.github.lee0701.lboard.layouts.alphabet.MobileAlphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
+import io.github.lee0701.lboard.prediction.SQLiteDictionaryPredictor
 import io.github.lee0701.lboard.settings.SettingsActivity
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
@@ -93,10 +95,11 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val softLayout = BasicSoftKeyboard.LAYOUTS[pref.getString("method_en_soft_layout", null) ?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
             val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
-            val methodEn = WordComposingInputMethod(
+            val methodEn = PredictiveInputMethod(
                     InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                     BasicSoftKeyboard(softLayout.clone(), theme),
-                    CommonHardKeyboard(hardLayout)
+                    CommonHardKeyboard(hardLayout),
+                    SQLiteDictionaryPredictor(SQLiteDictionary.getInstance(this), 0)
             )
             inputMethods += methodEn.info to methodEn
 

@@ -45,6 +45,14 @@
             android:defaultValue="200" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Prediction">
+        <io.github.lee0701.lboard.settings.BuildDictionaryPreference
+            android:title="Build Dictionary"
+            methodId="0"
+            language="en"
+            fileName="dict/en/words.txt" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_method_physical_title">
         <ListPreference
             android:key="method_en_physical_hard_layout"
