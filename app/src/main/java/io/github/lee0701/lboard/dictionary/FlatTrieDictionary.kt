@@ -12,12 +12,11 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
     }
 
     override fun searchPrefix(prefix: String, length: Int): List<Candidate> {
-        var p = searchAddress(prefix) ?: return listOf()
-        return searchRecursive(p, prefix, length)
+        return searchRecursive(searchAddress(prefix) ?: return listOf(), prefix, length)
     }
 
     override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): List<Candidate> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return searchSequenceRecursive(seq, layout, root, "")
     }
 
     private fun searchAddress(word: String): Int? {
@@ -47,6 +46,14 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
         val result = listCandidates(address, current)
         if(current.length >= length) return result
         return result + listChildren(address).flatMap { searchRecursive(it.value, current + it.key, length) }
+    }
+
+    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, address: Int, current: String): List<Candidate> {
+        if(current.length >= seq.size) return listCandidates(address, current)
+        val keyCode = seq[current.length]
+        val chars = layout[keyCode] ?: return listOf()
+        return listChildren(address).filterKeys { chars.contains(it.toInt()) }
+                .flatMap { searchSequenceRecursive(seq, layout, it.value, current + it.key) }
     }
 
     private fun listCandidates(address: Int, word: String): List<Candidate> {

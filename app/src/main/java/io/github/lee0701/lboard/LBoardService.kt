@@ -28,6 +28,7 @@ import io.github.lee0701.lboard.layouts.alphabet.MobileAlphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
+import io.github.lee0701.lboard.prediction.DictionaryPredictor
 import io.github.lee0701.lboard.settings.SettingsActivity
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
@@ -71,7 +72,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
 
         reloadPreferences()
-        
+
     }
 
     private fun reloadPreferences() {
@@ -98,10 +99,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val softLayout = BasicSoftKeyboard.LAYOUTS[pref.getString("method_en_soft_layout", null) ?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
             val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
-            val methodEn = WordComposingInputMethod(
+            val methodEn = PredictiveInputMethod(
                     InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                     BasicSoftKeyboard(softLayout.clone(), theme),
-                    CommonHardKeyboard(hardLayout)
+                    CommonHardKeyboard(hardLayout),
+                    DictionaryPredictor(FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()), predefinedMethod.hardLayout[0]!!.layout
+                            .mapValues { it.value.normal })
             )
             inputMethods += methodEn.info to methodEn
 

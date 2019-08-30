@@ -55,7 +55,6 @@ class PredictiveInputMethod(
             }
             else -> {
                 val converted = convert(event.lastKeyCode, shift, alt)
-                if(converted.backspace && states.size > 0) states.remove(states.last())
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
                         reset()
