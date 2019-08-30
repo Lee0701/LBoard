@@ -143,6 +143,7 @@ class AmbiguousHangulInputMethod(
                 .take(10)
                 .sortedByDescending { finalScorer.calculateScore(it.first) }
                 .map { it.first }
+                .filter { it.isNotEmpty() }
     }
 
     override fun reset() {
