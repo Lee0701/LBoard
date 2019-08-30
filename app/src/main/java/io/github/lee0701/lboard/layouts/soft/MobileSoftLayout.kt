@@ -56,4 +56,31 @@ object MobileSoftLayout {
             Key(66, "RET")
     ), Row.Type.EVEN)), keyWidth = 0.20f, key = "15key-a", nameStringKey = R.string.pref_method_soft_layout_15key_a)
 
+    val LAYOUT_15KEY_B = Layout(listOf(Row(listOf(
+            Key(0x2001, "qw"),
+            Key(0x2002, "er"),
+            Key(0x2003, "ty"),
+            Key(0x2004, "ui"),
+            Key(0x2005, "op")
+    ), Row.Type.ODD), Row(listOf(
+            Key(0x2006, "as"),
+            Key(0x2007, "df"),
+            Key(0x2008, "gh"),
+            Key(0x2009, "jk"),
+            Key(0x200a, "l")
+    ), Row.Type.EVEN), Row(listOf(
+            Key(59, "SFT", keyWidth = 0.10f),
+            Key(0x200b, "zx"),
+            Key(0x200c, "cv"),
+            Key(0x200d, "bn"),
+            Key(0x200e, "m"),
+            Key(67, "DEL", keyWidth = 0.10f, repeatable = true)
+    ), Row.Type.ODD), Row(listOf(
+            Key(63, "123"),
+            Key(204, "ABC"),
+            Key(62, " "),
+            Key(56, "."),
+            Key(66, "RET")
+    ), Row.Type.EVEN)), keyWidth = 0.20f, key = "15key-b", nameStringKey = R.string.pref_method_soft_layout_15key_b)
+
 }

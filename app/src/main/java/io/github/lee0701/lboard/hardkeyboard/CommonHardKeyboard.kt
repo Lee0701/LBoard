@@ -7,6 +7,7 @@ import io.github.lee0701.lboard.layouts.hangul.DubeolHangul
 import io.github.lee0701.lboard.layouts.hangul.SebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.ShinSebeolHangul
 import io.github.lee0701.lboard.layouts.hangul.MobileDubeolHangul
+import io.github.lee0701.lboard.layouts.symbols.MoreKeys
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
@@ -113,9 +114,9 @@ class CommonHardKeyboard(
                 "symbols-blackberry" to Symbols.LAYOUT_SYMBOLS_BLACKBERRY,
                 "symbols-google" to Symbols.LAYOUT_SYMBOLS_GOOGLE,
 
-                "more-keys-top-row-numbers" to Alphabet.MOREKEYS_NUMBERS,
-                "more-keys-latin-supplement" to Alphabet.MOREKEYS_LATIN_SUPPLEMENT,
-                "more-keys-romanization" to Alphabet.MOREKEYS_ROMANIZATION,
+                "more-keys-top-row-numbers" to MoreKeys.MOREKEYS_NUMBERS,
+                "more-keys-latin-supplement" to MoreKeys.MOREKEYS_LATIN_SUPPLEMENT,
+                "more-keys-romanization" to MoreKeys.MOREKEYS_ROMANIZATION,
 
                 "alphabet-qwerty" to Alphabet.LAYOUT_QWERTY,
                 "alphabet-dvorak" to Alphabet.LAYOUT_DVORAK,

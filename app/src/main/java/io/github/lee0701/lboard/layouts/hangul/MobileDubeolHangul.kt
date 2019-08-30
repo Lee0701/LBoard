@@ -7,6 +7,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout.*
 import io.github.lee0701.lboard.hardkeyboard.SystemCode
+import io.github.lee0701.lboard.layouts.symbols.MoreKeys
 
 object MobileDubeolHangul {
     
@@ -208,18 +209,7 @@ object MobileDubeolHangul {
 //            0x11ba to 0x11ba to 0x11bb	// ㅆ
     ))
 
-    val LAYOUT_FIFTEEN_DUBEOL = CommonKeyboardLayout(mapOf(0 to LayoutLayer(mapOf(
-
-            7 to LayoutItem(0x0030),
-            8 to LayoutItem(0x0031),
-            9 to LayoutItem(0x0032),
-            10 to LayoutItem(0x0033),
-            11 to LayoutItem(0x0034),
-            12 to LayoutItem(0x0035),
-            13 to LayoutItem(0x0036),
-            14 to LayoutItem(0x0037),
-            15 to LayoutItem(0x0038),
-            16 to LayoutItem(0x0039),
+    val LAYOUT_FIFTEEN_DUBEOL = MoreKeys.MOREKEYS_FIFTEEN_NUMBERS + CommonKeyboardLayout(mapOf(0 to LayoutLayer(mapOf(
 
             0x2001 to LayoutItem("ㅂㅛ".map { it.toInt() }, "ㅃ".map { it.toInt() }),
             0x2002 to LayoutItem("ㅈㅕ".map { it.toInt() }, "ㅉ".map { it.toInt() }),
@@ -291,17 +281,6 @@ object MobileDubeolHangul {
             0x200c to ("ㅌㅠ" to "ㅌㅠ"),
             0x200d to ("ㅊㅜ" to "ㅊㅜ"),
             0x200e to ("ㅍㅡ" to "ㅍㅡ")
-    )), CommonKeyboardLayout.LAYER_MORE_KEYS_KEYCODE to LayoutLayer(mapOf(
-            0x2002 to LayoutItem(8),
-            0x2003 to LayoutItem(9),
-            0x2004 to LayoutItem(10),
-            0x2007 to LayoutItem(11),
-            0x2008 to LayoutItem(12),
-            0x2009 to LayoutItem(13),
-            0x200c to LayoutItem(14),
-            0x200d to LayoutItem(15),
-            0x200e to LayoutItem(16),
-            62 to LayoutItem(7)
     ))), timeout = true)
 
 }
