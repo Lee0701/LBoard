@@ -97,7 +97,10 @@ class PredictiveInputMethod(
 
         candidates = predictor.predict(states.map { it as KeyInputHistory<Any> })
                 .sortedByDescending { it.frequency }
-                .map { it.word.mapIndexed { i, c -> if(states[i].shift) c.toUpperCase() else c }.joinToString("") } + lastState.composing
+                .map {
+                    val withMissing = addMissing(states, it.word)
+                    it.word.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
+                } + lastState.composing
         candidateIndex = -1
 
         val composing = candidates[if(candidateIndex < 0) 0 else candidateIndex]
@@ -109,6 +112,19 @@ class PredictiveInputMethod(
     override fun reset() {
         states.clear()
         super.reset()
+    }
+
+    fun addMissing(states: List<KeyInputHistory<String>>, word: String): List<KeyInputHistory<String>> {
+        val layout = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout.mapValues { it.value.normal + it.value.shift }
+        val result = mutableListOf<KeyInputHistory<String>>()
+        var j = 0
+        word.forEachIndexed { i, c ->
+            if(layout.none { it.value.contains(c.toInt()) })
+                result += KeyInputHistory(0, composing = (result.lastOrNull()?.composing ?: "") + c)
+            else
+                result += states[j++]
+        }
+        return result
     }
 
     fun getSequence(word: String): String {
