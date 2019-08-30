@@ -104,7 +104,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     BasicSoftKeyboard(softLayout.clone(), theme),
                     CommonHardKeyboard(hardLayout),
                     DictionaryPredictor(FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()), predefinedMethod.hardLayout[0]!!.layout
-                            .mapValues { it.value.normal })
+                            .mapValues { it.value.normal + it.value.shift })
             )
             inputMethods += methodEn.info to methodEn
 

@@ -16,7 +16,7 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
     }
 
     override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): List<Candidate> {
-        return searchSequenceRecursive(seq, layout, root, "")
+        return searchSequenceRecursive(seq, layout, root, "", 0)
     }
 
     private fun searchAddress(word: String): Int? {
@@ -48,12 +48,13 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
         return result + listChildren(address).flatMap { searchRecursive(it.value, current + it.key, length) }
     }
 
-    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, address: Int, current: String): List<Candidate> {
-        if(current.length >= seq.size) return listCandidates(address, current)
-        val keyCode = seq[current.length]
-        val chars = layout[keyCode] ?: return listOf()
-        return listChildren(address).filterKeys { chars.contains(it.toInt()) }
-                .flatMap { searchSequenceRecursive(seq, layout, it.value, current + it.key) }
+    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, address: Int, current: String, index: Int): List<Candidate> {
+        if(index >= seq.size) return listCandidates(address, current)
+        val keyCode = seq[index]
+        val chars = layout[keyCode] ?: listOf()
+        val children = listChildren(address)
+        return children.filterKeys { chars.contains(it.toInt()) || layout.values.none { list -> list.contains(it.toInt()) } }
+                .flatMap { searchSequenceRecursive(seq, layout, it.value, current + it.key, if(layout.values.none { list -> list.contains(it.key.toInt()) }) index else index + 1) }
     }
 
     private fun listCandidates(address: Int, word: String): List<Candidate> {
