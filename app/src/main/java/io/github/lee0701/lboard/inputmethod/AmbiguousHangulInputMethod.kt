@@ -83,7 +83,6 @@ class AmbiguousHangulInputMethod(
 
                 val converted = hardKeyboard.convert(event.lastKeyCode, shift, alt)
                 if(converted.resultChar != null) {
-                    println(event.lastKeyCode)
                     if(isHangul(converted.resultChar)) states += event.lastKeyCode to shift
                     else {
                         reset()
