@@ -16,6 +16,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.jetbrains.anko.doAsync
 import org.json.JSONObject
 import java.util.concurrent.Future
+import kotlin.math.roundToInt
 
 class AmbiguousHangulInputMethod(
         override val info: InputMethodInfo,
@@ -132,7 +133,7 @@ class AmbiguousHangulInputMethod(
         val result = mutableListOf("" to (0f to 0))
 
         syllables
-                .mapIndexed { i, list -> if(i > 0 && list.size > 1) list.filter { it.first in '가' .. '힣'} else list }
+                .mapIndexed { i, list -> if(list.size <= 2) list else list.filter { it.first in '가' .. '힣'} }
                 .forEachIndexed { i, list ->
                     val targets = result.filter { it.second.second == i }
                     result -= targets
@@ -143,7 +144,8 @@ class AmbiguousHangulInputMethod(
 
         return result.map { it.first to it.second.first / it.first.length }
                 .sortedByDescending { conversionScorer.calculateScore(it.first) }
-                .take(10)
+                .filter { if(it.first.none { it in '가' .. '힣' }) true else it.first.all { it in '가' .. '힣' } }
+                .let { if(it.size > 8) it.take(Math.sqrt(it.size.toDouble()).toInt() * 3) else it }
                 .sortedByDescending { finalScorer.calculateScore(it.first) }
                 .map { it.first }
                 .filter { it.isNotEmpty() }
