@@ -6,6 +6,6 @@ interface Dictionary {
 
     fun search(word: String): List<Candidate>
     fun searchPrefix(prefix: String, length: Int): List<Candidate>
-    fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>)
+    fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): List<Candidate>
 
 }

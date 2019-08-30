@@ -13,10 +13,10 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
 
     override fun searchPrefix(prefix: String, length: Int): List<Candidate> {
         var p = searchAddress(prefix) ?: return listOf()
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return searchRecursive(p, prefix, length)
     }
 
-    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>) {
+    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): List<Candidate> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -72,6 +72,7 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
         val wordSize = buffer.get(p)
         p += 1 + wordSize * (1 + 4)
         val childrenSize = buffer.get(p)
+        p += 1
         for(i in 0 until childrenSize) {
             val key = buffer.getShort(p)
             p += 2

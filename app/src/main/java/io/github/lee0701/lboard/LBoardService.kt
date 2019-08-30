@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import io.github.lee0701.lboard.dictionary.Dictionary
 import io.github.lee0701.lboard.dictionary.FlatTrieDictionary
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
@@ -34,6 +35,7 @@ import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.text.Normalizer
 
 class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -69,7 +71,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
 
         reloadPreferences()
-
+        
     }
 
     private fun reloadPreferences() {
