@@ -69,8 +69,8 @@ class PredictiveInputMethod(
             }
             else -> {
                 if(candidateIndex >= 0) reset()
-
                 val converted = convert(event.lastKeyCode, shift, alt)
+                val composing = if(converted.backspace) lastState.composing.substring(0, lastState.composing.length-1) else lastState.composing
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
                         reset()
@@ -80,7 +80,7 @@ class PredictiveInputMethod(
                     reset()
                 } else {
                     states += KeyInputHistory(event.lastKeyCode, (event.lastKeyCode and 0xff).toString(16), shift, alt,
-                            lastState.composing + converted.resultChar.toChar().toString())
+                            composing + converted.resultChar.toChar().toString())
                 }
                 processStickyKeysOnInput()
                 converted.shiftOn?.let { shift = it }
@@ -97,10 +97,10 @@ class PredictiveInputMethod(
 
         candidates = predictor.predict(states.map { it as KeyInputHistory<Any> })
                 .sortedByDescending { it.frequency }
-                .map { it.word }
+                .map { it.word.mapIndexed { i, c -> if(states[i].shift) c.toUpperCase() else c }.joinToString("") } + lastState.composing
         candidateIndex = -1
 
-        val composing = if(candidates.isEmpty()) lastState.composing else candidates[if(candidateIndex < 0) 0 else candidateIndex]
+        val composing = candidates[if(candidateIndex < 0) 0 else candidateIndex]
         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                 ComposingText(newComposingText = composing)))
         return true
