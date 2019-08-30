@@ -100,7 +100,7 @@ class PredictiveInputMethod(
                 .map {
                     val withMissing = addMissing(states, it.word)
                     it.word.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
-                } + lastState.composing
+                }.let { if(it.contains(lastState.composing)) it else it + lastState.composing }
         candidateIndex = -1
 
         val composing = candidates[if(candidateIndex < 0) 0 else candidateIndex]

@@ -8,7 +8,7 @@ import io.github.lee0701.lboard.layouts.symbols.MoreKeys
 
 object MobileAlphabet {
 
-    val LAYOUT_TWELVE_ALPHABET_A = MoreKeys.MOREKEYS_FIFTEEN_NUMBERS + CommonKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_TWELVE_ALPHABET_A = CommonKeyboardLayout(LayoutLayer(mapOf(
             0x2001 to LayoutItem(listOf(0x2e, 0x22)),
             0x2002 to LayoutItem(listOf(0x61, 0x62, 0x63), listOf(0x41, 0x42, 0x43)),
             0x2003 to LayoutItem(listOf(0x64, 0x65, 0x66), listOf(0x44, 0x45, 0x46)),
@@ -34,7 +34,7 @@ object MobileAlphabet {
             0x200b to ("aA" to "Aa")
     )), timeout = true)
 
-    val LAYOUT_FIFTEEN_QWERTY_COMPACT = CommonKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_FIFTEEN_QWERTY_COMPACT = MoreKeys.MOREKEYS_FIFTEEN_NUMBERS + CommonKeyboardLayout(LayoutLayer(mapOf(
             0x2001 to LayoutItem("qw".map { it.toInt() }, "QW".map { it.toInt() }),
             0x2002 to LayoutItem("er".map { it.toInt() }, "ER".map { it.toInt() }),
             0x2003 to LayoutItem("ty".map { it.toInt() }, "TY".map { it.toInt() }),
