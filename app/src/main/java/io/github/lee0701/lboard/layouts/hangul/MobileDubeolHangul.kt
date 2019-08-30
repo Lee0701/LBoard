@@ -208,7 +208,19 @@ object MobileDubeolHangul {
 //            0x11ba to 0x11ba to 0x11bb	// ㅆ
     ))
 
-    val LAYOUT_FIFTEEN_DUBEOL = CommonKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_FIFTEEN_DUBEOL = CommonKeyboardLayout(mapOf(0 to LayoutLayer(mapOf(
+
+            7 to LayoutItem(0x0030),
+            8 to LayoutItem(0x0031),
+            9 to LayoutItem(0x0032),
+            10 to LayoutItem(0x0033),
+            11 to LayoutItem(0x0034),
+            12 to LayoutItem(0x0035),
+            13 to LayoutItem(0x0036),
+            14 to LayoutItem(0x0037),
+            15 to LayoutItem(0x0038),
+            16 to LayoutItem(0x0039),
+
             0x2001 to LayoutItem("ㅂㅛ".map { it.toInt() }, "ㅃ".map { it.toInt() }),
             0x2002 to LayoutItem("ㅈㅕ".map { it.toInt() }, "ㅉ".map { it.toInt() }),
             0x2003 to LayoutItem("ㄷㅑ".map { it.toInt() }, "ㄸ".map { it.toInt() }),
@@ -222,7 +234,48 @@ object MobileDubeolHangul {
             0x200b to LayoutItem("ㅋ".map { it.toInt() }),
             0x200c to LayoutItem("ㅌㅠ".map { it.toInt() }),
             0x200d to LayoutItem("ㅊㅜ".map { it.toInt() }),
-            0x200e to LayoutItem("ㅍㅡ".map { it.toInt() })
+            0x200e to LayoutItem("ㅍㅡ".map { it.toInt() }),
+
+            // Flick layout
+            0x2201 to LayoutItem('ㅃ'.toInt()),
+            0x2202 to LayoutItem('ㅉ'.toInt()),
+            0x2203 to LayoutItem('ㄸ'.toInt()),
+            0x2204 to LayoutItem('ㄲ'.toInt()),
+            0x2205 to LayoutItem('ㅆ'.toInt()),
+
+            0x2304 to LayoutItem('ㅒ'.toInt()),
+            0x2305 to LayoutItem('ㅖ'.toInt()),
+
+            0x2401 to LayoutItem('ㅂ'.toInt()),
+            0x2402 to LayoutItem('ㅈ'.toInt()),
+            0x2403 to LayoutItem('ㄷ'.toInt()),
+            0x2404 to LayoutItem('ㄱ'.toInt()),
+            0x2405 to LayoutItem('ㅅ'.toInt()),
+            0x2406 to LayoutItem('ㅁ'.toInt()),
+            0x2407 to LayoutItem('ㄴ'.toInt()),
+            0x2408 to LayoutItem('ㅇ'.toInt()),
+            0x2409 to LayoutItem('ㄹ'.toInt()),
+            0x240a to LayoutItem('ㅎ'.toInt()),
+            0x240b to LayoutItem('ㅋ'.toInt()),
+            0x240c to LayoutItem('ㅌ'.toInt()),
+            0x240d to LayoutItem('ㅊ'.toInt()),
+            0x240e to LayoutItem('ㅍ'.toInt()),
+
+            0x2501 to LayoutItem('ㅛ'.toInt()),
+            0x2502 to LayoutItem('ㅕ'.toInt()),
+            0x2503 to LayoutItem('ㅑ'.toInt()),
+            0x2504 to LayoutItem('ㅐ'.toInt()),
+            0x2505 to LayoutItem('ㅔ'.toInt()),
+            0x2506 to LayoutItem('ㅁ'.toInt()),
+            0x2507 to LayoutItem('ㅗ'.toInt()),
+            0x2508 to LayoutItem('ㅓ'.toInt()),
+            0x2509 to LayoutItem('ㅏ'.toInt()),
+            0x250a to LayoutItem('ㅣ'.toInt()),
+            0x250b to LayoutItem('ㅋ'.toInt()),
+            0x250c to LayoutItem('ㅠ'.toInt()),
+            0x250d to LayoutItem('ㅜ'.toInt()),
+            0x250e to LayoutItem('ㅡ'.toInt())
+
     ), labels = mapOf(
             0x2001 to ("ㅂㅛ" to "ㅃ"),
             0x2002 to ("ㅈㅕ" to "ㅉ"),
@@ -238,6 +291,17 @@ object MobileDubeolHangul {
             0x200c to ("ㅌㅠ" to "ㅌㅠ"),
             0x200d to ("ㅊㅜ" to "ㅊㅜ"),
             0x200e to ("ㅍㅡ" to "ㅍㅡ")
-    )), timeout = true)
+    )), CommonKeyboardLayout.LAYER_MORE_KEYS_KEYCODE to LayoutLayer(mapOf(
+            0x2002 to LayoutItem(8),
+            0x2003 to LayoutItem(9),
+            0x2004 to LayoutItem(10),
+            0x2007 to LayoutItem(11),
+            0x2008 to LayoutItem(12),
+            0x2009 to LayoutItem(13),
+            0x200c to LayoutItem(14),
+            0x200d to LayoutItem(15),
+            0x200e to LayoutItem(16),
+            62 to LayoutItem(7)
+    ))), timeout = true)
 
 }

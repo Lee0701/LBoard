@@ -5,6 +5,7 @@ import io.github.lee0701.lboard.ComposingText
 import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.event.PreferenceChangeEvent
+import io.github.lee0701.lboard.hangul.DubeolHangulComposer
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
@@ -61,6 +62,7 @@ class AmbiguousHangulInputMethod(
                                 ComposingText(newComposingText = candidates[candidateIndex] + " ")))
                     }
                 } else {
+                    reset()
                     EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                             ComposingText(commitPreviousText = true, textToCommit = " ")))
                 }
@@ -79,7 +81,16 @@ class AmbiguousHangulInputMethod(
             else -> {
                 if(candidateIndex >= 0) reset()
 
-                states += event.lastKeyCode to shift
+                val converted = hardKeyboard.convert(event.lastKeyCode, shift, alt)
+                if(converted.resultChar != null) {
+                    println(event.lastKeyCode)
+                    if(isHangul(converted.resultChar)) states += event.lastKeyCode to shift
+                    else {
+                        reset()
+                        EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                                ComposingText(commitPreviousText = true, textToCommit = converted.resultChar.toChar().toString())))
+                    }
+                }
 
                 processStickyKeysOnInput()
             }
@@ -148,7 +159,11 @@ class AmbiguousHangulInputMethod(
     }
 
     companion object {
-        val DOUBLES = "ᆪᆬᆭᆰᆱᆲᆳᆴᆵᆶᆹ".map { it.toInt() }
+
+        fun isHangul(c: Int): Boolean {
+            return HangulComposer.isCho(c) || HangulComposer.isJung(c) || HangulComposer.isJong(c)
+                    || DubeolHangulComposer.isConsonant(c) || DubeolHangulComposer.isVowel(c)
+        }
 
     }
 
