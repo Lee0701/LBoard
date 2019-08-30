@@ -102,6 +102,9 @@ class AmbiguousHangulInputMethod(
             if(candidates.isNotEmpty()) {
                 EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                         ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex])))
+            } else {
+                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                        ComposingText(newComposingText = "")))
             }
         }
 
