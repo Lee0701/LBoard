@@ -99,13 +99,20 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val softLayout = BasicSoftKeyboard.LAYOUTS[pref.getString("method_en_soft_layout", null) ?: ""] ?: SoftLayout.LAYOUT_10COLS_MOBILE_WITH_NUM
             val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
-            val methodEn = PredictiveInputMethod(
-                    InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
-                    BasicSoftKeyboard(softLayout.clone(), theme),
-                    CommonHardKeyboard(hardLayout),
-                    DictionaryPredictor(FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()), predefinedMethod.hardLayout[0]!!.layout
-                            .mapValues { it.value.normal + it.value.shift })
-            )
+            val methodEn = when(predefinedMethod.methodType) {
+                PredefinedMethodType.PREDICTIVE -> PredictiveInputMethod(
+                        InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
+                        BasicSoftKeyboard(softLayout.clone(), theme),
+                        CommonHardKeyboard(hardLayout),
+                        DictionaryPredictor(FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()), predefinedMethod.hardLayout[0]!!.layout
+                                .mapValues { it.value.normal + it.value.shift })
+                )
+                else -> WordComposingInputMethod(
+                        InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
+                        BasicSoftKeyboard(softLayout.clone(), theme),
+                        CommonHardKeyboard(hardLayout)
+                )
+            }
             inputMethods += methodEn.info to methodEn
 
             val methodEnDirect = AlphabetInputMethod(
@@ -538,7 +545,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     enum class PredefinedMethodType() {
-        NONE, DUBEOL, DUBEOL_SINGLE_VOWEL, SEBEOL,
+        NONE, PREDICTIVE,
+        DUBEOL, DUBEOL_SINGLE_VOWEL, SEBEOL,
         DUBEOL_AMBIGUOUS, SEBEOL_AMBIGUOUS
     }
 
@@ -644,7 +652,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 "alphabet-colemak" to PredefinedMethod(SOFT_LAYOUT_COLEMAK, Alphabet.LAYOUT_COLEMAK),
                 "alphabet-7cols-wert" to PredefinedMethod(SOFT_LAYOUT_MINI_7COLS, Alphabet.LAYOUT_7COLS_WERT),
                 "alphabet-12key-a" to PredefinedMethod(SOFT_LAYOUT_12KEY, MobileAlphabet.LAYOUT_TWELVE_ALPHABET_A),
-                "alphabet-15key-qwerty-a" to PredefinedMethod(SOFT_LAYOUT_15KEY, MobileAlphabet.LAYOUT_FIFTEEN_QWERTY_A),
+                "alphabet-15key-qwerty-a" to PredefinedMethod(SOFT_LAYOUT_15KEY, MobileAlphabet.LAYOUT_FIFTEEN_QWERTY_A, PredefinedMethodType.PREDICTIVE),
 
                 "dubeol-standard" to PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, DubeolHangul.LAYOUT_DUBEOL_STANDARD, PredefinedMethodType.DUBEOL, DubeolHangul.COMBINATION_DUBEOL_STANDARD),
                 "sebeol-390" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_GONG, SebeolHangul.LAYOUT_SEBEOL_390, PredefinedMethodType.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),
