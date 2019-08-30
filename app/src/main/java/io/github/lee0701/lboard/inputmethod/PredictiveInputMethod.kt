@@ -59,6 +59,7 @@ class PredictiveInputMethod(
                 return true
             }
             KeyEvent.KEYCODE_ENTER -> {
+                reset()
                 return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
