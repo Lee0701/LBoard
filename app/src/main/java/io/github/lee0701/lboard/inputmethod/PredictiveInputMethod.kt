@@ -21,6 +21,9 @@ class PredictiveInputMethod(
     val states: MutableList<KeyInputHistory<String>> = mutableListOf()
     val lastState: KeyInputHistory<String> get() = if(states.isEmpty()) KeyInputHistory(0, composing = "") else states.last()
 
+    var candidates: List<String> = listOf()
+    var candidateIndex: Int = 0
+
     private val reverseKeycodeMap = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout
             .flatMap { entry -> entry.value.normal.map { it to entry.key } + entry.value.shift.map { it to entry.key } }
             .map { it.first to (it.second and 0xff) }
@@ -37,12 +40,23 @@ class PredictiveInputMethod(
                 if(states.size > 0) {
                     states.remove(states.last())
                 } else {
+                    candidates = listOf()
                     return false
                 }
             }
             KeyEvent.KEYCODE_SPACE -> {
-                reset()
-                return super.onKeyPress(event)
+                if(candidates.isNotEmpty()) {
+                    states.clear()
+                    if(++candidateIndex >= candidates.size) candidateIndex = 0
+                    if(candidates.isNotEmpty()) {
+                        EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                                ComposingText(newComposingText = candidates[candidateIndex] + " ")))
+                    }
+                } else {
+                    reset()
+                    return super.onKeyPress(event)
+                }
+                return true
             }
             KeyEvent.KEYCODE_ENTER -> {
                 return super.onKeyPress(event)
@@ -54,6 +68,8 @@ class PredictiveInputMethod(
                 return super.onKeyPress(event)
             }
             else -> {
+                if(candidateIndex >= 0) reset()
+
                 val converted = convert(event.lastKeyCode, shift, alt)
                 if(converted.resultChar == null) {
                     if(converted.defaultChar) {
@@ -79,10 +95,14 @@ class PredictiveInputMethod(
             }
         }
 
-        val candidates = predictor.predict(states.map { it as KeyInputHistory<Any> })
+        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> })
+                .sortedByDescending { it.frequency }
+                .map { it.word }
+        candidateIndex = -1
 
+        val composing = if(candidates.isEmpty()) lastState.composing else candidates[if(candidateIndex < 0) 0 else candidateIndex]
         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                ComposingText(newComposingText = candidates.firstOrNull()?.word ?: lastState.composing)))
+                ComposingText(newComposingText = composing)))
         return true
     }
 
