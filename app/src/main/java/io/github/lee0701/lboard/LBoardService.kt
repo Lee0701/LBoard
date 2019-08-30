@@ -151,7 +151,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     }
 
             val methodKo = when(predefinedMethod.hangulConverter) {
-                PredefinedHangulConverter.DUBEOL_AMBIGUOUS, PredefinedHangulConverter.SEBEOL_AMBIGUOUS -> AmbiguousHangulInputMethod(
+                PredefinedHangulConverter.DUBEOL_AMBIGUOUS,
+                PredefinedHangulConverter.SEBEOL_AMBIGUOUS -> AmbiguousHangulInputMethod(
                         InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                         BasicSoftKeyboard(softLayout.clone(), theme),
                         CommonHardKeyboard(hardLayout),

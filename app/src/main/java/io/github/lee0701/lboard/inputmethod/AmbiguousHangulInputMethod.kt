@@ -54,6 +54,7 @@ class AmbiguousHangulInputMethod(
             KeyEvent.KEYCODE_SPACE -> {
                 if(candidates.isNotEmpty()) {
                     while(convertTask?.isDone != true);
+                    states.clear()
                     if(++candidateIndex >= candidates.size) candidateIndex = 0
                     if(candidates.isNotEmpty()) {
                         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
@@ -66,6 +67,7 @@ class AmbiguousHangulInputMethod(
                 return true
             }
             KeyEvent.KEYCODE_ENTER -> {
+                reset()
                 return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
@@ -116,13 +118,15 @@ class AmbiguousHangulInputMethod(
 
         val result = mutableListOf("" to (0f to 0))
 
-        syllables.map { list -> list.filter { it.first in '가' .. '힣'} }.forEachIndexed { i, list ->
-            val targets = result.filter { it.second.second == i }
-            result -= targets
-            result += targets.flatMap { target ->
-                list.map { target.first + it.first to (target.second.first + it.second.first to target.second.second + it.second.second) }
-            }
-        }
+        syllables
+                .mapIndexed { i, list -> if(i > 0 && list.size > 1) list.filter { it.first in '가' .. '힣'} else list }
+                .forEachIndexed { i, list ->
+                    val targets = result.filter { it.second.second == i }
+                    result -= targets
+                    result += targets.flatMap { target ->
+                        list.map { target.first + it.first to (target.second.first + it.second.first to target.second.second + it.second.second) }
+                    }
+                }
 
         return result.map { it.first to it.second.first / it.first.length }
                 .sortedByDescending { conversionScorer.calculateScore(it.first) }
