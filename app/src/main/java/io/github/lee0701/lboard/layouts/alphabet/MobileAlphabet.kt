@@ -33,7 +33,7 @@ object MobileAlphabet {
             0x200b to ("aA" to "Aa")
     )), timeout = true)
 
-    val LAYOUT_FIFTEEN_QWERTY_A = CommonKeyboardLayout(LayoutLayer(mapOf(
+    val LAYOUT_FIFTEEN_QWERTY_COMPACT = CommonKeyboardLayout(LayoutLayer(mapOf(
             0x2001 to LayoutItem("qw".map { it.toInt() }, "QW".map { it.toInt() }),
             0x2002 to LayoutItem("er".map { it.toInt() }, "ER".map { it.toInt() }),
             0x2003 to LayoutItem("ty".map { it.toInt() }, "TY".map { it.toInt() }),
@@ -48,6 +48,23 @@ object MobileAlphabet {
             0x200c to LayoutItem("cv".map { it.toInt() }, "CV".map { it.toInt() }),
             0x200d to LayoutItem("bn".map { it.toInt() }, "BN".map { it.toInt() }),
             0x200e to LayoutItem("m".map { it.toInt() }, "M".map { it.toInt() })
+    )), timeout = true)
+
+    val LAYOUT_FIFTEEN_DVORAK_COMPACT = CommonKeyboardLayout(LayoutLayer(mapOf(
+            0x2001 to LayoutItem("a".map { it.toInt() }, "A".map { it.toInt() }),
+            0x2002 to LayoutItem("oq".map { it.toInt() }, "OQ".map { it.toInt() }),
+            0x2003 to LayoutItem("ej".map { it.toInt() }, "EJ".map { it.toInt() }),
+            0x2004 to LayoutItem("uk".map { it.toInt() }, "UK".map { it.toInt() }),
+            0x2005 to LayoutItem("ix".map { it.toInt() }, "IX".map { it.toInt() }),
+            0x2006 to LayoutItem("db".map { it.toInt() }, "DB".map { it.toInt() }),
+            0x2007 to LayoutItem("hm".map { it.toInt() }, "HM".map { it.toInt() }),
+            0x2008 to LayoutItem("tw".map { it.toInt() }, "TW".map { it.toInt() }),
+            0x2009 to LayoutItem("nv".map { it.toInt() }, "NV".map { it.toInt() }),
+            0x200a to LayoutItem("sz".map { it.toInt() }, "SZ".map { it.toInt() }),
+            0x200b to LayoutItem("py".map { it.toInt() }, "PY".map { it.toInt() }),
+            0x200c to LayoutItem("fg".map { it.toInt() }, "FG".map { it.toInt() }),
+            0x200d to LayoutItem("cr".map { it.toInt() }, "CR".map { it.toInt() }),
+            0x200e to LayoutItem("l".map { it.toInt() }, "L".map { it.toInt() })
     )), timeout = true)
 
 }
