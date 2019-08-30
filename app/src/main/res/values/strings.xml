@@ -169,6 +169,7 @@
     <string name="pref_method_hard_layout_dubeol_cheonjiin">T10 Dubeolsik Cheonjiin</string>
     <string name="pref_method_hard_layout_dubeol_naratgeul">T12 Dubeolsik Naratgeul</string>
     <string name="pref_method_hard_layout_dubeol_compact">T15 Dubeolsik Standard Compact Experimental</string>
+    <string name="pref_method_hard_layout_sebeol_compact">T15 Sebeolsik Compact Experimental</string>
 
 
     <string name="pref_method_physical_title">Physical Keyboard</string>
