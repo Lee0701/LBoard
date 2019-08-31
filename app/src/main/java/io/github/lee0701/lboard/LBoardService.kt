@@ -7,7 +7,6 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.inputmethodservice.InputMethodService
 import android.os.Build
-import android.support.v7.preference.PreferenceManager
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
@@ -15,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import androidx.preference.PreferenceManager
 import io.github.lee0701.lboard.candidates.RecyclerCandidateViewManager
 import io.github.lee0701.lboard.candidates.CandidateViewManager
 import io.github.lee0701.lboard.dictionary.FlatTrieDictionary
@@ -539,7 +539,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         }
 
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val token = window.window.attributes.token
+        val token = window.window!!.attributes.token
 
         if(++languageCycleIndex >= languageCycleTable.size) {
             languageCycleIndex = 0

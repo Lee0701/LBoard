@@ -1,10 +1,10 @@
 package io.github.lee0701.lboard.settings
 
+import android.app.AlertDialog
 import android.content.Context
-import android.support.v7.app.AlertDialog
-import android.support.v7.preference.ListPreference
-import android.support.v7.preference.PreferenceManager
 import android.util.AttributeSet
+import androidx.preference.ListPreference
+import androidx.preference.PreferenceManager
 import io.github.lee0701.lboard.LBoardService
 import io.github.lee0701.lboard.R
 

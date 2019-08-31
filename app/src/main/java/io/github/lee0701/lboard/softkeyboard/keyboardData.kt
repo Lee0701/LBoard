@@ -2,8 +2,8 @@ package io.github.lee0701.lboard.softkeyboard
 
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
-import android.support.annotation.DrawableRes
 import android.view.animation.DecelerateInterpolator
+import androidx.annotation.DrawableRes
 
 data class KeyTheme(
         @DrawableRes val background: Int,

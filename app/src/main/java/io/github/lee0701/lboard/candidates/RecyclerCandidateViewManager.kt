@@ -1,12 +1,12 @@
 package io.github.lee0701.lboard.candidates
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.CandidateSelectEvent
 import io.github.lee0701.lboard.event.CandidateUpdateEvent

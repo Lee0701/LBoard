@@ -11,7 +11,6 @@ import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Build
 import android.os.Vibrator
-import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.KeyEvent
@@ -20,6 +19,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.event.MoreKeySelectEvent

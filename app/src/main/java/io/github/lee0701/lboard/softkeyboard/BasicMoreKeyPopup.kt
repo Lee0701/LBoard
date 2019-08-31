@@ -6,11 +6,11 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 
 class BasicMoreKeyPopup(context: Context, private val showXOffset: Int, private val showYOffset: Int,
                         key: io.github.lee0701.lboard.softkeyboard.Key,

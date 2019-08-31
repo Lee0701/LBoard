@@ -2,8 +2,8 @@ package io.github.lee0701.lboard.settings
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.support.v7.preference.CheckBoxPreference
 import android.util.AttributeSet
+import androidx.preference.CheckBoxPreference
 
 class IntCheckBoxPreference(context: Context, attrs: AttributeSet): CheckBoxPreference(context, attrs) {
     override fun getPersistedBoolean(defaultReturnValue: Boolean): Boolean {

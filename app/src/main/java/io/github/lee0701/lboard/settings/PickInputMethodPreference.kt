@@ -2,9 +2,9 @@ package io.github.lee0701.lboard.settings
 
 import android.app.Service
 import android.content.Context
-import android.support.v7.preference.Preference
 import android.util.AttributeSet
 import android.view.inputmethod.InputMethodManager
+import androidx.preference.Preference
 
 class PickInputMethodPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs) {
 

@@ -1,11 +1,11 @@
 package io.github.lee0701.lboard.softkeyboard
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 
 class BasicKeyPreviewPopup(context: Context, private val showXOffset: Int, private val showYOffset: Int,
                            key: Key, background: Int, val color: Int): KeyboardPopup(context, key) {

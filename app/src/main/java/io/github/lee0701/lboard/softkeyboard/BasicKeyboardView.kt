@@ -2,8 +2,8 @@ package io.github.lee0701.lboard.softkeyboard
 
 import android.content.Context
 import android.graphics.*
-import android.support.v4.content.ContextCompat
 import android.view.*
+import androidx.core.content.ContextCompat
 import java.util.*
 import kotlin.concurrent.timerTask
 import kotlin.math.abs

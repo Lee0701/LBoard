@@ -1,8 +1,8 @@
 package io.github.lee0701.lboard.settings
 
 import android.content.Context
-import android.support.v7.preference.EditTextPreference
 import android.util.AttributeSet
+import androidx.preference.EditTextPreference
 
 class IntEditTextPreference(context: Context, attrs: AttributeSet): EditTextPreference(context, attrs) {
 
