@@ -2,10 +2,12 @@ package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
+import io.github.lee0701.lboard.event.CandidateUpdateEvent
 import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
+import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.Predictor
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
@@ -21,7 +23,7 @@ class PredictiveInputMethod(
     val states: MutableList<KeyInputHistory<String>> = mutableListOf()
     val lastState: KeyInputHistory<String> get() = if(states.isEmpty()) KeyInputHistory(0, composing = "") else states.last()
 
-    var candidates: List<String> = listOf()
+    var candidates: List<Candidate> = listOf()
     var candidateIndex: Int = 0
 
     private val reverseKeycodeMap = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout
@@ -40,7 +42,7 @@ class PredictiveInputMethod(
                 if(states.size > 0) {
                     states.remove(states.last())
                 } else {
-                    candidates = listOf()
+                    resetCandidates()
                     return false
                 }
             }
@@ -50,7 +52,7 @@ class PredictiveInputMethod(
                     if(++candidateIndex >= candidates.size) candidateIndex = 0
                     if(candidates.isNotEmpty()) {
                         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                                ComposingText(newComposingText = candidates[candidateIndex] + " ")))
+                                ComposingText(newComposingText = candidates[candidateIndex].text + " ")))
                     }
                 } else {
                     reset()
@@ -99,12 +101,15 @@ class PredictiveInputMethod(
         candidates = predictor.predict(states.map { it as KeyInputHistory<Any> })
                 .sortedByDescending { it.frequency }
                 .map {
-                    val withMissing = addMissing(states, it.word)
-                    it.word.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
-                }.let { if(it.contains(lastState.composing)) it else it + lastState.composing }
+                    val withMissing = addMissing(states, it.text)
+                    val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
+                    it.copy(text = text)
+                }.let { if(it.none { it.text == lastState.composing }) it + Candidate(0, lastState.composing) else it }
         candidateIndex = -1
 
-        val composing = candidates[if(candidateIndex < 0) 0 else candidateIndex]
+        EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
+
+        val composing = candidates[if(candidateIndex < 0) 0 else candidateIndex].text
         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                 ComposingText(newComposingText = composing)))
         return true
@@ -112,7 +117,15 @@ class PredictiveInputMethod(
 
     override fun reset() {
         states.clear()
+        resetCandidates()
         super.reset()
+    }
+
+    private fun resetCandidates() {
+        if(candidates.isNotEmpty()) {
+            candidates = listOf()
+            EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
+        }
     }
 
     fun addMissing(states: List<KeyInputHistory<String>>, word: String): List<KeyInputHistory<String>> {

@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import io.github.lee0701.lboard.candidates.RecyclerCandidateViewManager
+import io.github.lee0701.lboard.candidates.CandidatesViewManager
 import io.github.lee0701.lboard.dictionary.FlatTrieDictionary
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
@@ -37,6 +39,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private var showCandidateView: Boolean = true
+    private var candidateViewManager: CandidatesViewManager? = null
 
     val inputHistory: MutableMap<Int, MutableList<LBoardKeyEvent.Action>> = mutableMapOf()
 
@@ -74,10 +79,13 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     private fun reloadPreferences() {
+        candidateViewManager?.destroy()
         inputMethods.values.forEach { it.destroy() }
         inputMethods.clear()
 
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
+
+        candidateViewManager = RecyclerCandidateViewManager()
 
         switchBetweenApps = pref.getBoolean("common_soft_switch_between_methods", switchBetweenApps)
 
@@ -223,6 +231,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         inputMethods.values.forEach { it.init() }
         EventBus.getDefault().post(PreferenceChangeEvent(pref))
 
+        candidateViewManager?.init()
+
         updateCurrentMethod()
     }
 
@@ -335,11 +345,18 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     @Subscribe(threadMode = ThreadMode.MAIN)
 	fun onInputViewChange(event: InputViewChangeEvent) {
         if(!event.methodInfo.match(currentMethod.info)) return
+        val topView = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+        }
+        candidateViewManager?.let {
+            topView.addView(it.initView(this))
+        }
+
         if(event.inputView != null) {
             (event.inputView.parent as ViewGroup?)?.removeView(event.inputView)
-            setInputView(event.inputView)
+            topView.addView(event.inputView)
         }
-        else setInputView(LinearLayout(this))
+        setInputView(topView)
     }
 
     @Subscribe
@@ -478,6 +495,20 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         }
 
         if(event.originalKeyCode != KeyEvent.KEYCODE_LANGUAGE_SWITCH) inputAfterSwitch = true
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    fun onCandidateUpdate(event: CandidateUpdateEvent) {
+        if(!event.methodInfo.match(currentMethod.info)) EventBus.getDefault().cancelEventDelivery(event)
+    }
+
+    @Subscribe
+    fun onCandidateSelect(event: CandidateSelectEvent) {
+        currentInputConnection?.setComposingText(event.selected.text, 1)
+        currentInputConnection?.finishComposingText()
+        if(event.selected.endingSpace) currentInputConnection?.commitText(" ", 1)
+
+        EventBus.getDefault().post(InputStartEvent())
     }
 
     private fun updateCurrentMethod() {

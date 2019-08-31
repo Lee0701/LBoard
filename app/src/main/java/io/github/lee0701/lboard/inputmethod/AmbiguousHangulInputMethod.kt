@@ -2,6 +2,7 @@ package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
+import io.github.lee0701.lboard.event.CandidateUpdateEvent
 import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
 import io.github.lee0701.lboard.event.PreferenceChangeEvent
@@ -10,6 +11,7 @@ import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
+import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -30,7 +32,7 @@ class AmbiguousHangulInputMethod(
     val states: MutableList<Pair<Int, Boolean>> = mutableListOf()
     var convertTask: Future<Unit>? = null
 
-    var candidates: List<String> = listOf()
+    var candidates: List<Candidate> = listOf()
     var candidateIndex: Int = 0
 
     @Subscribe
@@ -49,7 +51,7 @@ class AmbiguousHangulInputMethod(
                 if(states.size > 0 && candidateIndex < 0) {
                     states.removeAt(states.size-1)
                 } else {
-                    candidates = listOf()
+                    resetCandidates()
                     return false
                 }
             }
@@ -60,7 +62,7 @@ class AmbiguousHangulInputMethod(
                     if(++candidateIndex >= candidates.size) candidateIndex = 0
                     if(candidates.isNotEmpty()) {
                         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                                ComposingText(newComposingText = candidates[candidateIndex] + " ")))
+                                ComposingText(newComposingText = candidates[candidateIndex].text + " ")))
                     }
                 } else {
                     reset()
@@ -100,9 +102,12 @@ class AmbiguousHangulInputMethod(
         convertTask = doAsync {
             candidates = convertAll()
             candidateIndex = -1
+
+            EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
+
             if(candidates.isNotEmpty()) {
                 EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                        ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex])))
+                        ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex].text)))
             } else {
                 EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                         ComposingText(newComposingText = "")))
@@ -112,7 +117,7 @@ class AmbiguousHangulInputMethod(
         return true
     }
 
-    private fun convertAll(): List<String> {
+    private fun convertAll(): List<Candidate> {
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return listOf()
         val converted = states.map { layout[it.first]?.let { item -> if(it.second) item.shift else item.normal } ?: listOf() }
 
@@ -147,13 +152,20 @@ class AmbiguousHangulInputMethod(
                 .filter { if(it.first.none { it in '가' .. '힣' }) true else it.first.all { it in '가' .. '힣' } }
                 .let { if(it.size > 8) it.take(Math.sqrt(it.size.toDouble()).toInt() * 3) else it }
                 .sortedByDescending { finalScorer.calculateScore(it.first) }
-                .map { it.first }
-                .filter { it.isNotEmpty() }
+                .filter { it.first.isNotEmpty() }
+                .map { Candidate(0, it.first, frequency = it.second) }
+    }
+
+    private fun resetCandidates() {
+        if(candidates.isNotEmpty()) {
+            candidates = listOf()
+            EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
+        }
     }
 
     override fun reset() {
         states.clear()
-        candidates = listOf()
+        resetCandidates()
         super.reset()
     }
 

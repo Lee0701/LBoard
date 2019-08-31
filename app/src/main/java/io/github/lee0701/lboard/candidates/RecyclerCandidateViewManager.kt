@@ -1,0 +1,93 @@
+package io.github.lee0701.lboard.candidates
+
+import android.content.Context
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import io.github.lee0701.lboard.R
+import io.github.lee0701.lboard.event.CandidateSelectEvent
+import io.github.lee0701.lboard.event.CandidateUpdateEvent
+import io.github.lee0701.lboard.prediction.Candidate
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+
+class RecyclerCandidateViewManager: CandidatesViewManager {
+
+    var contentView: RecyclerView? = null
+    lateinit var adapter: CandidatesViewAdapter
+
+    override fun init() {
+        EventBus.getDefault().register(this)
+    }
+
+    override fun destroy() {
+        EventBus.getDefault().unregister(this)
+    }
+
+    override fun initView(context: Context): View? {
+        val mainView = LayoutInflater.from(context).inflate(R.layout.candidate_view, null)
+        val contentView = mainView.findViewById(R.id.recycler_view) as RecyclerView
+
+        adapter = CandidatesViewAdapter(context)
+        contentView.adapter = adapter
+        contentView.layoutManager = LinearLayoutManager(context).apply {
+            orientation = LinearLayoutManager.HORIZONTAL
+        }
+        contentView.setBackgroundResource(android.R.color.background_light)
+
+        this.contentView = contentView
+        return mainView
+    }
+
+    override fun getView(): View? {
+        return contentView
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onCandidateUpdate(event: CandidateUpdateEvent) {
+        adapter.candidates = event.candidates
+        adapter.notifyDataSetChanged()
+    }
+
+    class CandidatesViewAdapter(val context: Context, var candidates: List<Candidate> = listOf()): RecyclerView.Adapter<CandidateViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, index: Int): CandidateViewHolder {
+            val view = LayoutInflater.from(context).inflate(R.layout.candidate_item, parent, false)
+            return CandidateViewHolder(view)
+        }
+
+        override fun getItemCount(): Int {
+            return candidates.size
+        }
+
+        override fun onBindViewHolder(holder: CandidateViewHolder, index: Int) {
+            holder.bind(candidates[index], context)
+        }
+    }
+
+    class CandidateViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
+
+        var candidate: Candidate? = null
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        fun bind(candidate: Candidate, context: Context) {
+            val text = itemView.findViewById<TextView>(R.id.text)
+            text.text = candidate.text
+            this.candidate = candidate
+        }
+
+        override fun onClick(v: View?) {
+            if(adapterPosition == RecyclerView.NO_POSITION) return
+            this.candidate?.let {
+                EventBus.getDefault().post(CandidateSelectEvent(it))
+            }
+        }
+    }
+
+}

@@ -13,9 +13,9 @@ class KoreanDictionaryScorer(val dictionary: Dictionary): Scorer {
                 val word = string.substring(i, j)
                 if(word.isEmpty()) continue
                 result += dictionary.search(Normalizer.normalize(word, Normalizer.Form.NFD))
-                        .map { it.copy(word = Normalizer.normalize(it.word, Normalizer.Form.NFC)) }
+                        .map { it.copy(text = Normalizer.normalize(it.text, Normalizer.Form.NFC)) }
                         .sortedByDescending { it.frequency }
-                        .distinctBy { it.word }
+                        .distinctBy { it.text }
             }
             result
         }
@@ -26,7 +26,7 @@ class KoreanDictionaryScorer(val dictionary: Dictionary): Scorer {
             val targets = result.filter { it.first.length == i }
             result -= targets
             result += targets.flatMap { target ->
-                list.map { target.first + it.word to (target.second.first + it.frequency to target.second.second + 1) }
+                list.map { target.first + it.text to (target.second.first + it.frequency to target.second.second + 1) }
             }
         }
 
