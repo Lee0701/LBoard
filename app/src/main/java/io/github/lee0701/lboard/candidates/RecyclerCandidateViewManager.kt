@@ -73,11 +73,11 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
         }
 
         override fun onBindViewHolder(holder: CandidateViewHolder, index: Int) {
-            holder.bind(candidates[index], context)
             holder.itemView.layoutParams.apply {
                 if(index < 3) width = holder.parentWidth / 3
                 else width = ViewGroup.LayoutParams.WRAP_CONTENT
             }
+            holder.bind(candidates[index])
         }
     }
 
@@ -89,7 +89,7 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
             itemView.setOnClickListener(this)
         }
 
-        fun bind(candidate: Candidate, context: Context) {
+        fun bind(candidate: Candidate) {
             val text = itemView.findViewById<TextView>(R.id.text)
             text.setTextColor(textColor)
             text.text = candidate.text

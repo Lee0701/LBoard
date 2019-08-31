@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,7 +14,13 @@
         android:paddingLeft="@dimen/candidate_item_padding"
         android:paddingEnd="@dimen/candidate_item_padding"
         android:paddingRight="@dimen/candidate_item_padding"
-        android:textSize="11pt"
+        android:maxLines="1"
+        android:textSize="20sp"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMaxTextSize="20sp"
+        app:autoSizeMinTextSize="10sp"
+        app:autoSizeStepGranularity="1sp"
+        android:gravity="center"
         android:textAlignment="center" />
 
 </LinearLayout>
