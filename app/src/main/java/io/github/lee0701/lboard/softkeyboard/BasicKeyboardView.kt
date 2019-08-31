@@ -40,7 +40,6 @@ class BasicKeyboardView(
 
     init {
         invalidateAllKeys()
-        timer.schedule(timerTask { invalidate() }, 700)
     }
 
     fun invalidateAllKeys() {
@@ -72,6 +71,11 @@ class BasicKeyboardView(
     fun reset() {
         pointers.values.forEach { it.longClickHandler.cancel() }
         pointers.clear()
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
