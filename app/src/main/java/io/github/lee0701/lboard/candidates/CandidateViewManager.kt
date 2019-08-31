@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
 
-interface CandidatesViewManager {
+interface CandidateViewManager {
 
     fun initView(context: Context): View?
     fun getView(): View?

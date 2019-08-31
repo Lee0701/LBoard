@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class RecyclerCandidateViewManager: CandidatesViewManager {
+class RecyclerCandidateViewManager(val background: Int): CandidateViewManager {
 
     var contentView: RecyclerView? = null
     lateinit var adapter: CandidatesViewAdapter
@@ -37,7 +37,7 @@ class RecyclerCandidateViewManager: CandidatesViewManager {
         contentView.layoutManager = LinearLayoutManager(context).apply {
             orientation = LinearLayoutManager.HORIZONTAL
         }
-        contentView.setBackgroundResource(android.R.color.background_light)
+        contentView.setBackgroundResource(background)
 
         this.contentView = contentView
         return mainView

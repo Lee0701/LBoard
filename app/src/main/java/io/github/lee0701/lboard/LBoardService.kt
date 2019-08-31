@@ -15,7 +15,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import io.github.lee0701.lboard.candidates.RecyclerCandidateViewManager
-import io.github.lee0701.lboard.candidates.CandidatesViewManager
+import io.github.lee0701.lboard.candidates.CandidateViewManager
 import io.github.lee0701.lboard.dictionary.FlatTrieDictionary
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
@@ -41,7 +41,7 @@ import org.greenrobot.eventbus.ThreadMode
 class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var showCandidateView: Boolean = true
-    private var candidateViewManager: CandidatesViewManager? = null
+    private var candidateViewManager: CandidateViewManager? = null
 
     val inputHistory: MutableMap<Int, MutableList<LBoardKeyEvent.Action>> = mutableMapOf()
 
@@ -85,11 +85,11 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        candidateViewManager = RecyclerCandidateViewManager()
-
         switchBetweenApps = pref.getBoolean("common_soft_switch_between_methods", switchBetweenApps)
 
         val theme = BasicSoftKeyboard.THEMES[pref.getString("common_soft_theme", null) ?: ""] ?: BasicSoftKeyboardTheme.WHITE
+
+        candidateViewManager = RecyclerCandidateViewManager(theme.background)
 
         run {
             val predefinedMethod = PREDEFINED_METHODS[pref.getString("method_en_predefined", null) ?: ""] ?: PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, Alphabet.LAYOUT_QWERTY)
