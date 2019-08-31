@@ -8,6 +8,11 @@
             android:entries="@array/common_soft_themes"
             android:entryValues="@array/common_soft_theme_ids"
             android:defaultValue="white" />
+        <CheckBoxPreference
+            android:key="common_soft_theme_automatic_dark_mode"
+            android:title="@string/pref_common_soft_theme_automatic_dark_mode_title"
+            android:summary="@string/pref_common_soft_theme_automatic_dark_mode_summary"
+            android:defaultValue="true" />
         <io.github.lee0701.lboard.settings.IntEditTextPreference
             android:key="common_soft_height"
             android:title="@string/pref_common_soft_height_title"

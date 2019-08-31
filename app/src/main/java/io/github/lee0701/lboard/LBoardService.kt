@@ -62,7 +62,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private var virtualKeyboardPresent: Boolean = false
 
     private var switchBetweenApps: Boolean = true
+    private var automaticDarkMode: Boolean = true
 
+    private var darkMode: Boolean? = null
     private var inputAfterSwitch: Boolean = false
 
     override fun onCreate() {
@@ -87,8 +89,13 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
 
         switchBetweenApps = pref.getBoolean("common_soft_switch_between_methods", switchBetweenApps)
+        automaticDarkMode = pref.getBoolean("common_soft_theme_automatic_dark_mode", automaticDarkMode)
 
-        val theme = BasicSoftKeyboard.THEMES[pref.getString("common_soft_theme", null) ?: ""] ?: BasicSoftKeyboardTheme.WHITE
+        var theme = BasicSoftKeyboard.THEMES[pref.getString("common_soft_theme", null) ?: ""] ?: BasicSoftKeyboardTheme.WHITE
+
+        if(automaticDarkMode && darkMode != null) {
+            theme = (if(darkMode == true) BasicSoftKeyboard.DARK_THEMES else BasicSoftKeyboard.LIGHT_THEMES)[theme] ?: theme
+        }
 
         run {
             val predefinedMethod = PREDEFINED_METHODS[pref.getString("method_en_predefined", null) ?: ""] ?: PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, Alphabet.LAYOUT_QWERTY)
@@ -342,6 +349,16 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     @Subscribe
 	fun onConfigurationChange(event: ConfigurationChangeEvent) {
         this.physicalKeyboardPresent = event.configuration.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
+        val darkMode = when(event.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            else -> null
+        }
+        if(darkMode != this.darkMode) {
+            this.darkMode = darkMode
+            reloadPreferences()
+            onCreateInputView()
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -352,7 +369,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         }
         if(showCandidateView) {
             candidateViewManager?.let {
-                topView.addView(it.initView(this))
+                val candidateView = it.initView(this)
+                if(candidateView != null && candidateView.parent != null) (candidateView.parent as ViewGroup).removeView(candidateView)
+                topView.addView(candidateView)
             }
         }
 

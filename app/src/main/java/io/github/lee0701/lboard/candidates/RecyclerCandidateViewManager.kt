@@ -29,6 +29,8 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
     }
 
     override fun initView(context: Context): View? {
+        if(this.contentView != null) return contentView
+
         val mainView = LayoutInflater.from(context).inflate(R.layout.candidate_view, null)
         val contentView = mainView.findViewById(R.id.recycler_view) as RecyclerView
 

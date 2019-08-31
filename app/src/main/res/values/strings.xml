@@ -44,6 +44,9 @@
     <string name="pref_common_soft_themes_flatwhite">Flat White</string>
     <string name="pref_common_soft_themes_flatdark">Flat Dark</string>
 
+    <string name="pref_common_soft_theme_automatic_dark_mode_title">Automatic Dark Mode</string>
+    <string name="pref_common_soft_theme_automatic_dark_mode_summary">Automatically set theme to dark one based on system settings.</string>
+
     <string name="pref_common_soft_mode_mobile">Mobile</string>
     <string name="pref_common_soft_mode_tablet">Tablet</string>
     <string name="pref_common_soft_mode_full">Full</string>

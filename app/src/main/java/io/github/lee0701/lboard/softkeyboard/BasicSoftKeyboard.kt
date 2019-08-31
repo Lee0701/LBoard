@@ -346,6 +346,13 @@ class BasicSoftKeyboard(
         )
         val REVERSE_THEMES = THEMES.map { it.value to it.key }.toMap()
 
+        val DARK_THEMES = mapOf(
+                BasicSoftKeyboardTheme.WHITE to BasicSoftKeyboardTheme.DARK,
+                BasicSoftKeyboardTheme.FLATWHITE to BasicSoftKeyboardTheme.FLATDARK
+        )
+
+        val LIGHT_THEMES = DARK_THEMES.map { it.value to it.key }.toMap()
+
     }
 
 }
