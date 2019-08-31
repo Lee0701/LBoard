@@ -34,9 +34,7 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
 
         adapter = CandidatesViewAdapter(context)
         contentView.adapter = adapter
-        contentView.layoutManager = LinearLayoutManager(context).apply {
-            orientation = LinearLayoutManager.HORIZONTAL
-        }
+        contentView.layoutManager = CandidatesViewLayoutManager(context)
         contentView.setBackgroundResource(background)
 
         this.contentView = contentView
@@ -53,9 +51,20 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
         adapter.notifyDataSetChanged()
     }
 
+    inner class CandidatesViewLayoutManager(context: Context): LinearLayoutManager(context) {
+
+        init {
+            orientation = HORIZONTAL
+        }
+
+    }
+
     inner class CandidatesViewAdapter(val context: Context, var candidates: List<Candidate> = listOf()): RecyclerView.Adapter<CandidateViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, index: Int): CandidateViewHolder {
             val view = LayoutInflater.from(context).inflate(R.layout.candidate_item, parent, false)
+            view.layoutParams.apply {
+                width = parent.width / 3
+            }
             return CandidateViewHolder(view)
         }
 
