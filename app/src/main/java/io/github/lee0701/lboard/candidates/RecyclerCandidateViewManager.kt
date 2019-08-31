@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class RecyclerCandidateViewManager(val background: Int): CandidateViewManager {
+class RecyclerCandidateViewManager(val background: Int, val textColor: Int): CandidateViewManager {
 
     var contentView: RecyclerView? = null
     lateinit var adapter: CandidatesViewAdapter
@@ -53,7 +53,7 @@ class RecyclerCandidateViewManager(val background: Int): CandidateViewManager {
         adapter.notifyDataSetChanged()
     }
 
-    class CandidatesViewAdapter(val context: Context, var candidates: List<Candidate> = listOf()): RecyclerView.Adapter<CandidateViewHolder>() {
+    inner class CandidatesViewAdapter(val context: Context, var candidates: List<Candidate> = listOf()): RecyclerView.Adapter<CandidateViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, index: Int): CandidateViewHolder {
             val view = LayoutInflater.from(context).inflate(R.layout.candidate_item, parent, false)
             return CandidateViewHolder(view)
@@ -68,7 +68,7 @@ class RecyclerCandidateViewManager(val background: Int): CandidateViewManager {
         }
     }
 
-    class CandidateViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class CandidateViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         var candidate: Candidate? = null
 
@@ -78,6 +78,7 @@ class RecyclerCandidateViewManager(val background: Int): CandidateViewManager {
 
         fun bind(candidate: Candidate, context: Context) {
             val text = itemView.findViewById<TextView>(R.id.text)
+            text.setTextColor(textColor)
             text.text = candidate.text
             this.candidate = candidate
         }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.graphics.Color
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.support.v7.preference.PreferenceManager
@@ -230,7 +231,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         EventBus.getDefault().post(PreferenceChangeEvent(pref))
 
         showCandidateView = inputMethods.any { it.value.info.predictive == true }
-        candidateViewManager = RecyclerCandidateViewManager(theme.background)
+        candidateViewManager = RecyclerCandidateViewManager(theme.background, theme.keyTheme[null]?.textColor ?: Color.BLACK)
         candidateViewManager?.init()
 
         updateCurrentMethod()
