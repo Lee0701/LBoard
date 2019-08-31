@@ -327,6 +327,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     override fun onDestroy() {
         inputMethods.values.forEach { it.destroy() }
+        candidateViewManager?.destroy()
         EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
