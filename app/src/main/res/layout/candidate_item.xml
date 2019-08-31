@@ -8,7 +8,11 @@
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dip"
+        android:padding="5dp"
+        android:paddingStart="@dimen/candidate_item_padding"
+        android:paddingLeft="@dimen/candidate_item_padding"
+        android:paddingEnd="@dimen/candidate_item_padding"
+        android:paddingRight="@dimen/candidate_item_padding"
         android:textSize="11pt"
         android:textAlignment="center" />
 

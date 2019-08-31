@@ -62,10 +62,7 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
     inner class CandidatesViewAdapter(val context: Context, var candidates: List<Candidate> = listOf()): RecyclerView.Adapter<CandidateViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, index: Int): CandidateViewHolder {
             val view = LayoutInflater.from(context).inflate(R.layout.candidate_item, parent, false)
-            view.layoutParams.apply {
-                width = parent.width / 3
-            }
-            return CandidateViewHolder(view)
+            return CandidateViewHolder(view, parent.width)
         }
 
         override fun getItemCount(): Int {
@@ -74,10 +71,14 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
 
         override fun onBindViewHolder(holder: CandidateViewHolder, index: Int) {
             holder.bind(candidates[index], context)
+            holder.itemView.layoutParams.apply {
+                if(index < 3) width = holder.parentWidth / 3
+                else width = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
         }
     }
 
-    inner class CandidateViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class CandidateViewHolder(itemView: View, val parentWidth: Int): RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         var candidate: Candidate? = null
 

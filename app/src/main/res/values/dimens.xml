@@ -2,4 +2,6 @@
 <resources>
     <dimen name="key_height">50dp</dimen>
     <dimen name="key_radius">5dip</dimen>
+
+    <dimen name="candidate_item_padding">20dip</dimen>
 </resources>
