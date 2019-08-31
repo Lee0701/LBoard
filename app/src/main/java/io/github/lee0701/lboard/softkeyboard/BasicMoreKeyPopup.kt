@@ -12,7 +12,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 
-class BasicMoreKeyPopup(context: Context, private val showOffset: Int, key: io.github.lee0701.lboard.softkeyboard.Key,
+class BasicMoreKeyPopup(context: Context, private val showXOffset: Int, private val showYOffset: Int,
+                        key: io.github.lee0701.lboard.softkeyboard.Key,
                         val list: List<Pair<Int, String>>, val theme: KeyboardTheme
 ): KeyboardPopup(context, key) {
 
@@ -62,7 +63,7 @@ class BasicMoreKeyPopup(context: Context, private val showOffset: Int, key: io.g
             }
         }
 
-        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, offsetX + showOffset, offsetY)
+        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, offsetX + showXOffset, offsetY + showYOffset)
 
         firstTouchedKey?.let {
             it.active = true

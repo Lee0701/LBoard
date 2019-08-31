@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.AudioManager
@@ -47,6 +48,7 @@ class BasicSoftKeyboard(
     var currentLabels: Map<Int, String> = mapOf()
 
     private val displayMetrics = DisplayMetrics()
+    private val rect = Rect()
 
     override var shift: Int
         get() = keyboardView?.shift ?: 0
@@ -201,8 +203,9 @@ class BasicSoftKeyboard(
     override fun onKeyDown(keyCode: Int, x: Int, y: Int) {
         val keyboardView = keyboardView
         if(showPopups && validatePopupShown(keyCode) && keyboardView != null) {
+            keyboardView.getGlobalVisibleRect(rect)
             val key = layout.rows.flatMap { row -> row.keys }.filter { key -> key.keyCode == keyCode }.firstOrNull() ?: return
-            val popup = BasicKeyPreviewPopup(keyboardView.context, if(oneHandedMode > 0) oneHandedMargin else 0, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
+            val popup = BasicKeyPreviewPopup(keyboardView.context, if(oneHandedMode > 0) oneHandedMargin else 0, rect.top, key, theme.previewBackground, theme.keyTheme[null]?.textColor ?: Color.BLACK)
             keyboardView.showPopup(popup)
         }
 
@@ -259,9 +262,10 @@ class BasicSoftKeyboard(
     override fun showMoreKeysKeyboard(keyCode: Int, moreKeys: List<Int>) {
         val key = layout.rows.flatMap { row -> row.keys }.filter { key -> key.keyCode == keyCode }.firstOrNull() ?: return
         val keyboardView = keyboardView ?: return
+        keyboardView.getGlobalVisibleRect(rect)
         val list = moreKeys.map { it to (currentLabels[it] ?: it.toString()) }
         if(list.isEmpty()) return
-        val popup = BasicMoreKeyPopup(keyboardView.context, if(oneHandedMode > 0) oneHandedMargin else 0, key, list, theme)
+        val popup = BasicMoreKeyPopup(keyboardView.context, if(oneHandedMode > 0) oneHandedMargin else 0, rect.top, key, list, theme)
         keyboardView.showPopup(popup)
     }
 
