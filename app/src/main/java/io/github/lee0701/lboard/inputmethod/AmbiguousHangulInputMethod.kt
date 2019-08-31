@@ -18,7 +18,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.jetbrains.anko.doAsync
 import org.json.JSONObject
 import java.util.concurrent.Future
-import kotlin.math.roundToInt
 
 class AmbiguousHangulInputMethod(
         override val info: InputMethodInfo,
@@ -123,12 +122,13 @@ class AmbiguousHangulInputMethod(
 
         val syllables = converted.mapIndexed { i, _ ->
             val result = mutableListOf<Pair<HangulComposer.State, Int>>()
-            var current = listOf(HangulComposer.State() to 0)
+            var currents = listOf(HangulComposer.State() to 0)
             converted.slice(i until Math.min(i+6, converted.size)).forEach { list ->
-                current = current.flatMap { item -> list.map { c -> hangulConverter.compose(item.first, c) to item.second + 1} }
+                currents = currents
+                        .flatMap { item -> list.map { c -> hangulConverter.compose(item.first, c) to item.second + 1} }
+                        // 음절이 넘어갔으면(other에 문자열이 있으면) 제외
                         .filter { it.first.other.isEmpty() }
-                        .ifEmpty { return@forEach }
-                result += current
+                result += currents
             }
             result.map { hangulConverter.display(it.first) to it.second }
                     .map { it.first[0] to (conversionScorer.calculateScore(it.first) to it.second) }
@@ -136,7 +136,6 @@ class AmbiguousHangulInputMethod(
         }
 
         val result = mutableListOf("" to (0f to 0))
-
         syllables
                 .mapIndexed { i, list -> if(list.size <= 2) list else list.filter { it.first in '가' .. '힣'} }
                 .forEachIndexed { i, list ->
@@ -149,7 +148,7 @@ class AmbiguousHangulInputMethod(
 
         return result.map { it.first to it.second.first / it.first.length }
                 .sortedByDescending { conversionScorer.calculateScore(it.first) }
-                .filter { if(it.first.none { it in '가' .. '힣' }) true else it.first.all { it in '가' .. '힣' } }
+                .filter { if(it.first.last() in '가' .. '힣') it.first.all { it in '가' .. '힣' } else true }
                 .let { if(it.size > 8) it.take(Math.sqrt(it.size.toDouble()).toInt() * 3) else it }
                 .sortedByDescending { finalScorer.calculateScore(it.first) }
                 .filter { it.first.isNotEmpty() }
