@@ -89,8 +89,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
         val theme = BasicSoftKeyboard.THEMES[pref.getString("common_soft_theme", null) ?: ""] ?: BasicSoftKeyboardTheme.WHITE
 
-        candidateViewManager = RecyclerCandidateViewManager(theme.background)
-
         run {
             val predefinedMethod = PREDEFINED_METHODS[pref.getString("method_en_predefined", null) ?: ""] ?: PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, Alphabet.LAYOUT_QWERTY)
 
@@ -107,7 +105,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val methodEn = when(predefinedMethod.methodType) {
                 PredefinedMethodType.PREDICTIVE -> PredictiveInputMethod(
-                        InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
+                        InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
                         BasicSoftKeyboard(softLayout.clone(), theme),
                         CommonHardKeyboard(hardLayout),
                         DictionaryPredictor(FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()), predefinedMethod.hardLayout[0]!!.layout
@@ -165,7 +163,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val methodKo = when(predefinedMethod.methodType) {
                 PredefinedMethodType.DUBEOL_AMBIGUOUS,
                 PredefinedMethodType.SEBEOL_AMBIGUOUS -> AmbiguousHangulInputMethod(
-                        InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
+                        InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
                         BasicSoftKeyboard(softLayout.clone(), theme),
                         CommonHardKeyboard(hardLayout),
                         converter,
@@ -231,6 +229,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         inputMethods.values.forEach { it.init() }
         EventBus.getDefault().post(PreferenceChangeEvent(pref))
 
+        showCandidateView = inputMethods.any { it.value.info.predictive == true }
+        candidateViewManager = RecyclerCandidateViewManager(theme.background)
         candidateViewManager?.init()
 
         updateCurrentMethod()
@@ -348,8 +348,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         val topView = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
         }
-        candidateViewManager?.let {
-            topView.addView(it.initView(this))
+        if(showCandidateView) {
+            candidateViewManager?.let {
+                topView.addView(it.initView(this))
+            }
         }
 
         if(event.inputView != null) {

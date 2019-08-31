@@ -4,7 +4,8 @@ data class InputMethodInfo(
         val language: String? = null,
         val device: Device? = null,
         val type: Type? = null,
-        val direct: Boolean? = null
+        val direct: Boolean? = null,
+        val predictive: Boolean? = null
 ) {
     enum class Device {
         PHYSICAL, VIRTUAL
