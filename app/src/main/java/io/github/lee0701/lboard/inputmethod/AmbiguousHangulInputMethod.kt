@@ -148,7 +148,7 @@ class AmbiguousHangulInputMethod(
 
         return result.map { it.first to it.second.first / it.first.length }
                 .sortedByDescending { conversionScorer.calculateScore(it.first) }
-                .filter { if(it.first.last() in '가' .. '힣') it.first.all { it in '가' .. '힣' } else true }
+                .filter { if(it.first.lastOrNull() in '가' .. '힣') it.first.all { it in '가' .. '힣' } else true }
                 .let { if(it.size > 8) it.take(Math.sqrt(it.size.toDouble()).toInt() * 3) else it }
                 .sortedByDescending { finalScorer.calculateScore(it.first) }
                 .filter { it.first.isNotEmpty() }
