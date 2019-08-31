@@ -47,7 +47,10 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onCandidateUpdate(event: CandidateUpdateEvent) {
-        adapter.candidates = event.candidates
+        val candidates = event.candidates
+                .let { if(it.size == 1) it + Candidate(0, "") else it }
+                .let { if(it.size >= 2) listOf(it[1], it[0]) + it.subList(2, it.size) else it }
+        adapter.candidates = candidates
         adapter.notifyDataSetChanged()
     }
 
@@ -96,7 +99,7 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
         override fun onClick(v: View?) {
             if(adapterPosition == RecyclerView.NO_POSITION) return
             this.candidate?.let {
-                EventBus.getDefault().post(CandidateSelectEvent(it))
+                if(it.text.isNotEmpty()) EventBus.getDefault().post(CandidateSelectEvent(it))
             }
         }
     }
