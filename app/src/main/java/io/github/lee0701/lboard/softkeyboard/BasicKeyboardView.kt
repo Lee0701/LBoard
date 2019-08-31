@@ -40,6 +40,7 @@ class BasicKeyboardView(
 
     init {
         invalidateAllKeys()
+        timer.schedule(timerTask { invalidate() }, 700)
     }
 
     fun invalidateAllKeys() {

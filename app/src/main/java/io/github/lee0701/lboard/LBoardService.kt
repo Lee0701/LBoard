@@ -403,8 +403,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val imeAction = currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
             if(keyCode == KeyEvent.KEYCODE_ENTER && currentInputConnection?.getTextBeforeCursor(1, 0) == " ")
                 currentInputConnection?.deleteSurroundingText(1, 0)
-            if(keyCode == KeyEvent.KEYCODE_ENTER &&
-                    listOf(EditorInfo.IME_ACTION_SEARCH, EditorInfo.IME_ACTION_GO).contains(imeAction))
+            if(keyCode == KeyEvent.KEYCODE_ENTER && listOf(EditorInfo.IME_ACTION_SEARCH, EditorInfo.IME_ACTION_GO).contains(imeAction))
                 sendDefaultEditorAction(true)
             else currentInputConnection?.sendKeyEvent(KeyEvent(time, time, action, keyCode, repeat, metaState))
         } else {
