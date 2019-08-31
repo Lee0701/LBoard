@@ -1,21 +1,20 @@
 package io.github.lee0701.lboard.dictionary
 
-import io.github.lee0701.lboard.prediction.Candidate
 import java.nio.ByteBuffer
 
 class FlatTrieDictionary(data: ByteArray): Dictionary {
     val buffer = ByteBuffer.wrap(data)
     val root: Int = buffer.getInt(data.size - 4)
 
-    override fun search(word: String): List<Candidate> {
-        return listCandidates(searchAddress(word) ?: return listOf(), word)
+    override fun search(text: String): List<Dictionary.Word> {
+        return listWords(searchAddress(text) ?: return listOf(), text)
     }
 
-    override fun searchPrefix(prefix: String, length: Int): List<Candidate> {
+    override fun searchPrefix(prefix: String, length: Int): List<Dictionary.Word> {
         return searchRecursive(searchAddress(prefix) ?: return listOf(), prefix, length)
     }
 
-    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): List<Candidate> {
+    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): List<Dictionary.Word> {
         return searchSequenceRecursive(seq, layout, root, "", 0)
     }
 
@@ -42,14 +41,14 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
         return p
     }
 
-    private fun searchRecursive(address: Int, current: String, length: Int): List<Candidate> {
-        val result = listCandidates(address, current)
+    private fun searchRecursive(address: Int, current: String, length: Int): List<Dictionary.Word> {
+        val result = listWords(address, current)
         if(current.length >= length) return result
         return result + listChildren(address).flatMap { searchRecursive(it.value, current + it.key, length) }
     }
 
-    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, address: Int, current: String, index: Int): List<Candidate> {
-        if(index >= seq.size) return listCandidates(address, current)
+    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, address: Int, current: String, index: Int): List<Dictionary.Word> {
+        if(index >= seq.size) return listWords(address, current)
         val keyCode = seq[index]
         val chars = layout[keyCode] ?: listOf()
         val children = listChildren(address)
@@ -57,8 +56,8 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
                 .flatMap { searchSequenceRecursive(seq, layout, it.value, current + it.key, if(layout.values.none { list -> list.contains(it.key.toInt()) }) index else index + 1) }
     }
 
-    private fun listCandidates(address: Int, word: String): List<Candidate> {
-        val result = mutableListOf<Candidate>()
+    private fun listWords(address: Int, word: String): List<Dictionary.Word> {
+        val result = mutableListOf<Dictionary.Word>()
         var p = address
 
         val wordSize = buffer.get(p)
@@ -68,7 +67,7 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
             p += 1
             val frequency = buffer.getFloat(p)
             p += 4
-            result += Candidate(0, word, pos.toString(), frequency)
+            result += Dictionary.Word(word, frequency, pos.toInt())
         }
         return result
     }

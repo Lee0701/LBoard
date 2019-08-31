@@ -8,7 +8,7 @@ class KoreanDictionaryScorer(val dictionary: Dictionary): Scorer {
 
     override fun calculateScore(string: String): Float {
         val words = string.mapIndexed { i, _ ->
-            val result = mutableListOf<Candidate>()
+            val result = mutableListOf<Dictionary.Word>()
             for(j in i .. string.length) {
                 val word = string.substring(i, j)
                 if(word.isEmpty()) continue
