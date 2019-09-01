@@ -16,6 +16,7 @@ import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.json.JSONObject
 import java.util.concurrent.Future
 
@@ -32,7 +33,7 @@ class AmbiguousHangulInputMethod(
     var convertTask: Future<Unit>? = null
 
     var candidates: List<Candidate> = listOf()
-    var candidateIndex: Int = 0
+    var candidateIndex: Int = -1
 
     @Subscribe
     override fun onPreferenceChange(event: PreferenceChangeEvent) {
@@ -81,7 +82,11 @@ class AmbiguousHangulInputMethod(
                 return super.onKeyPress(event)
             }
             else -> {
-                if(candidateIndex >= 0) reset()
+                if(candidateIndex >= 0 && candidates.isNotEmpty()) {
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                            ComposingText(newComposingText = candidates[candidateIndex].text + " ")))
+                    reset()
+                }
 
                 val converted = hardKeyboard.convert(event.lastKeyCode, shift, alt)
                 if(converted.resultChar != null) {
@@ -102,14 +107,15 @@ class AmbiguousHangulInputMethod(
             candidates = convertAll()
             candidateIndex = -1
 
-            EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
-
-            if(candidates.isNotEmpty()) {
-                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                        ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex].text)))
-            } else {
-                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                        ComposingText(newComposingText = "")))
+            uiThread {
+                EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
+                if(candidates.isNotEmpty()) {
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                            ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex].text)))
+                } else {
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                            ComposingText(newComposingText = "")))
+                }
             }
         }
 
@@ -164,8 +170,8 @@ class AmbiguousHangulInputMethod(
 
     override fun reset() {
         states.clear()
-        resetCandidates()
         super.reset()
+        resetCandidates()
     }
 
     override fun serialize(): JSONObject {
