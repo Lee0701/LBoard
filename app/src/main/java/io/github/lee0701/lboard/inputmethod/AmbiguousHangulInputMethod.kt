@@ -92,7 +92,12 @@ class AmbiguousHangulInputMethod(
                 if(converted.resultChar != null) {
                     if(isHangul(converted.resultChar)) states += event.lastKeyCode to shift
                     else {
-                        reset()
+                        states.clear()
+                        resetCandidates()
+                        if(converted.backspace) EventBus.getDefault().post(InputProcessCompleteEvent(event.methodInfo,
+                                LBoardKeyEvent(event.methodInfo, event.originalKeyCode, LBoardKeyEvent.Source.INTERNAL,
+                                        event.actions + LBoardKeyEvent.Action(LBoardKeyEvent.ActionType.PRESS,
+                                                KeyEvent.KEYCODE_DEL, System.currentTimeMillis())), sendRawInput = true))
                         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                                 ComposingText(commitPreviousText = true, textToCommit = converted.resultChar.toChar().toString())))
                     }
