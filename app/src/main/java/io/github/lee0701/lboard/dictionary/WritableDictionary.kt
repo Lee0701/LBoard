@@ -5,7 +5,7 @@ import java.io.OutputStream
 
 interface WritableDictionary: Dictionary {
 
-    fun read(inputStream: InputStream)
-    fun write(outputStream: OutputStream)
+    fun read()
+    fun write()
 
 }

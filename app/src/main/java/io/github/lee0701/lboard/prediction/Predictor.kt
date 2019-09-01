@@ -4,6 +4,10 @@ import io.github.lee0701.lboard.inputmethod.KeyInputHistory
 
 interface Predictor {
 
+    fun init()
+    fun destroy()
+
     fun predict(history: List<KeyInputHistory<Any>>): List<Candidate>
+    fun learn(candidate: Candidate)
 
 }

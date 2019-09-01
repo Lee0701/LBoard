@@ -1,6 +1,6 @@
 package io.github.lee0701.lboard.dictionary
 
-class CompoundDictionary(val dictionaries: List<Dictionary>): EditableDictionary {
+class CompoundDictionary(val dictionaries: List<Dictionary>): EditableDictionary, WritableDictionary {
 
     override fun insert(word: Dictionary.Word) {
         dictionaries.forEach {
@@ -20,4 +20,15 @@ class CompoundDictionary(val dictionaries: List<Dictionary>): EditableDictionary
         return dictionaries.flatMap { it.searchSequence(seq, layout) }
     }
 
+    override fun read() {
+        dictionaries.forEach {
+            if(it is WritableDictionary) it.read()
+        }
+    }
+
+    override fun write() {
+        dictionaries.forEach {
+            if(it is WritableDictionary) it.write()
+        }
+    }
 }

@@ -2,6 +2,7 @@ package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
+import io.github.lee0701.lboard.event.CandidateSelectEvent
 import io.github.lee0701.lboard.event.CandidateUpdateEvent
 import io.github.lee0701.lboard.event.InputProcessCompleteEvent
 import io.github.lee0701.lboard.event.LBoardKeyEvent
@@ -11,6 +12,7 @@ import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.Predictor
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.timerTask
 
 class PredictiveInputMethod(
@@ -26,12 +28,11 @@ class PredictiveInputMethod(
     var candidates: List<Candidate> = listOf()
     var candidateIndex: Int = 0
 
-    private val reverseKeycodeMap = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout
-            .flatMap { entry -> entry.value.normal.map { it to entry.key } + entry.value.shift.map { it to entry.key } }
-            .map { it.first to (it.second and 0xff) }
-            .filter { it.second in 0 .. 0xf }
-            .map { it.first to it.second.toString(16) }
-            .toMap()
+    @Subscribe
+    fun onCandidateSelect(event: CandidateSelectEvent) {
+        if(!event.methodInfo.match(this.info)) return
+        predictor.learn(event.selected)
+    }
 
     override fun onKeyPress(event: LBoardKeyEvent): Boolean {
         if(ignoreNextInput) return true
@@ -61,7 +62,10 @@ class PredictiveInputMethod(
                 return true
             }
             KeyEvent.KEYCODE_ENTER -> {
-                reset()
+                if(candidateIndex >= 0 && candidates.isNotEmpty()) {
+                    predictor.learn(candidates[candidateIndex])
+                    reset()
+                }
                 return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
@@ -71,7 +75,10 @@ class PredictiveInputMethod(
                 return super.onKeyPress(event)
             }
             else -> {
-                if(candidateIndex >= 0) reset()
+                if(candidateIndex >= 0 && candidates.isNotEmpty()) {
+                    predictor.learn(candidates[candidateIndex])
+                    reset()
+                }
                 val converted = convert(event.lastKeyCode, shift, alt)
                 val composing = if(converted.backspace) lastState.composing.substring(0, lastState.composing.length-1) else lastState.composing
                 if(converted.resultChar == null) {
@@ -104,7 +111,7 @@ class PredictiveInputMethod(
                     val withMissing = addMissing(states, it.text)
                     val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
                     it.copy(text = text)
-                }.let { if(it.none { it.text == lastState.composing }) it + Candidate(0, lastState.composing) else it }
+                }.let { if(it.none { it.text == lastState.composing }) it + Candidate(0, lastState.composing, "0", 0.1f) else it }
         candidateIndex = -1
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
@@ -128,7 +135,7 @@ class PredictiveInputMethod(
         }
     }
 
-    fun addMissing(states: List<KeyInputHistory<String>>, word: String): List<KeyInputHistory<String>> {
+    private fun addMissing(states: List<KeyInputHistory<String>>, word: String): List<KeyInputHistory<String>> {
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout.mapValues { it.value.normal + it.value.shift }
         val result = mutableListOf<KeyInputHistory<String>>()
         var j = 0
@@ -141,8 +148,13 @@ class PredictiveInputMethod(
         return result
     }
 
-    fun getSequence(word: String): String {
-        return word.map { c -> reverseKeycodeMap[c.toInt()] ?: 0 }.joinToString("")
+    override fun init() {
+        predictor.init()
+        super.init()
     }
 
+    override fun destroy() {
+        predictor.destroy()
+        super.destroy()
+    }
 }

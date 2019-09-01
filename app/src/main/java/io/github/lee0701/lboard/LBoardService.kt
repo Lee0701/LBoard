@@ -17,7 +17,10 @@ import android.widget.LinearLayout
 import androidx.preference.PreferenceManager
 import io.github.lee0701.lboard.candidates.RecyclerCandidateViewManager
 import io.github.lee0701.lboard.candidates.CandidateViewManager
+import io.github.lee0701.lboard.dictionary.CompoundDictionary
 import io.github.lee0701.lboard.dictionary.FlatTrieDictionary
+import io.github.lee0701.lboard.dictionary.WeightedDictionary
+import io.github.lee0701.lboard.dictionary.WritableTrieDictionary
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
@@ -38,6 +41,7 @@ import io.github.lee0701.lboard.softkeyboard.themes.BasicSoftKeyboardTheme
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 
 class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -113,13 +117,20 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
             val methodEn = when(predefinedMethod.methodType) {
-                PredefinedMethodType.PREDICTIVE -> PredictiveInputMethod(
-                        InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
-                        BasicSoftKeyboard(softLayout.clone(), theme),
-                        CommonHardKeyboard(hardLayout),
-                        DictionaryPredictor(FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()), predefinedMethod.hardLayout[0]!!.layout
-                                .mapValues { it.value.normal + it.value.shift })
-                )
+                PredefinedMethodType.PREDICTIVE -> {
+                    val userDictFile = File(filesDir, "userdict.en.txt")
+                    if(!userDictFile.exists()) userDictFile.createNewFile()
+                    val dictionary = CompoundDictionary(listOf(
+                            FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()),
+                            WeightedDictionary(WritableTrieDictionary(userDictFile), 10f)
+                    ))
+                    PredictiveInputMethod(
+                            InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
+                            BasicSoftKeyboard(softLayout.clone(), theme),
+                            CommonHardKeyboard(hardLayout),
+                            DictionaryPredictor(dictionary, predefinedMethod.hardLayout[0]!!.layout.mapValues { it.value.normal + it.value.shift })
+                    )
+                }
                 else -> WordComposingInputMethod(
                         InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                         BasicSoftKeyboard(softLayout.clone(), theme),

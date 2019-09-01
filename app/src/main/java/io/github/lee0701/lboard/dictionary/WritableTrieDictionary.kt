@@ -1,14 +1,13 @@
 package io.github.lee0701.lboard.dictionary
 
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.OutputStream
+import java.io.*
 
-class WritableTrieDictionary: EditableTrieDictionary(), WritableDictionary {
+class WritableTrieDictionary(
+        val file: File
+): EditableTrieDictionary(), WritableDictionary {
 
-    override fun read(inputStream: InputStream) {
-        val reader = BufferedReader(InputStreamReader(inputStream))
+    override fun read() {
+        val reader = BufferedReader(InputStreamReader(FileInputStream(file)))
         while(true) {
             val line = reader.readLine()?.split("\t") ?: break
             val text = line[0]
@@ -18,9 +17,11 @@ class WritableTrieDictionary: EditableTrieDictionary(), WritableDictionary {
         }
     }
 
-    override fun write(outputStream: OutputStream) {
+    override fun write() {
         val list = searchPrefix("", Integer.MAX_VALUE)
+        if(list.isEmpty()) return
+        val output = FileOutputStream(file)
         val data = list.map { "${it.text}\t${it.frequency}\t${it.pos}" }.joinToString("\n").toByteArray()
-        outputStream.write(data)
+        output.write(data)
     }
 }
