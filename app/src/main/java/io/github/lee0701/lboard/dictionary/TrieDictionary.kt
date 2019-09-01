@@ -1,18 +1,8 @@
 package io.github.lee0701.lboard.dictionary
 
-class TrieDictionary: EditableDictionary {
+open class TrieDictionary: Dictionary {
 
     val root = Node()
-
-    override fun insert(word: Dictionary.Word) {
-        var p = root
-        word.text.forEach { c ->
-            val n = p.children[c] ?: Node()
-            p.addChild(c, n)
-            p = n
-        }
-        p.addWord(word)
-    }
 
     override fun search(text: String): List<Dictionary.Word> {
         var p = root
