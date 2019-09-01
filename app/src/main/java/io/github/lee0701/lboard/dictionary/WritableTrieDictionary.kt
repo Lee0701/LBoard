@@ -7,6 +7,7 @@ class WritableTrieDictionary(
 ): EditableTrieDictionary(), WritableDictionary {
 
     override fun read() {
+        if(!file.exists()) file.createNewFile()
         val reader = BufferedReader(InputStreamReader(FileInputStream(file)))
         while(true) {
             val line = reader.readLine()?.split("\t") ?: break
@@ -20,6 +21,7 @@ class WritableTrieDictionary(
     override fun write() {
         val list = searchPrefix("", Integer.MAX_VALUE)
         if(list.isEmpty()) return
+        if(!file.exists()) file.createNewFile()
         val output = FileOutputStream(file)
         val data = list.map { "${it.text}\t${it.frequency}\t${it.pos}" }.joinToString("\n").toByteArray()
         output.write(data)

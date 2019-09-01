@@ -119,7 +119,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val methodEn = when(predefinedMethod.methodType) {
                 PredefinedMethodType.PREDICTIVE -> {
                     val userDictFile = File(filesDir, "userdict.en.txt")
-                    if(!userDictFile.exists()) userDictFile.createNewFile()
                     val dictionary = CompoundDictionary(listOf(
                             FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()),
                             WeightedDictionary(WritableTrieDictionary(userDictFile), 10f)
@@ -182,13 +181,21 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val methodKo = when(predefinedMethod.methodType) {
                 PredefinedMethodType.DUBEOL_AMBIGUOUS,
-                PredefinedMethodType.SEBEOL_AMBIGUOUS -> AmbiguousHangulInputMethod(
-                        InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
-                        BasicSoftKeyboard(softLayout.clone(), theme),
-                        CommonHardKeyboard(hardLayout),
-                        converter,
-                        HangulSyllableFrequencyScorer(),
-                        KoreanDictionaryScorer(FlatTrieDictionary(assets.open("dict/ko/dict.bin").readBytes())))
+                PredefinedMethodType.SEBEOL_AMBIGUOUS -> {
+                    val userDictFile = File(filesDir, "userdict.ko.txt")
+                    val dictionary = CompoundDictionary(listOf(
+                            FlatTrieDictionary(assets.open("dict/ko/dict.bin").readBytes()),
+                            WeightedDictionary(WritableTrieDictionary(userDictFile), 10f)
+                    ))
+                    AmbiguousHangulInputMethod(
+                            InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
+                            BasicSoftKeyboard(softLayout.clone(), theme),
+                            CommonHardKeyboard(hardLayout),
+                            converter,
+                            HangulSyllableFrequencyScorer(),
+                            KoreanDictionaryScorer(dictionary),
+                            dictionary)
+                }
                 else -> HangulInputMethod(
                         InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                         BasicSoftKeyboard(softLayout.clone(), theme),

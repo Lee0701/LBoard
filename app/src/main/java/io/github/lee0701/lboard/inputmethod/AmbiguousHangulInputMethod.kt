@@ -2,10 +2,11 @@ package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
-import io.github.lee0701.lboard.event.CandidateUpdateEvent
-import io.github.lee0701.lboard.event.InputProcessCompleteEvent
-import io.github.lee0701.lboard.event.LBoardKeyEvent
-import io.github.lee0701.lboard.event.PreferenceChangeEvent
+import io.github.lee0701.lboard.dictionary.Dictionary
+import io.github.lee0701.lboard.dictionary.EditableDictionary
+import io.github.lee0701.lboard.dictionary.WritableDictionary
+
+import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.DubeolHangulComposer
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
@@ -18,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
+import java.text.Normalizer
 import java.util.concurrent.Future
 
 class AmbiguousHangulInputMethod(
@@ -26,7 +28,8 @@ class AmbiguousHangulInputMethod(
         override val hardKeyboard: HardKeyboard,
         val hangulConverter: HangulComposer,
         val conversionScorer: Scorer,
-        val finalScorer: Scorer
+        val finalScorer: Scorer,
+        val dictionary: Dictionary? = null
 ): CommonInputMethod() {
 
     val states: MutableList<Pair<Int, Boolean>> = mutableListOf()
@@ -40,6 +43,12 @@ class AmbiguousHangulInputMethod(
         super.onPreferenceChange(event)
         hangulConverter.setPreferences(event.preferences)
         timeout = event.preferences.getInt("method_ko_timeout", 0)
+    }
+
+    @Subscribe
+    fun onCandidateSelect(event: CandidateSelectEvent) {
+        if(!event.methodInfo.match(this.info)) return
+        learn(event.selected)
     }
 
     override fun onKeyPress(event: LBoardKeyEvent): Boolean {
@@ -73,7 +82,11 @@ class AmbiguousHangulInputMethod(
                 return true
             }
             KeyEvent.KEYCODE_ENTER -> {
-                reset()
+                if(candidateIndex >= 0 && candidates.isNotEmpty()) {
+                    val candidate = candidates[candidateIndex]
+                    learn(candidate)
+                    reset()
+                }
                 return super.onKeyPress(event)
             }
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
@@ -85,6 +98,7 @@ class AmbiguousHangulInputMethod(
             else -> {
                 if(candidateIndex >= 0 && candidates.isNotEmpty()) {
                     val candidate = candidates[candidateIndex]
+                    learn(candidate)
                     EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                             ComposingText(newComposingText = candidate.text + if(candidate.endingSpace) " " else "")))
                     reset()
@@ -165,7 +179,16 @@ class AmbiguousHangulInputMethod(
                 .let { if(it.size > 8) it.take(Math.sqrt(it.size.toDouble()).toInt() * 3) else it }
                 .sortedByDescending { finalScorer.calculateScore(it.first) }
                 .filter { it.first.isNotEmpty() }
-                .map { Candidate(0, it.first, frequency = it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' }) }
+                .map { Candidate(0, it.first, frequency = it.second, pos = "0", endingSpace = it.first.any { c -> c in '가' .. '힣' }) }
+    }
+
+    private fun learn(candidate: Candidate) {
+        if(dictionary is EditableDictionary) {
+            val existing = dictionary.search(Normalizer.normalize(candidate.text, Normalizer.Form.NFD)).maxBy { it.frequency }
+            if(existing == null || existing.frequency < candidate.frequency) {
+                dictionary.insert(Dictionary.Word(Normalizer.normalize(candidate.text, Normalizer.Form.NFD), candidate.frequency, candidate.pos.toInt()))
+            }
+        }
     }
 
     private fun resetCandidates() {
@@ -179,6 +202,16 @@ class AmbiguousHangulInputMethod(
         states.clear()
         super.reset()
         resetCandidates()
+    }
+
+    override fun init() {
+        if(dictionary is WritableDictionary) dictionary.read()
+        super.init()
+    }
+
+    override fun destroy() {
+        if(dictionary is WritableDictionary) dictionary.write()
+        super.destroy()
     }
 
     override fun serialize(): JSONObject {
