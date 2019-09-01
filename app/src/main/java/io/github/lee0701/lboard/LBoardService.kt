@@ -58,6 +58,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     private val inputMethods: MutableMap<InputMethodInfo, InputMethod> = mutableMapOf()
     private lateinit var currentMethod: InputMethod
 
+    private var orientation: Orientation = Orientation.PORTRAIT
     private var physicalKeyboardPresent: Boolean = false
     private var virtualKeyboardPresent: Boolean = false
 
@@ -349,6 +350,18 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     @Subscribe
 	fun onConfigurationChange(event: ConfigurationChangeEvent) {
         this.physicalKeyboardPresent = event.configuration.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES
+
+        val orientation = when(event.configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> Orientation.PORTRAIT
+            Configuration.ORIENTATION_LANDSCAPE -> Orientation.LANDSCAPE
+            else -> null
+        }
+        if(orientation != null && orientation != this.orientation) {
+            this.orientation = orientation
+            reloadPreferences()
+            onCreateInputView()
+        }
+
         val darkMode = when(event.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false
@@ -615,6 +628,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val combinationTable: CombinationTable = CombinationTable(mapOf()),
             val virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
     )
+
+    enum class Orientation {
+        PORTRAIT, LANDSCAPE
+    }
 
     companion object {
 
