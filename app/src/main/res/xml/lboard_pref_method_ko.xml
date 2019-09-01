@@ -45,6 +45,13 @@
             android:defaultValue="200" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/pref_method_prediction_title">
+        <io.github.lee0701.lboard.settings.ResetDictionaryPreference
+            android:title="@string/pref_method_prediction_reset_user_dictionary_title"
+            android:summary="@string/pref_method_prediction_reset_user_dictionary_summary"
+            fileName="userdict.ko.txt" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_method_physical_title">
         <ListPreference
             android:key="method_ko_physical_predefined"

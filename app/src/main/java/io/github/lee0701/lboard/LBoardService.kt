@@ -74,7 +74,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
     override fun onCreate() {
         super.onCreate()
-        EventBus.getDefault().register(this)
+
+        INSTANCE = this
 
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this)
 
@@ -82,7 +83,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_en, true)
         PreferenceManager.setDefaultValues(this, R.xml.lboard_pref_method_ko, true)
 
-        reloadPreferences()
+        init()
 
     }
 
@@ -353,9 +354,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     override fun onDestroy() {
-        inputMethods.values.forEach { it.destroy() }
-        candidateViewManager?.destroy()
-        EventBus.getDefault().unregister(this)
+        this.destroy()
+        INSTANCE = null
         super.onDestroy()
     }
 
@@ -630,6 +630,19 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         inputHistory -= keyCode
     }
 
+    fun init() {
+        EventBus.getDefault().register(this)
+        reloadPreferences()
+    }
+
+    fun destroy() {
+        inputMethods.values.forEach { it.destroy() }
+        candidateViewManager?.destroy()
+        EventBus.getDefault().unregister(this)
+        inputMethods.clear()
+        candidateViewManager = null
+    }
+
     enum class PredefinedMethodType() {
         NONE, PREDICTIVE,
         DUBEOL, DUBEOL_SINGLE_VOWEL, SEBEOL,
@@ -649,6 +662,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
     }
 
     companion object {
+
+        var INSTANCE: LBoardService? = null
 
         val SOFT_LAYOUT_MODE_MOBILE = listOf(
                 MobileSoftLayout.LAYOUT_12KEY_4COLS,

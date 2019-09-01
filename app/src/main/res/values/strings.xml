@@ -183,11 +183,18 @@
     <string name="pref_method_physical_hard_layout_summary">Choose a keyboard layout to be used on physical keyboards.</string>
 
 
+    <string name="pref_method_prediction_title">Prediction</string>
+
+    <string name="pref_method_prediction_reset_user_dictionary_title">Clear User Dictionary</string>
+    <string name="pref_method_prediction_reset_user_dictionary_summary">Clear all learned words.</string>
+
+
     <string name="pref_activation_enabler_title">Enable / Disable input methods</string>
     <string name="pref_activation_enabler_summary">Please enable \'LBoard\'.</string>
     <string name="pref_activation_picker_title">Show input method picker</string>
 
     <string name="msg_unsupported_layout_for_mode">This layout is not supported for %s mode.</string>
     <string name="msg_user_word_deleted">Deleted user word.</string>
+    <string name="msg_user_dictionary_reset">User dictionary reset.</string>
 
 </resources>
