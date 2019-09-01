@@ -539,13 +539,10 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         if(event.originalKeyCode != KeyEvent.KEYCODE_LANGUAGE_SWITCH) inputAfterSwitch = true
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
-    fun onCandidateUpdate(event: CandidateUpdateEvent) {
-        if(!event.methodInfo.match(currentMethod.info)) EventBus.getDefault().cancelEventDelivery(event)
-    }
-
     @Subscribe
     fun onCandidateSelect(event: CandidateSelectEvent) {
+        if(!event.methodInfo.match(currentMethod.info)) return
+
         currentInputConnection?.setComposingText(event.selected.text, 1)
         currentInputConnection?.finishComposingText()
         if(event.selected.endingSpace) currentInputConnection?.commitText(" ", 1)

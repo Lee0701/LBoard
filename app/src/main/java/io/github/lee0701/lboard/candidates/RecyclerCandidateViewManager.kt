@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.lee0701.lboard.R
 import io.github.lee0701.lboard.event.CandidateSelectEvent
 import io.github.lee0701.lboard.event.CandidateUpdateEvent
+import io.github.lee0701.lboard.inputmethod.InputMethodInfo
 import io.github.lee0701.lboard.prediction.Candidate
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -19,6 +20,8 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
 
     var contentView: RecyclerView? = null
     lateinit var adapter: CandidatesViewAdapter
+
+    lateinit var methodInfo: InputMethodInfo
 
     override fun init() {
         EventBus.getDefault().register(this)
@@ -49,6 +52,7 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onCandidateUpdate(event: CandidateUpdateEvent) {
+        methodInfo = event.methodInfo
         val candidates = event.candidates
                 .let { if(it.size == 1) it + Candidate(0, "") else it }
                 .let { if(it.size >= 2) listOf(it[1], it[0]) + it.subList(2, it.size) else it }
@@ -101,7 +105,7 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
         override fun onClick(v: View?) {
             if(adapterPosition == RecyclerView.NO_POSITION) return
             this.candidate?.let {
-                if(it.text.isNotEmpty()) EventBus.getDefault().post(CandidateSelectEvent(it))
+                if(it.text.isNotEmpty()) EventBus.getDefault().post(CandidateSelectEvent(methodInfo, it))
             }
         }
     }
