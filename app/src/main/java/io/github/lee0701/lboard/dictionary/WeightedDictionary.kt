@@ -18,6 +18,10 @@ class WeightedDictionary(val dictionary: Dictionary, val weight: Float): Diction
         if(dictionary is EditableDictionary) dictionary.insert(word)
     }
 
+    override fun remove(word: Dictionary.Word) {
+        if(dictionary is EditableDictionary) dictionary.remove(word)
+    }
+
     override fun read() {
         if(dictionary is WritableDictionary) dictionary.read()
     }

@@ -188,5 +188,6 @@
     <string name="pref_activation_picker_title">Show input method picker</string>
 
     <string name="msg_unsupported_layout_for_mode">This layout is not supported for %s mode.</string>
+    <string name="msg_user_word_deleted">Deleted user word.</string>
 
 </resources>

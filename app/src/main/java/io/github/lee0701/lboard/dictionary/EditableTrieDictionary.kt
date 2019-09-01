@@ -12,4 +12,11 @@ open class EditableTrieDictionary: TrieDictionary(), EditableDictionary {
         p.addWord(word)
     }
 
+    override fun remove(word: Dictionary.Word) {
+        var p = root
+        word.text.forEach { c ->
+            p = p.children[c] ?: return
+        }
+        p.words.clear()
+    }
 }

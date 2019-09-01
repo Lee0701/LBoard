@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.lee0701.lboard.R
+import io.github.lee0701.lboard.event.CandidateLongClickEvent
 import io.github.lee0701.lboard.event.CandidateSelectEvent
 import io.github.lee0701.lboard.event.CandidateUpdateEvent
 import io.github.lee0701.lboard.inputmethod.InputMethodInfo
@@ -87,12 +89,13 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
         }
     }
 
-    inner class CandidateViewHolder(itemView: View, val parentWidth: Int): RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class CandidateViewHolder(itemView: View, val parentWidth: Int): RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
 
         var candidate: Candidate? = null
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         fun bind(candidate: Candidate) {
@@ -107,6 +110,16 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
             this.candidate?.let {
                 if(it.text.isNotEmpty()) EventBus.getDefault().post(CandidateSelectEvent(methodInfo, it))
             }
+        }
+
+        override fun onLongClick(p0: View?): Boolean {
+            if(adapterPosition == RecyclerView.NO_POSITION) return false
+            this.candidate?.let {
+                Toast.makeText(itemView.context, R.string.msg_user_word_deleted, Toast.LENGTH_SHORT).show()
+                if(it.text.isNotEmpty()) EventBus.getDefault().post(CandidateLongClickEvent(methodInfo, it))
+                return true
+            }
+            return false
         }
     }
 

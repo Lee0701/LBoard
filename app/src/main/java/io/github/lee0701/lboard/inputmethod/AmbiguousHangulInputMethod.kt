@@ -51,6 +51,12 @@ class AmbiguousHangulInputMethod(
         learn(event.selected)
     }
 
+    @Subscribe
+    fun onCandidateLongClick(event: CandidateLongClickEvent) {
+        if(!event.methodInfo.match(this.info)) return
+        delete(event.longClicked)
+    }
+
     override fun onKeyPress(event: LBoardKeyEvent): Boolean {
         if(ignoreNextInput) return true
         timeoutTask?.cancel()
@@ -188,6 +194,13 @@ class AmbiguousHangulInputMethod(
             if(existing == null || existing.frequency < candidate.frequency) {
                 dictionary.insert(Dictionary.Word(Normalizer.normalize(candidate.text, Normalizer.Form.NFD), candidate.frequency, candidate.pos.toInt()))
             }
+        }
+    }
+
+    private fun delete(candidate: Candidate) {
+        if(dictionary is EditableDictionary) {
+            val existing = dictionary.search(Normalizer.normalize(candidate.text, Normalizer.Form.NFD))
+            existing.forEach { dictionary.remove(it) }
         }
     }
 

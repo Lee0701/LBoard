@@ -8,6 +8,12 @@ class CompoundDictionary(val dictionaries: List<Dictionary>): EditableDictionary
         }
     }
 
+    override fun remove(word: Dictionary.Word) {
+        dictionaries.forEach {
+            if(it is EditableDictionary) it.remove(word)
+        }
+    }
+
     override fun search(text: String): List<Dictionary.Word> {
         return dictionaries.flatMap { it.search(text) }
     }

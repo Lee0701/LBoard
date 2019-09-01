@@ -28,4 +28,12 @@ class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<
                 dictionary.insert(Dictionary.Word(candidate.text, candidate.frequency, candidate.pos.toInt()))
         }
     }
+
+    override fun delete(candidate: Candidate) {
+        if(dictionary is EditableDictionary) {
+            val existing = dictionary.search(candidate.text)
+            existing.forEach { dictionary.remove(it) }
+        }
+    }
+
 }

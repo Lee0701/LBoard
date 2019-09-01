@@ -2,10 +2,7 @@ package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
-import io.github.lee0701.lboard.event.CandidateSelectEvent
-import io.github.lee0701.lboard.event.CandidateUpdateEvent
-import io.github.lee0701.lboard.event.InputProcessCompleteEvent
-import io.github.lee0701.lboard.event.LBoardKeyEvent
+import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.prediction.Candidate
@@ -32,6 +29,12 @@ class PredictiveInputMethod(
     fun onCandidateSelect(event: CandidateSelectEvent) {
         if(!event.methodInfo.match(this.info)) return
         predictor.learn(event.selected)
+    }
+
+    @Subscribe
+    fun onCandidateLongClick(event: CandidateLongClickEvent) {
+        if(!event.methodInfo.match(this.info)) return
+        predictor.delete(event.longClicked)
     }
 
     override fun onKeyPress(event: LBoardKeyEvent): Boolean {

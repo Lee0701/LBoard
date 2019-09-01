@@ -9,5 +9,6 @@ interface Predictor {
 
     fun predict(history: List<KeyInputHistory<Any>>): List<Candidate>
     fun learn(candidate: Candidate)
+    fun delete(candidate: Candidate)
 
 }
