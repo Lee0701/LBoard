@@ -61,8 +61,9 @@ class AmbiguousHangulInputMethod(
                     states.clear()
                     if(++candidateIndex >= candidates.size) candidateIndex = 0
                     if(candidates.isNotEmpty()) {
+                        val candidate = candidates[candidateIndex]
                         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                                ComposingText(newComposingText = candidates[candidateIndex].text + " ")))
+                                ComposingText(newComposingText = candidate.text + if(candidate.endingSpace) " " else "")))
                     }
                 } else {
                     reset()
@@ -83,8 +84,9 @@ class AmbiguousHangulInputMethod(
             }
             else -> {
                 if(candidateIndex >= 0 && candidates.isNotEmpty()) {
+                    val candidate = candidates[candidateIndex]
                     EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                            ComposingText(newComposingText = candidates[candidateIndex].text + " ")))
+                            ComposingText(newComposingText = candidate.text + if(candidate.endingSpace) " " else "")))
                     reset()
                 }
 
@@ -163,7 +165,7 @@ class AmbiguousHangulInputMethod(
                 .let { if(it.size > 8) it.take(Math.sqrt(it.size.toDouble()).toInt() * 3) else it }
                 .sortedByDescending { finalScorer.calculateScore(it.first) }
                 .filter { it.first.isNotEmpty() }
-                .map { Candidate(0, it.first, frequency = it.second) }
+                .map { Candidate(0, it.first, frequency = it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' }) }
     }
 
     private fun resetCandidates() {
