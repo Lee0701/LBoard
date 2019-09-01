@@ -113,8 +113,8 @@ class PredictiveInputMethod(
                 .map {
                     val withMissing = addMissing(states, it.text)
                     val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
-                    it.copy(text = text)
-                }.let { if(it.none { it.text == lastState.composing }) it + Candidate(0, lastState.composing, "0", 0.1f) else it }
+                    it.copy(text = text, originalText = it.text)
+                }.let { if(it.none { it.text == lastState.composing }) it + Candidate(0, lastState.composing, lastState.composing, "0", 0.1f) else it }
         candidateIndex = -1
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))

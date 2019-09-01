@@ -18,14 +18,15 @@ class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<
 
     override fun predict(history: List<KeyInputHistory<Any>>): List<Candidate> {
         return dictionary.searchSequence(history.map { it.keyCode }, layout)
-                .map { Candidate(0, it.text, it.pos.toString(), it.frequency) }
+                .map { Candidate(0, it.text, it.text, it.pos.toString(), it.frequency) }
     }
 
     override fun learn(candidate: Candidate) {
         if(dictionary is EditableDictionary) {
-            val existing = dictionary.search(candidate.text).firstOrNull()
+            val text = candidate.originalText
+            val existing = dictionary.search(text).firstOrNull()
             if(existing == null || candidate.frequency < existing.frequency)
-                dictionary.insert(Dictionary.Word(candidate.text, candidate.frequency, candidate.pos.toInt()))
+                dictionary.insert(Dictionary.Word(text, candidate.frequency, candidate.pos.toInt()))
         }
     }
 
@@ -33,6 +34,8 @@ class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<
         if(dictionary is EditableDictionary) {
             val existing = dictionary.search(candidate.text)
             existing.forEach { dictionary.remove(it) }
+            val originalExisting = dictionary.search(candidate.originalText)
+            originalExisting.forEach { dictionary.remove(it) }
         }
     }
 
