@@ -14,6 +14,7 @@ import io.github.lee0701.lboard.event.CandidateSelectEvent
 import io.github.lee0701.lboard.event.CandidateUpdateEvent
 import io.github.lee0701.lboard.inputmethod.InputMethodInfo
 import io.github.lee0701.lboard.prediction.Candidate
+import io.github.lee0701.lboard.prediction.SingleCandidate
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -56,7 +57,7 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
     fun onCandidateUpdate(event: CandidateUpdateEvent) {
         methodInfo = event.methodInfo
         val candidates = event.candidates
-                .let { if(it.size == 1) it + Candidate(0, "") else it }
+                .let { if(it.size == 1) it + SingleCandidate("", "") else it }
                 .let { if(it.size >= 2) listOf(it[1], it[0]) + it.subList(2, it.size) else it }
         adapter.candidates = candidates
         adapter.notifyDataSetChanged()

@@ -1,10 +1,10 @@
 package io.github.lee0701.lboard.prediction
 
-data class Candidate(
-        val wordId: Int,
-        val text: String,
-        val originalText: String = text,
-        val pos: String = "",
-        val frequency: Float = 0f,
-        val endingSpace: Boolean = true
-)
+abstract class Candidate {
+    abstract val text: String
+    abstract val originalText: String
+    abstract val pos: Int
+    abstract val frequency: Float
+    abstract val score: Float
+    abstract val endingSpace: Boolean
+}

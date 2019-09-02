@@ -6,6 +6,7 @@ import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.prediction.Candidate
+import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.prediction.Predictor
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
@@ -113,8 +114,8 @@ class PredictiveInputMethod(
                 .map {
                     val withMissing = addMissing(states, it.text)
                     val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
-                    it.copy(text = text, originalText = it.text)
-                }.let { if(it.none { it.text == lastState.composing }) it + Candidate(0, lastState.composing, lastState.composing, "0", 0.1f) else it }
+                    SingleCandidate(text, it.text, it.pos, it.frequency)
+                }.let { if(it.none { it.text == lastState.composing }) it + SingleCandidate(lastState.composing, lastState.composing, 0, 0.1f) else it }
         candidateIndex = -1
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))

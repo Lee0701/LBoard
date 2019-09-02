@@ -1,7 +1,6 @@
 package io.github.lee0701.lboard.inputmethod.ambiguous
 
 import io.github.lee0701.lboard.dictionary.Dictionary
-import io.github.lee0701.lboard.prediction.Candidate
 import java.text.Normalizer
 
 class KoreanDictionaryScorer(val dictionary: Dictionary): Scorer {

@@ -2,25 +2,24 @@ package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
-import io.github.lee0701.lboard.dictionary.Dictionary
-import io.github.lee0701.lboard.dictionary.EditableDictionary
-import io.github.lee0701.lboard.dictionary.WritableDictionary
 
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.DubeolHangulComposer
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
+import io.github.lee0701.lboard.inputmethod.ambiguous.CandidateGenerator
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import io.github.lee0701.lboard.prediction.Candidate
+import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
-import java.text.Normalizer
 import java.util.concurrent.Future
+import kotlin.math.sqrt
 
 class AmbiguousHangulInputMethod(
         override val info: InputMethodInfo,
@@ -28,8 +27,7 @@ class AmbiguousHangulInputMethod(
         override val hardKeyboard: HardKeyboard,
         val hangulConverter: HangulComposer,
         val conversionScorer: Scorer,
-        val finalScorer: Scorer,
-        val dictionary: Dictionary? = null
+        val candidateGenerator: CandidateGenerator
 ): CommonInputMethod() {
 
     val states: MutableList<Pair<Int, Boolean>> = mutableListOf()
@@ -168,40 +166,34 @@ class AmbiguousHangulInputMethod(
                     .sortedByDescending { it.second.first }
         }
 
-        val result = mutableListOf("" to (0f to 0))
+        val eojeols = mutableListOf("" to (0f to 0))
         syllables
                 .mapIndexed { i, list -> if(list.size <= 2) list else list.filter { it.first in '가' .. '힣'} }
                 .forEachIndexed { i, list ->
-                    val targets = result.filter { it.second.second == i }
-                    result -= targets
-                    result += targets.flatMap { target ->
+                    val targets = eojeols.filter { it.second.second == i }
+                    eojeols -= targets
+                    eojeols += targets.flatMap { target ->
                         list.map { target.first + it.first to (target.second.first + it.second.first to target.second.second + it.second.second) }
                     }
                 }
 
-        return result.map { it.first to it.second.first / it.first.length }
+        val result = eojeols.map { it.first to it.second.first / it.first.length }
                 .sortedByDescending { conversionScorer.calculateScore(it.first) }
                 .filter { if(it.first.lastOrNull() in '가' .. '힣') it.first.all { it in '가' .. '힣' } else true }
-                .let { if(it.size > 8) it.take(Math.sqrt(it.size.toDouble()).toInt() * 3) else it }
-                .sortedByDescending { finalScorer.calculateScore(it.first) }
-                .filter { it.first.isNotEmpty() }
-                .map { Candidate(0, it.first, frequency = it.second, pos = "0", endingSpace = it.first.any { c -> c in '가' .. '힣' }) }
+                .let { if(it.size > 8) it.take(sqrt(it.size.toDouble()).toInt() * 3) else it }
+                .map { candidateGenerator.generate(it.first).firstOrNull()
+                        ?: SingleCandidate(it.first, it.first, 0, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' }) }
+                .sortedByDescending { it.score }
+
+        return result
     }
 
     private fun learn(candidate: Candidate) {
-        if(dictionary is EditableDictionary) {
-            val existing = dictionary.search(Normalizer.normalize(candidate.text, Normalizer.Form.NFD)).maxBy { it.frequency }
-            if(existing == null || existing.frequency < candidate.frequency) {
-                dictionary.insert(Dictionary.Word(Normalizer.normalize(candidate.text, Normalizer.Form.NFD), candidate.frequency, candidate.pos.toInt()))
-            }
-        }
+        candidateGenerator.learn(candidate)
     }
 
     private fun delete(candidate: Candidate) {
-        if(dictionary is EditableDictionary) {
-            val existing = dictionary.search(Normalizer.normalize(candidate.text, Normalizer.Form.NFD))
-            existing.forEach { dictionary.remove(it) }
-        }
+        candidateGenerator.delete(candidate)
     }
 
     private fun resetCandidates() {
@@ -218,12 +210,12 @@ class AmbiguousHangulInputMethod(
     }
 
     override fun init() {
-        if(dictionary is WritableDictionary) dictionary.read()
+        candidateGenerator.init()
         super.init()
     }
 
     override fun destroy() {
-        if(dictionary is WritableDictionary) dictionary.write()
+        candidateGenerator.destroy()
         super.destroy()
     }
 

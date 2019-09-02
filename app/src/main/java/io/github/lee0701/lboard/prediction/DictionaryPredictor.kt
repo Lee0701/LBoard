@@ -18,7 +18,7 @@ class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<
 
     override fun predict(history: List<KeyInputHistory<Any>>): List<Candidate> {
         return dictionary.searchSequence(history.map { it.keyCode }, layout)
-                .map { Candidate(0, it.text, it.text, it.pos.toString(), it.frequency) }
+                .map { SingleCandidate(it.text, it.text, it.pos, it.frequency) }
     }
 
     override fun learn(candidate: Candidate) {

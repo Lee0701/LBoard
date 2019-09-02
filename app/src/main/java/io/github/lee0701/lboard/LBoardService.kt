@@ -27,6 +27,7 @@ import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.inputmethod.*
 import io.github.lee0701.lboard.inputmethod.ambiguous.HangulSyllableFrequencyScorer
+import io.github.lee0701.lboard.inputmethod.ambiguous.KoreanDictionaryCandidateGenerator
 import io.github.lee0701.lboard.inputmethod.ambiguous.KoreanDictionaryScorer
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.alphabet.MobileAlphabet
@@ -194,8 +195,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                             CommonHardKeyboard(hardLayout),
                             converter,
                             HangulSyllableFrequencyScorer(),
-                            KoreanDictionaryScorer(dictionary),
-                            dictionary)
+                            KoreanDictionaryCandidateGenerator(dictionary))
                 }
                 else -> HangulInputMethod(
                         InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
