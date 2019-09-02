@@ -32,7 +32,8 @@ class CommonHardKeyboard(
 
     override fun convert(keyCode: Int, shift: Boolean, alt: Boolean): HardKeyboard.ConvertResult {
         val layer = if(alt) altLayer else currentLayer
-        val codes = layer[keyCode]?.let { if(shift || lastShift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null, defaultChar = true)
+        val multiTapShift = layout.timeout && lastShift && lastCode == keyCode
+        val codes = layer[keyCode]?.let { if(shift || multiTapShift) it.shift else it.normal } ?: return HardKeyboard.ConvertResult(null, defaultChar = true)
         var backspace = false
         if(lastCode == keyCode && lastAlt == lastAlt) {
             if(++lastIndex >= codes.size) lastIndex = 0
@@ -41,7 +42,7 @@ class CommonHardKeyboard(
             lastIndex = 0
         }
         lastCode = keyCode
-        lastShift = shift || lastShift
+        lastShift = shift
         lastAlt = alt
 
         var result = codes[lastIndex]

@@ -3,7 +3,7 @@ package io.github.lee0701.lboard.hardkeyboard
 data class CommonKeyboardLayout(
         val layers: Map<Int, LayoutLayer> = mapOf(0 to LayoutLayer()),
         val strokes: List<StrokeTable> = listOf(),
-        val cycle: Boolean = true,
+        val cycle: Boolean = false,
         val timeout: Boolean = false,
         val spaceForSeparation: Boolean = false
 ) {
