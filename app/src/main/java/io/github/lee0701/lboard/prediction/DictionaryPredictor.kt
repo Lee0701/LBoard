@@ -4,16 +4,17 @@ import io.github.lee0701.lboard.dictionary.Dictionary
 import io.github.lee0701.lboard.dictionary.EditableDictionary
 import io.github.lee0701.lboard.dictionary.WritableDictionary
 import io.github.lee0701.lboard.inputmethod.KeyInputHistory
-import org.jetbrains.anko.doAsync
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<Int>>): Predictor {
 
     override fun init() {
-        if(dictionary is WritableDictionary) doAsync { dictionary.read() }
+        if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.read() }
     }
 
     override fun destroy() {
-        if(dictionary is WritableDictionary) doAsync { dictionary.write() }
+        if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.write() }
     }
 
     override fun predict(history: List<KeyInputHistory<Any>>): List<Candidate> {

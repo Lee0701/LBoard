@@ -6,17 +6,18 @@ import io.github.lee0701.lboard.dictionary.WritableDictionary
 import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.CompoundCandidate
 import io.github.lee0701.lboard.prediction.SingleCandidate
-import org.jetbrains.anko.doAsync
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.Normalizer
 
 class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateGenerator {
 
     override fun init() {
-        if(dictionary is WritableDictionary) doAsync { dictionary.read() }
+        if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.read() }
     }
 
     override fun destroy() {
-        if(dictionary is WritableDictionary) doAsync { dictionary.write() }
+        if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.write() }
     }
 
     override fun generate(string: String): List<Candidate> {
@@ -39,7 +40,7 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
             val targets = result.filter { it.first.text.length == i }
             result -= targets
             result += targets.flatMap { target ->
-                list.map { target.first.copy(target.first.candidates + SingleCandidate(it.text, it.text, it.pos, it.frequency, false)) to target.second + 1 }
+                list.map { target.first.copy(candidates = target.first.candidates + SingleCandidate(it.text, it.text, it.pos, it.frequency, false)) to target.second + 1 }
             }
         }
 

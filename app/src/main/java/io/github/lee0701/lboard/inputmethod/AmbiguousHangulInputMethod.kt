@@ -13,12 +13,13 @@ import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import org.json.JSONObject
-import java.util.concurrent.Future
 import kotlin.math.sqrt
 
 class AmbiguousHangulInputMethod(
@@ -31,7 +32,7 @@ class AmbiguousHangulInputMethod(
 ): CommonInputMethod() {
 
     val states: MutableList<Pair<Int, Boolean>> = mutableListOf()
-    var convertTask: Future<Unit>? = null
+    var convertTask: Job? = null
 
     var candidates: List<Candidate> = listOf()
     var candidateIndex: Int = -1
@@ -70,7 +71,7 @@ class AmbiguousHangulInputMethod(
             }
             KeyEvent.KEYCODE_SPACE -> {
                 if(candidates.isNotEmpty()) {
-                    while(convertTask?.isDone != true);
+                    runBlocking { convertTask?.join() }
                     states.clear()
                     if(++candidateIndex >= candidates.size) candidateIndex = 0
                     if(candidates.isNotEmpty()) {
@@ -127,20 +128,18 @@ class AmbiguousHangulInputMethod(
             }
         }
 
-        convertTask?.cancel(true)
-        convertTask = doAsync {
+        convertTask?.cancel()
+        convertTask = GlobalScope.launch {
             candidates = convertAll()
             candidateIndex = -1
 
-            uiThread {
-                EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
-                if(candidates.isNotEmpty()) {
-                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                            ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex].text)))
-                } else {
-                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                            ComposingText(newComposingText = "")))
-                }
+            EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
+            if(candidates.isNotEmpty()) {
+                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                        ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex].text)))
+            } else {
+                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                        ComposingText(newComposingText = "")))
             }
         }
 
