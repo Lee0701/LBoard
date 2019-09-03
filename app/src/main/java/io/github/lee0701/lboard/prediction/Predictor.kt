@@ -7,7 +7,7 @@ interface Predictor {
     fun init()
     fun destroy()
 
-    fun predict(history: List<KeyInputHistory<Any>>): List<Candidate>
+    fun predict(history: List<KeyInputHistory<Any>>): Iterable<Candidate>
     fun learn(candidate: Candidate)
     fun delete(candidate: Candidate)
 

@@ -7,5 +7,5 @@ import io.github.lee0701.lboard.prediction.SingleCandidate
 
 class CandidateUpdateEvent(
         methodInfo: InputMethodInfo,
-        val candidates: List<Candidate>
+        val candidates: Iterable<Candidate>
 ): InputMethodEvent(methodInfo)

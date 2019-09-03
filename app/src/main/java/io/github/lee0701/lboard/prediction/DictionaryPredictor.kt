@@ -17,10 +17,10 @@ class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<
         if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.write() }
     }
 
-    override fun predict(history: List<KeyInputHistory<Any>>): List<Candidate> {
-        return dictionary.searchSequence(history.map { it.keyCode }, layout)
-                .map { SingleCandidate(it.text, it.text, it.pos, it.frequency) }
-    }
+    override fun predict(history: List<KeyInputHistory<Any>>): Iterable<Candidate> = sequence {
+        dictionary.searchSequence(history.map { it.keyCode }, layout)
+                .forEach { yield(SingleCandidate(it.text, it.text, it.pos, it.frequency)) }
+    }.asIterable()
 
     override fun learn(candidate: Candidate) {
         if(dictionary is EditableDictionary) {
