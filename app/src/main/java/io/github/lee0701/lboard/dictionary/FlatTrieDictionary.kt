@@ -6,15 +6,15 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
     val buffer = ByteBuffer.wrap(data)
     val root: Int = buffer.getInt(data.size - 4)
 
-    override fun search(text: String): List<Dictionary.Word> {
+    override fun search(text: String): Iterable<Dictionary.Word> {
         return listWords(searchAddress(text) ?: return listOf(), text)
     }
 
-    override fun searchPrefix(prefix: String, length: Int): List<Dictionary.Word> {
+    override fun searchPrefix(prefix: String, length: Int): Iterable<Dictionary.Word> {
         return searchRecursive(searchAddress(prefix) ?: return listOf(), prefix, length)
     }
 
-    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): List<Dictionary.Word> {
+    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): Iterable<Dictionary.Word> {
         return searchSequenceRecursive(seq, layout, root, "", 0)
     }
 
@@ -41,25 +41,28 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
         return p
     }
 
-    private fun searchRecursive(address: Int, current: String, length: Int): List<Dictionary.Word> {
+    private fun searchRecursive(address: Int, current: String, length: Int): Iterable<Dictionary.Word> = sequence {
         val result = listWords(address, current)
-        if(current.length >= length) return result
-        return result + listChildren(address).flatMap { searchRecursive(it.value, current + it.key, length) }
-    }
+        result.forEach { yield(it) }
+        if(current.length >= length) return@sequence
+        listChildren(address).forEach { searchRecursive(it.second, current + it.first, length).forEach { yield(it) } }
+    }.asIterable()
 
-    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, address: Int, current: String, index: Int): List<Dictionary.Word> {
-        if(index >= seq.size) return listWords(address, current)
+    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, address: Int, current: String, index: Int): Iterable<Dictionary.Word> = sequence {
+        if(index >= seq.size) {
+            listWords(address, current).forEach { yield(it) }
+            return@sequence
+        }
         val keyCode = seq[index]
         val chars = layout[keyCode] ?: listOf()
         val children = listChildren(address)
-        return children.filterKeys { chars.contains(it.toInt()) || layout.values.none { list -> list.contains(it.toInt()) } }
-                .flatMap { searchSequenceRecursive(seq, layout, it.value, current + it.key, if(layout.values.none { list -> list.contains(it.key.toInt()) }) index else index + 1) }
-    }
+        children.filter { chars.contains(it.first.toInt()) || layout.values.none { list -> list.contains(it.first.toInt()) } }
+                .forEach { searchSequenceRecursive(seq, layout, it.second, current + it.first,
+                        if(layout.values.none { list -> list.contains(it.first.toInt()) }) index else index + 1).forEach { yield(it) } }
+    }.asIterable()
 
-    private fun listWords(address: Int, word: String): List<Dictionary.Word> {
-        val result = mutableListOf<Dictionary.Word>()
+    private fun listWords(address: Int, word: String): Iterable<Dictionary.Word> = sequence {
         var p = address
-
         val wordSize = buffer.get(p)
         p += 1
         for(i in 0 until wordSize) {
@@ -67,15 +70,12 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
             p += 1
             val frequency = buffer.getFloat(p)
             p += 4
-            result += Dictionary.Word(word, frequency, pos.toInt())
+            yield(Dictionary.Word(word, frequency, pos.toInt()))
         }
-        return result
-    }
+    }.asIterable()
 
-    private fun listChildren(address: Int): Map<Char, Int> {
+    private fun listChildren(address: Int): Iterable<Pair<Char, Int>> = sequence {
         var p = address
-        val result = mutableMapOf<Char, Int>()
-
         val wordSize = buffer.get(p)
         p += 1 + wordSize * (1 + 4)
         val childrenSize = buffer.get(p)
@@ -85,9 +85,8 @@ class FlatTrieDictionary(data: ByteArray): Dictionary {
             p += 2
             val childAddress = buffer.getInt(p)
             p += 4
-            result += key.toChar() to childAddress
+            yield(key.toChar() to childAddress)
         }
-        return result
-    }
+    }.asIterable()
 
 }

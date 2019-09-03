@@ -19,7 +19,7 @@ class WritableTrieDictionary(
     }
 
     override fun write() {
-        val list = searchPrefix("", Integer.MAX_VALUE)
+        val list = searchPrefix("", Integer.MAX_VALUE).toList()
         if(list.isEmpty()) return
         if(!file.exists()) file.createNewFile()
         val output = FileOutputStream(file)

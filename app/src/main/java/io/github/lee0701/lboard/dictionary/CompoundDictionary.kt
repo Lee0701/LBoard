@@ -14,17 +14,17 @@ class CompoundDictionary(val dictionaries: List<Dictionary>): EditableDictionary
         }
     }
 
-    override fun search(text: String): List<Dictionary.Word> {
-        return dictionaries.flatMap { it.search(text) }
-    }
+    override fun search(text: String): Iterable<Dictionary.Word> = sequence {
+        dictionaries.forEach { it.search(text).forEach { yield(it) } }
+    }.asIterable()
 
-    override fun searchPrefix(prefix: String, length: Int): List<Dictionary.Word> {
-        return dictionaries.flatMap { it.searchPrefix(prefix, length) }
-    }
+    override fun searchPrefix(prefix: String, length: Int): Iterable<Dictionary.Word> = sequence {
+        dictionaries.forEach { it.searchPrefix(prefix, length).forEach { yield(it) } }
+    }.asIterable()
 
-    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): List<Dictionary.Word> {
-        return dictionaries.flatMap { it.searchSequence(seq, layout) }
-    }
+    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): Iterable<Dictionary.Word> = sequence {
+        dictionaries.forEach { it.searchSequence(seq, layout).forEach { yield(it) } }
+    }.asIterable()
 
     override fun read() {
         dictionaries.forEach {
