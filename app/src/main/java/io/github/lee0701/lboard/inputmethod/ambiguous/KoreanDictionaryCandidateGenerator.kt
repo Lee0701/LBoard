@@ -54,6 +54,7 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
     }.asIterable()
 
     override fun learn(candidate: Candidate) {
+        if(candidate.text.none { it in '가' .. '힣' }) return
         if(dictionary is EditableDictionary) {
             if(candidate is CompoundCandidate) {
                 candidate.candidates.forEach {
