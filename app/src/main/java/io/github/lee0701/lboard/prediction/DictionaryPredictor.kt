@@ -33,6 +33,7 @@ class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<
 
     override fun delete(candidate: Candidate) {
         if(dictionary is EditableDictionary) {
+            if(candidate.text.length <= 1) return
             val existing = dictionary.search(candidate.text)
             existing.forEach { dictionary.remove(it) }
             val originalExisting = dictionary.search(candidate.originalText)

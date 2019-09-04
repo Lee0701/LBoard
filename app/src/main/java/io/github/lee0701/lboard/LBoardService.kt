@@ -123,7 +123,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     val userDictFile = File(filesDir, "userdict.en.txt")
                     val dictionary = CompoundDictionary(listOf(
                             FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()),
-                            WeightedDictionary(WritableTrieDictionary(userDictFile), 10f)
+                            WeightedDictionary(WritableTrieDictionary(userDictFile), 1.3f)
                     ))
                     PredictiveInputMethod(
                             InputMethodInfo(language = "en", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
@@ -187,7 +187,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                     val userDictFile = File(filesDir, "userdict.ko.txt")
                     val dictionary = CompoundDictionary(listOf(
                             FlatTrieDictionary(assets.open("dict/ko/dict.bin").readBytes()),
-                            WeightedDictionary(WritableTrieDictionary(userDictFile), 10f)
+                            WeightedDictionary(WritableTrieDictionary(userDictFile), 1.3f)
                     ))
                     AmbiguousHangulInputMethod(
                             InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),

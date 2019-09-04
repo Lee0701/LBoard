@@ -58,6 +58,7 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
         if(dictionary is EditableDictionary) {
             if(candidate is CompoundCandidate) {
                 candidate.candidates.forEach {
+                    if(it.text.length <= 1) return@forEach
                     val text = Normalizer.normalize(it.text, Normalizer.Form.NFD)
                     val existing = dictionary.search(text).maxBy { it.frequency }
                     if(existing == null || existing.frequency < candidate.frequency) {
@@ -65,6 +66,7 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
                     }
                 }
             }
+            if(candidate.text.length <= 1) return
             val text = Normalizer.normalize(candidate.text, Normalizer.Form.NFD)
             val existing = dictionary.search(text).maxBy { it.frequency }
             if(existing == null || existing.frequency < candidate.frequency) {
