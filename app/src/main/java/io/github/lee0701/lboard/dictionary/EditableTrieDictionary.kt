@@ -9,6 +9,7 @@ open class EditableTrieDictionary: TrieDictionary(), EditableDictionary {
             p.addChild(c, n)
             p = n
         }
+        p.words.find { it.pos == word.pos }?.let { p.words -= it }
         p.addWord(word)
     }
 
