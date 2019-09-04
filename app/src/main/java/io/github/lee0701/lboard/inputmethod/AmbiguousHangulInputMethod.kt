@@ -11,12 +11,10 @@ import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.inputmethod.ambiguous.CandidateGenerator
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import io.github.lee0701.lboard.prediction.Candidate
+import io.github.lee0701.lboard.prediction.CompoundCandidate
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
@@ -130,7 +128,7 @@ class AmbiguousHangulInputMethod(
 
         convertTask?.cancel()
         convertTask = GlobalScope.launch {
-            candidates = convertAll()
+            candidates = convertAll().toList().sortedByDescending { it.score }
             candidateIndex = -1
 
             EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
@@ -146,7 +144,7 @@ class AmbiguousHangulInputMethod(
         return true
     }
 
-    private fun convertAll(): List<Candidate> {
+    private fun convertAll(): Iterable<Candidate> {
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return listOf()
         val converted = states.map { layout[it.first]?.let { item -> if(it.second) item.shift else item.normal } ?: listOf() }
 
@@ -180,9 +178,11 @@ class AmbiguousHangulInputMethod(
                 .sortedByDescending { conversionScorer.calculateScore(it.first) }
                 .filter { if(it.first.lastOrNull() in '가' .. '힣') it.first.all { it in '가' .. '힣' } else true }
                 .let { if(it.size > 8) it.take(sqrt(it.size.toDouble()).toInt() * 3) else it }
-                .map { candidateGenerator.generate(it.first).firstOrNull()
-                        ?: SingleCandidate(it.first, it.first, 0, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' }) }
-                .sortedByDescending { it.score }
+                .map {
+                    candidateGenerator.generate(it.first).toList().let { candidates ->
+                        candidates.sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else 1 }
+                                .sortedByDescending { candidate -> candidate.frequency }
+                    }.firstOrNull() ?: SingleCandidate(it.first, it.first, -1, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' }) }
 
         return result
     }

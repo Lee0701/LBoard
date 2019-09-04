@@ -20,8 +20,13 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
         if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.write() }
     }
 
-    override fun generate(string: String): List<Candidate> {
-        val words = string.mapIndexed { i, _ ->
+    override fun generate(string: String): Iterable<Candidate> = sequence {
+        getWordCombinationRecursive(getWords(string).toList(), 0).toList()
+                .forEach { yield(it) }
+    }.asIterable()
+
+    private fun getWords(string: String): Iterable<List<Dictionary.Word>> = sequence {
+        string.forEachIndexed { i, _ ->
             val result = mutableListOf<Dictionary.Word>()
             for(j in i .. string.length) {
                 val word = string.substring(i, j)
@@ -31,23 +36,22 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
                         .sortedByDescending { it.frequency }
                         .distinctBy { it.text }
             }
-            result
+            yield(result)
         }
+    }.asIterable()
 
-        val result = mutableListOf(CompoundCandidate(listOf()) to 0)
-
-        words.forEachIndexed { i, list ->
-            val targets = result.filter { it.first.text.length == i }
-            result -= targets
-            result += targets.flatMap { target ->
-                list.map { target.first.copy(candidates = target.first.candidates + SingleCandidate(it.text, it.text, it.pos, it.frequency, false)) to target.second + 1 }
+    private fun getWordCombinationRecursive(words: List<List<Dictionary.Word>>, index: Int)
+            : Iterable<CompoundCandidate> = sequence {
+        if(index >= words.size) {
+            yield(CompoundCandidate(listOf()))
+            return@sequence
+        }
+        words[index].forEach { word ->
+            getWordCombinationRecursive(words, index + word.text.length).forEach { candidate ->
+                yield(candidate.copy(candidates = listOf(SingleCandidate(word.text, word.text, word.pos, word.frequency, false)) + candidate.candidates))
             }
         }
-
-        return result.map { it.first }
-                .sortedBy { it.candidates.size }
-                .sortedByDescending { it.frequency }
-    }
+    }.asIterable()
 
     override fun learn(candidate: Candidate) {
         if(dictionary is EditableDictionary) {

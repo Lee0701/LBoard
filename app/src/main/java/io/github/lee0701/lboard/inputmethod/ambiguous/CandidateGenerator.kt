@@ -7,7 +7,7 @@ interface CandidateGenerator {
     fun init()
     fun destroy()
 
-    fun generate(string: String): List<Candidate>
+    fun generate(string: String): Iterable<Candidate>
 
     fun learn(candidate: Candidate)
 
