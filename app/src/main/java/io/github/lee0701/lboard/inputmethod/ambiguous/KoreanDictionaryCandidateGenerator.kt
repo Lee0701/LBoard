@@ -17,7 +17,7 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
     }
 
     override fun destroy() {
-        if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.write() }
+        if(dictionary is WritableDictionary) dictionary.write()
     }
 
     override fun generate(string: String): Iterable<Candidate> = sequence {

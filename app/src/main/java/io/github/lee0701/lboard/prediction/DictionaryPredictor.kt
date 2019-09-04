@@ -14,7 +14,7 @@ class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<
     }
 
     override fun destroy() {
-        if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.write() }
+        if(dictionary is WritableDictionary) dictionary.write()
     }
 
     override fun predict(history: List<KeyInputHistory<Any>>): Iterable<Candidate> = sequence {
