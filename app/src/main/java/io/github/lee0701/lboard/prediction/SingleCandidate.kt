@@ -7,5 +7,5 @@ data class SingleCandidate(
         override val frequency: Float = 0f,
         override val endingSpace: Boolean = true
 ): Candidate() {
-    override val score: Float get() = frequency / text.length / 2
+    override val score: Float get() = frequency / text.length
 }

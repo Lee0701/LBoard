@@ -177,7 +177,7 @@ class AmbiguousHangulInputMethod(
         val result = eojeols.map { it.first to it.second.first / it.first.length }
                 .sortedByDescending { conversionScorer.calculateScore(it.first) }
                 .filter { if(it.first.lastOrNull() in '가' .. '힣') it.first.all { it in '가' .. '힣' } else true }
-                .let { if(it.size > 8) it.take(sqrt(it.size.toDouble()).toInt() * 3) else it }
+                .let { if(it.size > 16) it.take(sqrt(it.size.toDouble()).toInt() * 4) else it }
                 .map {
                     candidateGenerator.generate(it.first).toList().let { candidates ->
                         candidates.sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else 1 }
