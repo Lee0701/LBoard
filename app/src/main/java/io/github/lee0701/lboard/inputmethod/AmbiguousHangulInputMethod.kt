@@ -68,19 +68,16 @@ class AmbiguousHangulInputMethod(
                 }
             }
             KeyEvent.KEYCODE_SPACE -> {
-                if(candidates.isNotEmpty()) {
+                if(candidates.isNotEmpty() && candidateIndex < 0) {
                     runBlocking { convertTask?.join() }
                     states.clear()
-                    if(++candidateIndex >= candidates.size) candidateIndex = 0
-                    if(candidates.isNotEmpty()) {
-                        val candidate = candidates[candidateIndex]
-                        EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                                ComposingText(newComposingText = candidate.text + if(candidate.endingSpace) " " else "")))
-                    }
+                    candidateIndex = 0
+                    val candidate = candidates[candidateIndex]
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                            ComposingText(newComposingText = candidate.text + if(candidate.endingSpace) " " else "")))
                 } else {
                     reset()
-                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                            ComposingText(commitPreviousText = true, textToCommit = " ")))
+                    return super.onKeyPress(event)
                 }
                 return true
             }

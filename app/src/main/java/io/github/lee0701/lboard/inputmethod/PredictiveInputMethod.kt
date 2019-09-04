@@ -9,6 +9,7 @@ import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.prediction.Predictor
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.timerTask
@@ -24,7 +25,7 @@ class PredictiveInputMethod(
     val lastState: KeyInputHistory<String> get() = if(states.isEmpty()) KeyInputHistory(0, composing = "") else states.last()
 
     var candidates: List<Candidate> = listOf()
-    var candidateIndex: Int = 0
+    var candidateIndex: Int = -1
     val currentCandidate: Candidate get() = candidates[if(candidateIndex >= 0) candidateIndex else 0]
 
     @Subscribe
@@ -53,8 +54,17 @@ class PredictiveInputMethod(
                 }
             }
             KeyEvent.KEYCODE_SPACE -> {
-                reset()
-                return super.onKeyPress(event)
+                if(candidates.isNotEmpty() && candidateIndex < 0) {
+                    states.clear()
+                    candidateIndex = 0
+                    val candidate = candidates[candidateIndex]
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                            ComposingText(newComposingText = candidate.text + if(candidate.endingSpace) " " else "")))
+                } else {
+                    reset()
+                    return super.onKeyPress(event)
+                }
+                return true
             }
             KeyEvent.KEYCODE_ENTER -> {
                 learnCurrentCandidateAndReset()
@@ -104,6 +114,7 @@ class PredictiveInputMethod(
                     SingleCandidate(text, it.text, it.pos, it.frequency)
                 }
                 .let { if(it.isEmpty()) it + SingleCandidate(lastState.composing, lastState.composing, -1, 0.1f) else it }
+        candidateIndex = -1
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
 
