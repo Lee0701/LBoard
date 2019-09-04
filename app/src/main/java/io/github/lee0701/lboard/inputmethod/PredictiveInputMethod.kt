@@ -23,10 +23,9 @@ class PredictiveInputMethod(
     val states: MutableList<KeyInputHistory<String>> = mutableListOf()
     val lastState: KeyInputHistory<String> get() = if(states.isEmpty()) KeyInputHistory(0, composing = "") else states.last()
 
-    var candidates: Iterable<Candidate> = listOf()
-    var candidateIterator: Iterator<Candidate> = candidates.iterator()
-    var currentCandidate: Candidate? = null
+    var candidates: List<Candidate> = listOf()
     var candidateIndex: Int = 0
+    val currentCandidate: Candidate get() = candidates[if(candidateIndex >= 0) candidateIndex else 0]
 
     @Subscribe
     fun onCandidateSelect(event: CandidateSelectEvent) {
@@ -96,22 +95,19 @@ class PredictiveInputMethod(
             }
         }
 
-        candidates = sequence {
-            predictor.predict(states.map { it as KeyInputHistory<Any> })
-                    .asSequence()
-                    .sortedByDescending { it.frequency }
-                    .forEach {
-                        val withMissing = addMissing(states, it.text)
-                        val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
-                        yield(SingleCandidate(text, it.text, it.pos, it.frequency))
-                    }
-            yield(SingleCandidate(lastState.composing, lastState.composing, 0, 0.1f))
-        }.asIterable()
-        candidateIterator = candidates.iterator()
+        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> })
+                .toList()
+                .sortedByDescending { it.frequency }
+                .map {
+                    val withMissing = addMissing(states, it.text)
+                    val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
+                    SingleCandidate(text, it.text, it.pos, it.frequency)
+                }
+                .let { if(it.isEmpty()) it + SingleCandidate(lastState.composing, lastState.composing, -1, 0.1f) else it }
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
 
-        val composing = if(candidateIterator.hasNext()) candidateIterator.next().text else lastState.composing
+        val composing = if(candidates.isNotEmpty()) currentCandidate.text else lastState.composing
         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                 ComposingText(newComposingText = composing)))
         return true
@@ -125,12 +121,12 @@ class PredictiveInputMethod(
 
     private fun resetCandidates() {
         candidates = listOf()
-        candidateIterator = candidates.iterator()
-        EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates.asSequence().asIterable()))
+        candidateIndex = -1
+        EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
     }
 
     private fun learnCurrentCandidateAndReset() {
-        if(candidateIndex >= 0) currentCandidate ?.let {
+        if(candidateIndex >= 0) candidates[candidateIndex].let {
             predictor.learn(it)
             reset()
         }
