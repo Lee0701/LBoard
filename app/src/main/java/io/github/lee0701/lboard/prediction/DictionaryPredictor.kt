@@ -17,8 +17,8 @@ class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<
         if(dictionary is WritableDictionary) dictionary.write()
     }
 
-    override fun predict(history: List<KeyInputHistory<Any>>): Iterable<Candidate> = sequence {
-        dictionary.searchSequence(history.map { it.keyCode }, layout)
+    override fun predict(history: List<KeyInputHistory<Any>>, length: Int): Iterable<Candidate> = sequence {
+        dictionary.searchSequencePrefix(history.map { it.keyCode }, layout, length)
                 .forEach { yield(SingleCandidate(it.text, it.text, it.pos, it.frequency)) }
     }.asIterable()
 

@@ -1,5 +1,7 @@
 package io.github.lee0701.lboard.dictionary
 
+import kotlinx.coroutines.yield
+
 class CompoundDictionary(val dictionaries: List<Dictionary>): EditableDictionary, WritableDictionary {
 
     override fun insert(word: Dictionary.Word) {
@@ -24,6 +26,10 @@ class CompoundDictionary(val dictionaries: List<Dictionary>): EditableDictionary
 
     override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): Iterable<Dictionary.Word> = sequence {
         dictionaries.forEach { it.searchSequence(seq, layout).forEach { yield(it) } }
+    }.asIterable()
+
+    override fun searchSequencePrefix(seqPrefix: List<Int>, layout: Map<Int, List<Int>>, length: Int): Iterable<Dictionary.Word> = sequence {
+        dictionaries.forEach { it.searchSequencePrefix(seqPrefix, layout, length).forEach { yield(it) } }
     }.asIterable()
 
     override fun read() {

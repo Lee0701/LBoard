@@ -14,6 +14,10 @@ class WeightedDictionary(val dictionary: Dictionary, val weight: Float): Diction
         return dictionary.searchSequence(seq, layout).map { it.copy(frequency = it.frequency * weight) }
     }
 
+    override fun searchSequencePrefix(seqPrefix: List<Int>, layout: Map<Int, List<Int>>, length: Int): Iterable<Dictionary.Word> {
+        return dictionary.searchSequencePrefix(seqPrefix, layout, length)
+    }
+
     override fun insert(word: Dictionary.Word) {
         if(dictionary is EditableDictionary) dictionary.insert(word)
     }

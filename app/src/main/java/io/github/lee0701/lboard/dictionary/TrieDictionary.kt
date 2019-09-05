@@ -19,7 +19,11 @@ open class TrieDictionary: Dictionary {
     }
 
     override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): Iterable<Dictionary.Word> {
-        return searchSequenceRecursive(seq, layout, root, "", 0)
+        return searchSequenceRecursive(seq, layout, seq.size, root, "", 0)
+    }
+
+    override fun searchSequencePrefix(seqPrefix: List<Int>, layout: Map<Int, List<Int>>, length: Int): Iterable<Dictionary.Word> {
+        return searchSequenceRecursive(seqPrefix, layout, length, root, "", 0)
     }
 
     private fun searchNode(text: String): Node? {
@@ -37,16 +41,16 @@ open class TrieDictionary: Dictionary {
         node.children.forEach { searchRecursive(it.value, current + it.key, length).forEach { yield(it) } }
     }.asIterable()
 
-    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, node: Node, current: String, index: Int): Iterable<Dictionary.Word> = sequence {
+    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, length: Int, node: Node, current: String, index: Int): Iterable<Dictionary.Word> = sequence {
         if(index >= seq.size) {
-            node.words.forEach { yield(it) }
+            searchRecursive(node, current, length).forEach { yield(it) }
             return@sequence
         }
         val keyCode = seq[index]
         val chars = layout[keyCode] ?: listOf()
         val children = node.children
         children.filterKeys { chars.contains(it.toInt()) || layout.values.none { list -> list.contains(it.toInt()) } }
-                .forEach { searchSequenceRecursive(seq, layout, it.value, current + it.key,
+                .forEach { searchSequenceRecursive(seq, layout, length, it.value, current + it.key,
                         if(layout.values.none { list -> list.contains(it.key.toInt()) }) index else index + 1).forEach { yield(it) } }
     }.asIterable()
 

@@ -105,15 +105,22 @@ class PredictiveInputMethod(
             }
         }
 
-        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> })
+        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size)
                 .toList()
+                .let {
+                    var candidates = listOf<Candidate>()
+                    if(it.isEmpty() && states.size > 2) for(i in 1 .. 5) {
+                        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size + i).toList()
+                        if(candidates.size >= 3) break
+                    } else return@let it
+                    candidates
+                }
                 .sortedByDescending { it.frequency }
                 .map {
                     val withMissing = addMissing(states, it.text)
                     val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
                     SingleCandidate(text, it.text, it.pos, it.frequency)
-                }
-                .let { if(it.isEmpty()) it + SingleCandidate(lastState.composing, lastState.composing, -1, 0.1f) else it }
+                } + SingleCandidate(lastState.composing, lastState.composing, -1, 0.1f)
         candidateIndex = -1
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
@@ -148,7 +155,7 @@ class PredictiveInputMethod(
         val result = mutableListOf<KeyInputHistory<String>>()
         var j = 0
         word.forEachIndexed { i, c ->
-            if(layout.none { it.value.contains(c.toInt()) })
+            if(i >= states.size || layout.none { it.value.contains(c.toInt()) })
                 result += KeyInputHistory(0, composing = (result.lastOrNull()?.composing ?: "") + c)
             else
                 result += states[j++]
