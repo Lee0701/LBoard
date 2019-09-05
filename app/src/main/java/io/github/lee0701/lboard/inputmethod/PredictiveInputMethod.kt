@@ -125,7 +125,9 @@ class PredictiveInputMethod(
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
 
-        val composing = if(candidates.isNotEmpty()) currentCandidate.text else lastState.composing
+        val composing =
+                if(candidates.isEmpty()) lastState.composing
+                else currentCandidate.text.let { it.substring(0, states.size + countMissing(it.substring(0, states.size))) }
         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                 ComposingText(newComposingText = composing)))
         return true
@@ -148,6 +150,11 @@ class PredictiveInputMethod(
             predictor.learn(it)
             reset()
         }
+    }
+
+    private fun countMissing(word: String): Int {
+        val layout = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout.mapValues { it.value.normal + it.value.shift }
+        return word.sumBy { c -> if(layout.none { it.value.contains(c.toInt()) }) 1 else 0 }
     }
 
     private fun addMissing(states: List<KeyInputHistory<String>>, word: String): List<KeyInputHistory<String>> {
