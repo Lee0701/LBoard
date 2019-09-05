@@ -178,7 +178,8 @@ class BasicMoreKeyPopup(context: Context, private val showXOffset: Int, private 
             }
 
             // Foreground (text)
-            val params = KeyTextSizeAndPositionCalculator.calculate(key.label, key.x, key.y, key.width, key.height)
+            val params = KeyTextSizeAndPositionCalculator.calculate(
+                    key.label.map { "W" }.joinToString(""), key.x, key.y, key.width, key.height)
             paint.textSize = params.size
             paint.color = keyForegroundColor
             canvas.drawText(key.label, params.x, params.y, paint)

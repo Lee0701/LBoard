@@ -17,7 +17,7 @@ object MobileSoftLayout {
             Key(0x2005, "5"),
             Key(0x2006, "6"),
             Key(204, "ABC", keyWidth = 0.125f),
-            Key(63, "123", keyWidth = 0.125f)
+            Key(63, "?12", keyWidth = 0.125f)
     ), Row.Type.EVEN), Row(listOf(
             Key(0x2007, "7"),
             Key(0x2008, "8"),
@@ -49,7 +49,7 @@ object MobileSoftLayout {
             Key(0x200e, "m"),
             Key(67, "DEL", repeatable = true)
     ), Row.Type.ODD), Row(listOf(
-            Key(63, "123"),
+            Key(63, "?12"),
             Key(204, "ABC"),
             Key(62, " "),
             Key(59, "SFT"),
@@ -76,7 +76,7 @@ object MobileSoftLayout {
             Key(0x200e, "m"),
             Key(67, "DEL", keyWidth = 0.10f, repeatable = true)
     ), Row.Type.ODD), Row(listOf(
-            Key(63, "123"),
+            Key(63, "?12"),
             Key(204, "ABC"),
             Key(62, " "),
             Key(56, "."),

@@ -27,6 +27,8 @@ class BasicKeyboardView(
     var shift: Int = 0
     var alt: Int = 0
 
+    var maxLabelLength: Int = 0
+
     private val rect = Rect()
     private val paint = Paint().apply {
         textAlign = Paint.Align.CENTER
@@ -61,6 +63,7 @@ class BasicKeyboardView(
                 key.height = row.height
 
                 key.textSize = 4f
+                if(key.label != SYMBOL_KEY_LABEL && key.label.length in maxLabelLength .. 3) maxLabelLength = key.label.length
 
                 x += key.width
             }
@@ -147,7 +150,9 @@ class BasicKeyboardView(
                 setBounds(x, y, x + intrinsicWidth, y + intrinsicHeight)
                 draw(canvas)
         } else {
-            val params = KeyTextSizeAndPositionCalculator.calculate(key.label, key.x, key.y, key.width, key.height)
+            val labelLength = if(key.label == SYMBOL_KEY_LABEL) SYMBOL_KEY_LABEL.length else maxLabelLength
+            val params = KeyTextSizeAndPositionCalculator.calculate(
+                    (0 until labelLength).map { "W" }.joinToString(""), key.x, key.y, key.width, key.height)
             paint.textSize = params.size
             paint.color = theme.textColor
             canvas.drawText(key.label, params.x, params.y, paint)
@@ -322,6 +327,10 @@ class BasicKeyboardView(
 
     enum class FlickDirection {
         UP, DOWN, LEFT, RIGHT
+    }
+
+    companion object {
+        const val SYMBOL_KEY_LABEL = "?12"
     }
 
 }

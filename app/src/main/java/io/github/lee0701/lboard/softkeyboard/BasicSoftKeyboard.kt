@@ -163,6 +163,7 @@ class BasicSoftKeyboard(
                 if(compatibleLabels) key.label = convertToCompatible(key.label)
             }
         }
+        if(keyboardView?.maxLabelLength == 0) keyboardView?.invalidateAllKeys()
         keyboardView?.invalidate()
         keyboardView?.updatePopups()
     }
