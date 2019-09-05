@@ -92,6 +92,11 @@ class AmbiguousHangulInputMethod(
                 return super.onKeyPress(event)
             }
             else -> {
+                if(candidateIndex >= 0 && candidates.isNotEmpty()) {
+                    val candidate = candidates[candidateIndex]
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                            ComposingText(newComposingText = candidate.text + if (candidate.endingSpace) " " else "")))
+                }
                 learnCurrentCandidateAndReset()
 
                 val converted = hardKeyboard.convert(event.lastKeyCode, shift, alt)
@@ -191,8 +196,7 @@ class AmbiguousHangulInputMethod(
 
     private fun learnCurrentCandidateAndReset() {
         if(candidateIndex >= 0 && candidates.isNotEmpty()) {
-            val candidate = candidates[candidateIndex]
-            learn(candidate)
+            learn(candidates[candidateIndex])
             reset()
         }
     }
