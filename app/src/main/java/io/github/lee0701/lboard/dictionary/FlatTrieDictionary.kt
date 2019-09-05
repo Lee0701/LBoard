@@ -2,9 +2,14 @@ package io.github.lee0701.lboard.dictionary
 
 import java.nio.ByteBuffer
 
-class FlatTrieDictionary(data: ByteArray): Dictionary {
-    val buffer = ByteBuffer.wrap(data)
-    val root: Int = buffer.getInt(data.size - 4)
+open class FlatTrieDictionary(): Dictionary {
+    var buffer = ByteBuffer.wrap(byteArrayOf(0, 0, 0, 0, 0, 0))
+    var root: Int = 0
+
+    constructor(data: ByteArray): this() {
+        buffer = ByteBuffer.wrap(data)
+        root = buffer.getInt(data.size - 4)
+    }
 
     override fun search(text: String): Iterable<Dictionary.Word> {
         return listWords(searchAddress(text) ?: return listOf(), text)

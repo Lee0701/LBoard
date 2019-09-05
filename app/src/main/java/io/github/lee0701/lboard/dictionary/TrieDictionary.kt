@@ -4,7 +4,7 @@ import kotlinx.coroutines.yield
 
 open class TrieDictionary: Dictionary {
 
-    val root = Node()
+    var root = Node()
 
     override fun search(text: String): Iterable<Dictionary.Word> = sequence {
         var p = root

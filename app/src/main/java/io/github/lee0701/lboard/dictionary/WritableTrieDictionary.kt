@@ -9,6 +9,7 @@ class WritableTrieDictionary(
     override fun read() {
         if(!file.exists()) file.createNewFile()
         val reader = BufferedReader(InputStreamReader(FileInputStream(file)))
+        root = Node()
         while(true) {
             val line = reader.readLine()?.split("\t") ?: break
             val text = line[0]
