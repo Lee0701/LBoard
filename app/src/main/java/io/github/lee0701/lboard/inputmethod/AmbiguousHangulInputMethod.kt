@@ -29,7 +29,7 @@ class AmbiguousHangulInputMethod(
         val candidateGenerator: CandidateGenerator
 ): CommonInputMethod() {
 
-    val states: MutableList<Pair<Int, Boolean>> = mutableListOf()
+    val states: MutableList<KeyInputHistory<HangulComposer.State>> = mutableListOf()
     var convertTask: Job? = null
 
     var candidates: List<Candidate> = listOf()
@@ -101,7 +101,8 @@ class AmbiguousHangulInputMethod(
 
                 val converted = hardKeyboard.convert(event.lastKeyCode, shift, alt)
                 if(converted.resultChar != null) {
-                    if(isHangul(converted.resultChar)) states += event.lastKeyCode to shift
+                    if(isHangul(converted.resultChar)) states += KeyInputHistory(event.lastKeyCode, shift, alt,
+                            hangulConverter.compose(states.lastOrNull()?.composing ?: HangulComposer.State(), converted.resultChar))
                     else {
                         states.clear()
                         resetCandidates()
@@ -138,7 +139,7 @@ class AmbiguousHangulInputMethod(
 
     private fun convertAll(): Iterable<Candidate> {
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return listOf()
-        val converted = states.map { layout[it.first]?.let { item -> if(it.second) item.shift else item.normal } ?: listOf() }
+        val converted = states.map { layout[it.keyCode]?.let { item -> if(it.shift) item.shift else item.normal } ?: listOf() }
 
         val syllables = converted.mapIndexed { i, _ ->
             val result = mutableListOf<Pair<HangulComposer.State, Int>>()
@@ -157,7 +158,7 @@ class AmbiguousHangulInputMethod(
 
         val eojeols = mutableListOf("" to (0f to 0))
         syllables
-                .mapIndexed { i, list -> if(list.size <= 2) list else list.filter { it.first in '가' .. '힣'} }
+                .map { list -> if(list.size <= 2) list else list.filter { it.first in '가' .. '힣'} }
                 .forEachIndexed { i, list ->
                     val targets = eojeols.filter { it.second.second == i }
                     eojeols -= targets

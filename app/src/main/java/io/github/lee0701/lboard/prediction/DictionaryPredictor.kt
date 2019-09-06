@@ -7,7 +7,7 @@ import io.github.lee0701.lboard.inputmethod.KeyInputHistory
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<Int>>): Predictor {
+class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<Int>>): Predictor<KeyInputHistory<Any>> {
 
     override fun init() {
         if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.read() }

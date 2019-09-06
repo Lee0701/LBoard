@@ -18,7 +18,7 @@ class PredictiveInputMethod(
         override val info: InputMethodInfo,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
-        val predictor: Predictor
+        val predictor: Predictor<KeyInputHistory<Any>>
 ): CommonInputMethod() {
 
     val states: MutableList<KeyInputHistory<String>> = mutableListOf()
@@ -89,7 +89,7 @@ class PredictiveInputMethod(
                 } else if(converted.resultChar == 0) {
                     reset()
                 } else {
-                    states += KeyInputHistory(event.lastKeyCode, (event.lastKeyCode and 0xff).toString(16), shift, alt,
+                    states += KeyInputHistory(event.lastKeyCode, shift, alt,
                             composing + converted.resultChar.toChar().toString())
                 }
                 processStickyKeysOnInput()

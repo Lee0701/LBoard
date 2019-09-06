@@ -1,13 +1,11 @@
 package io.github.lee0701.lboard.prediction
 
-import io.github.lee0701.lboard.inputmethod.KeyInputHistory
-
-interface Predictor {
+interface Predictor<T> {
 
     fun init()
     fun destroy()
 
-    fun predict(history: List<KeyInputHistory<Any>>, length: Int): Iterable<Candidate>
+    fun predict(history: List<T>, length: Int): Iterable<Candidate>
     fun learn(candidate: Candidate)
     fun delete(candidate: Candidate)
 
