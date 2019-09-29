@@ -669,6 +669,8 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                 MobileSoftLayout.LAYOUT_12KEY_4COLS,
                 MobileSoftLayout.LAYOUT_15KEY_A,
                 MobileSoftLayout.LAYOUT_15KEY_B,
+                MobileSoftLayout.LAYOUT_15KEY_A_WITH_NUM,
+                MobileSoftLayout.LAYOUT_15KEY_B_WITH_NUM,
                 MiniSoftLayout.LAYOUT_MINI_7COLS,
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
                 SoftLayout.LAYOUT_10COLS_MOBILE,
@@ -698,7 +700,9 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
         val SOFT_LAYOUT_15KEY = listOf(
                 MobileSoftLayout.LAYOUT_15KEY_A,
-                MobileSoftLayout.LAYOUT_15KEY_B
+                MobileSoftLayout.LAYOUT_15KEY_B,
+                MobileSoftLayout.LAYOUT_15KEY_A_WITH_NUM,
+                MobileSoftLayout.LAYOUT_15KEY_B_WITH_NUM
         )
 
         val SOFT_LAYOUT_UNIVERSAL = listOf(

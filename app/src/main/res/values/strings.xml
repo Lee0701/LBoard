@@ -129,6 +129,8 @@
     <string name="pref_method_soft_layout_12key_4cols">12 Key 4 Columns</string>
     <string name="pref_method_soft_layout_15key_a">15 Key A</string>
     <string name="pref_method_soft_layout_15key_b">15 Key B</string>
+    <string name="pref_method_soft_layout_15key_a_with_num">15 Key A with Numbers</string>
+    <string name="pref_method_soft_layout_15key_b_with_num">15 Key B with Numbers</string>
 
 
     <string name="pref_method_hard_layout_title">Keyboard Layout</string>

@@ -168,16 +168,16 @@ object MoreKeys {
     ))
 
     val MOREKEYS_FIFTEEN_NUMBERS = CommonKeyboardLayout(mapOf(0 to LayoutLayer(mapOf(
-            7 to LayoutItem(0x0030),
-            8 to LayoutItem(0x0031),
-            9 to LayoutItem(0x0032),
-            10 to LayoutItem(0x0033),
-            11 to LayoutItem(0x0034),
-            12 to LayoutItem(0x0035),
-            13 to LayoutItem(0x0036),
-            14 to LayoutItem(0x0037),
-            15 to LayoutItem(0x0038),
-            16 to LayoutItem(0x0039),
+            7 to LayoutItem(0x0030, 0x0029),
+            8 to LayoutItem(0x0031, 0x0021),
+            9 to LayoutItem(0x0032, 0x0040),
+            10 to LayoutItem(0x0033, 0x0023),
+            11 to LayoutItem(0x0034, 0x0024),
+            12 to LayoutItem(0x0035, 0x0025),
+            13 to LayoutItem(0x0036, 0x005e),
+            14 to LayoutItem(0x0037, 0x0026),
+            15 to LayoutItem(0x0038, 0x002a),
+            16 to LayoutItem(0x0039, 0x0028),
 
             56 to LayoutItem(listOf(0x2e, 0x2c))
 

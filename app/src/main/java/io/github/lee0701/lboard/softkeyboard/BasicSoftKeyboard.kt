@@ -336,7 +336,9 @@ class BasicSoftKeyboard(
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE,
                 MobileSoftLayout.LAYOUT_12KEY_4COLS,
                 MobileSoftLayout.LAYOUT_15KEY_A,
-                MobileSoftLayout.LAYOUT_15KEY_B
+                MobileSoftLayout.LAYOUT_15KEY_B,
+                MobileSoftLayout.LAYOUT_15KEY_A_WITH_NUM,
+                MobileSoftLayout.LAYOUT_15KEY_B_WITH_NUM
         ).map { it.key to it }.toMap()
 
         val THEMES = mapOf(
