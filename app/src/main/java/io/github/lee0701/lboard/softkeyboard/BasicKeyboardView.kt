@@ -63,7 +63,7 @@ class BasicKeyboardView(
                 key.height = row.height
 
                 key.textSize = 4f
-                if(key.label != SYMBOL_KEY_LABEL && key.label.length in maxLabelLength .. 3) maxLabelLength = key.label.length
+                if(!IGNORE_KEY_LABELS.contains(key.label) && key.label.length in maxLabelLength .. 3) maxLabelLength = key.label.length
 
                 x += key.width
             }
@@ -150,7 +150,7 @@ class BasicKeyboardView(
                 setBounds(x, y, x + intrinsicWidth, y + intrinsicHeight)
                 draw(canvas)
         } else {
-            val labelLength = if(key.label == SYMBOL_KEY_LABEL) SYMBOL_KEY_LABEL.length else maxLabelLength
+            val labelLength = if(IGNORE_KEY_LABELS.contains(key.label)) key.label.length else maxLabelLength
             val params = KeyTextSizeAndPositionCalculator.calculate(
                     (0 until labelLength).map { "W" }.joinToString(""), key.x, key.y, key.width, key.height)
             paint.textSize = params.size
@@ -330,7 +330,7 @@ class BasicKeyboardView(
     }
 
     companion object {
-        const val SYMBOL_KEY_LABEL = "?12"
+        val IGNORE_KEY_LABELS = listOf("?12", "ABC", "DEL", "SFT", "RETURN")
     }
 
 }
