@@ -15,13 +15,12 @@ class BasicKeyboardView(
         val onKeyListener: OnKeyListener,
         var keyboardWidth: Int,
         var keyboardHeight: Int,
-        val showLabels: Boolean,
-        val showPopups: Boolean,
-        val repeatRate: Int,
-        val longClickDelay: Int,
-        val marginLeft: Int,
-        val marginRight: Int,
-        val marginBottom: Int
+        private val showLabels: Boolean,
+        private val repeatRate: Int,
+        private val longClickDelay: Int,
+        private val marginLeft: Int,
+        private val marginRight: Int,
+        private val marginBottom: Int
 ): View(context) {
 
     var shift: Int = 0
