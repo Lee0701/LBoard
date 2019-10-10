@@ -27,8 +27,6 @@ class BasicKeyboardView(
     var shift: Int = 0
     var alt: Int = 0
 
-    var maxLabelLength: Int = 0
-
     private val rect = Rect()
     private val paint = Paint().apply {
         textAlign = Paint.Align.CENTER
@@ -62,10 +60,12 @@ class BasicKeyboardView(
                         else (keyboardWidth * layout.keyWidth).toInt()
                 key.height = row.height
 
-                key.textSize = 4f
-                if(!IGNORE_KEY_LABELS.contains(key.label) && key.label.length in maxLabelLength .. 3) maxLabelLength = key.label.length
+                if(!IGNORE_KEY_LABELS.contains(key.label) && key.label.length > row.maxLabelLength) row.maxLabelLength = key.label.length
 
                 x += key.width
+            }
+            row.keys.forEach { key ->
+                if(!IGNORE_KEY_LABELS.contains(key.label)) key.labelLength = row.maxLabelLength
             }
         }
 
@@ -150,9 +150,8 @@ class BasicKeyboardView(
                 setBounds(x, y, x + intrinsicWidth, y + intrinsicHeight)
                 draw(canvas)
         } else {
-            val labelLength = if(IGNORE_KEY_LABELS.contains(key.label)) key.label.length else maxLabelLength
             val params = KeyTextSizeAndPositionCalculator.calculate(
-                    (0 until labelLength).map { "W" }.joinToString(""), key.x, key.y, key.width, key.height)
+                    (0 until key.labelLength).joinToString("") { "W" }, key.x, key.y, key.width, key.height)
             paint.textSize = params.size
             paint.color = theme.textColor
             canvas.drawText(key.label, params.x, params.y, paint)
@@ -198,7 +197,8 @@ class BasicKeyboardView(
                     pointer.x = x.toInt()
                     pointer.y = y.toInt()
                     pointer.pressure = pressure
-                    val distance = Math.sqrt(((pointer.x-pointer.initialX)*(pointer.x-pointer.initialX) + (pointer.y-pointer.initialY)*(pointer.y-pointer.initialY)).toDouble()).toInt()
+                    val distance = Math.sqrt(((pointer.x-pointer.initialX)*(pointer.x-pointer.initialX) +
+                            (pointer.y-pointer.initialY)*(pointer.y-pointer.initialY)).toDouble()).toInt()
                     val threshold = if(pointer.key.width < pointer.key.height) pointer.key.width/2 else pointer.key.height/2
 
                     val popup = popups[pointer.key.keyCode]
@@ -330,7 +330,7 @@ class BasicKeyboardView(
     }
 
     companion object {
-        val IGNORE_KEY_LABELS = listOf("?12", "ABC", "DEL", "SFT", "RETURN")
+        val IGNORE_KEY_LABELS = listOf("ABC", "DEL", "SFT", "RETURN")
     }
 
 }

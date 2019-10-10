@@ -43,6 +43,7 @@ data class Row(
 ): Cloneable {
     var y: Int = 0
     var height: Int = 0
+    var maxLabelLength: Int = 0
 
     override public fun clone() = Row(keys.map { it.clone() }, type, keyWidth, marginLeft, marginRight)
 
@@ -61,7 +62,7 @@ data class Key (
     var y: Int = 0
     var width: Int = 0
     var height: Int = 0
-    var textSize: Float = 0f
+    var labelLength: Int = 0
 
     private var pressAnimator: ValueAnimator? = null
     private var releaseAnimator: ValueAnimator? = null
