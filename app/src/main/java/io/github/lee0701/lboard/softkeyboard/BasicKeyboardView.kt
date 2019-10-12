@@ -65,6 +65,7 @@ class BasicKeyboardView(
             }
             row.keys.forEach { key ->
                 if(!IGNORE_KEY_LABELS.contains(key.label)) key.labelLength = row.maxLabelLength
+                else key.labelLength = key.label.length
             }
         }
 
@@ -329,7 +330,7 @@ class BasicKeyboardView(
     }
 
     companion object {
-        val IGNORE_KEY_LABELS = listOf("ABC", "DEL", "SFT", "RETURN")
+        val IGNORE_KEY_LABELS = listOf("?12", "ABC", "DEL", "SFT", "RETURN")
     }
 
 }

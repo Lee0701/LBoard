@@ -105,7 +105,7 @@ class BasicSoftKeyboard(
         val keyboardWidth = displayMetrics.widthPixels - if(oneHandedMode != 0) oneHandedMargin else 0
 
         keyboardView = BasicKeyboardView(context, layout, theme, this,
-                keyboardWidth, keyboardHeight.toInt(), showLabels, showPopups, repeatRate, longClickDelay,
+                keyboardWidth, keyboardHeight.toInt(), showLabels, repeatRate, longClickDelay,
                 marginLeft.toInt(), marginRight.toInt(), marginBottom.toInt())
 
         val keyboardViewHolder = LinearLayout(context).apply {
