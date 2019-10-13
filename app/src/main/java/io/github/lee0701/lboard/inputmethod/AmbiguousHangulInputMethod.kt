@@ -101,9 +101,10 @@ class AmbiguousHangulInputMethod(
 
                 val converted = hardKeyboard.convert(event.lastKeyCode, shift, alt)
                 if(converted.resultChar != null) {
-                    if(isHangul(converted.resultChar)) states += KeyInputHistory(event.lastKeyCode, shift, alt,
-                            hangulConverter.compose(states.lastOrNull()?.composing ?: HangulComposer.State(), converted.resultChar))
-                    else {
+                    if(isHangul(converted.resultChar)) {
+                        states += KeyInputHistory(event.lastKeyCode, shift, alt,
+                                hangulConverter.compose(states.lastOrNull()?.composing ?: HangulComposer.State(), converted.resultChar))
+                    } else {
                         states.clear()
                         resetCandidates()
                         if(converted.backspace) EventBus.getDefault().post(InputProcessCompleteEvent(event.methodInfo,
@@ -126,11 +127,15 @@ class AmbiguousHangulInputMethod(
 
             EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
             if(candidates.isNotEmpty()) {
-                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                        ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex].text)))
+                launch(Dispatchers.Main) {
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                            ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex].text)))
+                }
             } else {
-                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                        ComposingText(newComposingText = "")))
+                launch(Dispatchers.Main) {
+                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                            ComposingText(newComposingText = "")))
+                }
             }
         }
 

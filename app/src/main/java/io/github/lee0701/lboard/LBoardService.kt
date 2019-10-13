@@ -420,13 +420,13 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         editor.apply()
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    @Subscribe
     fun onInputReset(event: InputResetEvent) {
         if(!event.methodInfo.match(currentMethod.info)) return
         currentInputConnection?.finishComposingText()
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    @Subscribe
 	fun onInputProcessComplete(event: InputProcessCompleteEvent) {
         if(!event.methodInfo.match(currentMethod.info)) return
         if(event.composingText?.commitPreviousText == true) currentInputConnection?.finishComposingText()
