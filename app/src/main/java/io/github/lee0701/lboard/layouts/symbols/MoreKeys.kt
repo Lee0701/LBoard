@@ -179,7 +179,7 @@ object MoreKeys {
             15 to LayoutItem(0x0038, 0x002a),
             16 to LayoutItem(0x0039, 0x0028),
 
-            56 to LayoutItem(listOf(0x2e, 0x2c))
+            56 to LayoutItem(listOf(0x2c, 0x2e))
 
     )), CommonKeyboardLayout.LAYER_MORE_KEYS_KEYCODE to LayoutLayer(mapOf(
             0x2002 to LayoutItem(8),
