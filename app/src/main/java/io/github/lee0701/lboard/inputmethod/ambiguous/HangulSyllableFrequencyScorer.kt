@@ -3,7 +3,7 @@ package io.github.lee0701.lboard.inputmethod.ambiguous
 class HangulSyllableFrequencyScorer: Scorer {
     override fun calculateScore(string: String): Float {
         return string
-                .map { 1f - SYLLABLE_FREQUENCY.indexOf(it) / SYLLABLE_FREQUENCY.length.toFloat() }
+                .map { (SYLLABLE_FREQUENCY.length - SYLLABLE_FREQUENCY.indexOf(it).toFloat()) / SYLLABLE_FREQUENCY.length.toFloat() }
                 .map { if(it > 1f) 0f else it }.average().toFloat()
     }
 

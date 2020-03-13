@@ -43,7 +43,7 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
     private fun getWordCombinationRecursive(words: List<List<Dictionary.Word>>, index: Int)
             : Iterable<CompoundCandidate> = sequence {
         if(index >= words.size) {
-            yield(CompoundCandidate(listOf()))
+            yield(CompoundCandidate(listOf<SingleCandidate>()))
             return@sequence
         }
         words[index].forEach { word ->

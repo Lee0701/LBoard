@@ -122,7 +122,9 @@ class AmbiguousHangulInputMethod(
 
         convertTask?.cancel()
         convertTask = GlobalScope.launch {
-            candidates = convertAll().toList().sortedByDescending { it.score }
+            candidates = convertAll().toList()
+                    .sortedByDescending { it.score }
+                    .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
             candidateIndex = -1
 
             EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
@@ -178,8 +180,9 @@ class AmbiguousHangulInputMethod(
                 .let { if(it.size > 16) it.take(sqrt(it.size.toDouble()).toInt() * 4) else it }
                 .map {
                     candidateGenerator.generate(it.first).toList().let { candidates ->
-                        candidates.sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else 1 }
+                        candidates
                                 .sortedByDescending { candidate -> candidate.frequency }
+                                .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
                     }.firstOrNull() ?: SingleCandidate(it.first, it.first, -1, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' }) }
 
         return result
