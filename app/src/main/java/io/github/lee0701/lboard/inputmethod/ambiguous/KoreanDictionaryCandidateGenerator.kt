@@ -21,7 +21,7 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
     }
 
     override fun generate(string: String): Iterable<Candidate> = sequence {
-        getWordCombinationRecursive(getWords(string).toList(), 0).toList()
+        getWordCombinationRecursive(getWords(string).toList(), 0)
                 .forEach { yield(it) }
     }.asIterable()
 

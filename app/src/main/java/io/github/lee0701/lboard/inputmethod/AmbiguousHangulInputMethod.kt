@@ -18,6 +18,7 @@ import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
+import kotlin.math.min
 import kotlin.math.sqrt
 
 class AmbiguousHangulInputMethod(
@@ -151,7 +152,7 @@ class AmbiguousHangulInputMethod(
         val syllables = converted.mapIndexed { i, _ ->
             val result = mutableListOf<Pair<HangulComposer.State, Int>>()
             var currents = listOf(HangulComposer.State() to 0)
-            converted.slice(i until Math.min(i+6, converted.size)).forEach { list ->
+            converted.slice(i until min(i+6, converted.size)).forEach { list ->
                 currents = currents
                         .flatMap { item -> list.map { c -> hangulConverter.compose(item.first, c) to item.second + 1} }
                         // 음절이 넘어갔으면(other에 문자열이 있으면) 제외
@@ -176,14 +177,16 @@ class AmbiguousHangulInputMethod(
 
         val result = eojeols.map { it.first to it.second.first / it.first.length }
                 .sortedByDescending { conversionScorer.calculateScore(it.first) }
-                .filter { if(it.first.lastOrNull() in '가' .. '힣') it.first.all { it in '가' .. '힣' } else true }
+                .filter { if(it.first.lastOrNull() in '가' .. '힣') it.first.all { c -> c in '가' .. '힣' } else true }
                 .let { if(it.size > 16) it.take(sqrt(it.size.toDouble()).toInt() * 4) else it }
                 .map {
+                    // 사전 검색 결과 조합 중 가장 좋은 후보로 선택
                     candidateGenerator.generate(it.first).toList().let { candidates ->
                         candidates
                                 .sortedByDescending { candidate -> candidate.frequency }
                                 .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
-                    }.firstOrNull() ?: SingleCandidate(it.first, it.first, -1, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' }) }
+                    }.firstOrNull() ?: SingleCandidate(it.first, it.first, -1, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' })
+                }
 
         return result
     }
