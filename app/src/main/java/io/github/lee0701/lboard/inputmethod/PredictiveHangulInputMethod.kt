@@ -13,7 +13,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.timerTask
 
-class PredictiveInputMethod(
+class PredictiveHangulInputMethod(
         override val info: InputMethodInfo,
         override val softKeyboard: SoftKeyboard,
         override val hardKeyboard: HardKeyboard,
@@ -106,27 +106,14 @@ class PredictiveInputMethod(
 
         candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size)
                 .toList()
-                .let {
-                    var candidates = listOf<Candidate>()
-                    if(it.isEmpty() && states.size > 2) for(i in 1 .. 5) {
-                        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size + i).toList()
-                        if(candidates.size >= 3) break
-                    } else return@let it
-                    candidates
-                }
                 .sortedByDescending { it.frequency }
-                .map {
-                    val withMissing = addMissing(states, it.text)
-                    val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
-                    SingleCandidate(text, it.text, it.pos, it.frequency)
-                } + SingleCandidate(lastState.composing, lastState.composing, -1, 0.1f)
         candidateIndex = -1
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
 
         val composing =
                 if(candidates.isEmpty()) lastState.composing
-                else currentCandidate.text.let { it.substring(0, states.size + countMissing(it.substring(0, states.size))) }
+                else currentCandidate.text
         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
                 ComposingText(newComposingText = composing)))
         return true
@@ -149,24 +136,6 @@ class PredictiveInputMethod(
             predictor.learn(it)
             reset()
         }
-    }
-
-    private fun countMissing(word: String): Int {
-        val layout = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout.mapValues { it.value.normal + it.value.shift }
-        return word.sumBy { c -> if(layout.none { it.value.contains(c.toInt()) }) 1 else 0 }
-    }
-
-    private fun addMissing(states: List<KeyInputHistory<String>>, word: String): List<KeyInputHistory<String>> {
-        val layout = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout.mapValues { it.value.normal + it.value.shift }
-        val result = mutableListOf<KeyInputHistory<String>>()
-        var j = 0
-        word.forEachIndexed { i, c ->
-            if(i >= states.size || layout.none { it.value.contains(c.toInt()) })
-                result += KeyInputHistory(0, composing = (result.lastOrNull()?.composing ?: "") + c)
-            else
-                result += states[j++]
-        }
-        return result
     }
 
     override fun init() {

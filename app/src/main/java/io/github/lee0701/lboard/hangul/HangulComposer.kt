@@ -49,6 +49,8 @@ abstract class HangulComposer(
 
         constructor(other: String): this(null, null, null, other)
 
+        fun isEmpty(): Boolean = cho == null && jung == null && jong == null
+
     }
 
     override fun serialize(): JSONObject {

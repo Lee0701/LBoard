@@ -33,6 +33,7 @@ import io.github.lee0701.lboard.layouts.alphabet.MobileAlphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
+import io.github.lee0701.lboard.prediction.AmbiguousHangulPredictor
 import io.github.lee0701.lboard.prediction.DictionaryPredictor
 import io.github.lee0701.lboard.settings.SettingsActivity
 import io.github.lee0701.lboard.softkeyboard.*
@@ -171,7 +172,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val combinationTable = predefinedMethod.combinationTable
             val virtualJamoTable = predefinedMethod.virtualJamoTable
 
-            val converter =
+            val hangulComposer =
                     when(predefinedMethod.methodType) {
                         PredefinedMethodType.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, true)
                         PredefinedMethodType.DUBEOL_SINGLE_VOWEL -> SingleVowelDubeolHangulComposer(combinationTable, virtualJamoTable, true)
@@ -188,19 +189,31 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                             FlatTrieDictionary(assets.open("dict/ko/dict.bin").readBytes()),
                             WeightedDictionary(WritableTrieDictionary(userDictFile), 1.3f)
                     ))
-                    AmbiguousHangulInputMethod(
+                    val predictor = AmbiguousHangulPredictor(
+                            HangulSyllableFrequencyScorer(),
+                            dictionary,
+                            hardLayout[0]!!.layout.mapValues { it.value.normal to it.value.shift },
+                            hangulComposer
+                    )
+                    PredictiveHangulInputMethod(
                             InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
                             BasicSoftKeyboard(softLayout.clone(), theme),
                             CommonHardKeyboard(hardLayout),
-                            converter,
-                            HangulSyllableFrequencyScorer(),
-                            KoreanDictionaryPredictor(dictionary))
+                            predictor
+                    )
+//                    AmbiguousHangulInputMethod(
+//                            InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
+//                            BasicSoftKeyboard(softLayout.clone(), theme),
+//                            CommonHardKeyboard(hardLayout),
+//                            hangulComposer,
+//                            HangulSyllableFrequencyScorer(),
+//                            KoreanDictionaryPredictor(dictionary))
                 }
                 else -> HangulInputMethod(
                         InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
                         BasicSoftKeyboard(softLayout.clone(), theme),
                         CommonHardKeyboard(hardLayout),
-                        converter)
+                        hangulComposer)
             }
             inputMethods += methodKo.info to methodKo
 

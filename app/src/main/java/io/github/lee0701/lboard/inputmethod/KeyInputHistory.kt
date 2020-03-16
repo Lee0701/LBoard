@@ -6,4 +6,3 @@ data class KeyInputHistory<T>(
         val alt: Boolean = false,
         val composing: T
 )
-
