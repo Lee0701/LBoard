@@ -1,16 +1,13 @@
-package io.github.lee0701.lboard.inputmethod.ambiguous
+package io.github.lee0701.lboard.prediction
 
 import io.github.lee0701.lboard.dictionary.Dictionary
 import io.github.lee0701.lboard.dictionary.EditableDictionary
 import io.github.lee0701.lboard.dictionary.WritableDictionary
-import io.github.lee0701.lboard.prediction.Candidate
-import io.github.lee0701.lboard.prediction.CompoundCandidate
-import io.github.lee0701.lboard.prediction.SingleCandidate
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.Normalizer
 
-class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateGenerator {
+class KoreanDictionaryPredictor(val dictionary: Dictionary): Predictor<Char> {
 
     override fun init() {
         if(dictionary is WritableDictionary) GlobalScope.launch { dictionary.read() }
@@ -20,18 +17,18 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
         if(dictionary is WritableDictionary) dictionary.write()
     }
 
-    override fun generate(string: String): Iterable<Candidate> = sequence {
-        getWordCombinationRecursive(getWords(string).toList(), 0)
+    override fun predict(source: List<Char>, length: Int): Iterable<Candidate> = sequence {
+        getWordCombinationRecursive(getWords(source).toList(), 0)
                 .forEach { yield(it) }
     }.asIterable()
 
-    private fun getWords(string: String): Iterable<List<Dictionary.Word>> = sequence {
+    private fun getWords(string: List<Char>): Iterable<List<Dictionary.Word>> = sequence {
         string.forEachIndexed { i, _ ->
             val result = mutableListOf<Dictionary.Word>()
-            for(j in i .. string.length) {
-                val word = string.substring(i, j)
+            for(j in i .. string.size) {
+                val word = string.subList(i, j)
                 if(word.isEmpty()) continue
-                result += dictionary.search(Normalizer.normalize(word, Normalizer.Form.NFD))
+                result += dictionary.search(Normalizer.normalize(word.joinToString(""), Normalizer.Form.NFD))
                         .map { it.copy(text = Normalizer.normalize(it.text, Normalizer.Form.NFC)) }
                         .sortedByDescending { it.frequency }
                         .distinctBy { it.text }

@@ -8,10 +8,10 @@ import io.github.lee0701.lboard.hangul.DubeolHangulComposer
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
-import io.github.lee0701.lboard.inputmethod.ambiguous.CandidateGenerator
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.CompoundCandidate
+import io.github.lee0701.lboard.prediction.Predictor
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import kotlinx.coroutines.*
@@ -27,7 +27,7 @@ class AmbiguousHangulInputMethod(
         override val hardKeyboard: HardKeyboard,
         val hangulConverter: HangulComposer,
         val conversionScorer: Scorer,
-        val candidateGenerator: CandidateGenerator
+        val predictor: Predictor<Char>
 ): CommonInputMethod() {
 
     val states: MutableList<KeyInputHistory<HangulComposer.State>> = mutableListOf()
@@ -181,7 +181,7 @@ class AmbiguousHangulInputMethod(
                 .let { if(it.size > 16) it.take(sqrt(it.size.toDouble()).toInt() * 4) else it }
                 .map {
                     // 사전 검색 결과 조합 중 가장 좋은 후보로 선택
-                    candidateGenerator.generate(it.first).toList().let { candidates ->
+                    predictor.predict(it.first.toList(), it.first.length).toList().let { candidates ->
                         candidates
                                 .sortedByDescending { candidate -> candidate.frequency }
                                 .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
@@ -192,11 +192,11 @@ class AmbiguousHangulInputMethod(
     }
 
     private fun learn(candidate: Candidate) {
-        candidateGenerator.learn(candidate)
+        predictor.learn(candidate)
     }
 
     private fun delete(candidate: Candidate) {
-        candidateGenerator.delete(candidate)
+        predictor.delete(candidate)
     }
 
     private fun resetCandidates() {
@@ -220,12 +220,12 @@ class AmbiguousHangulInputMethod(
     }
 
     override fun init() {
-        candidateGenerator.init()
+        predictor.init()
         super.init()
     }
 
     override fun destroy() {
-        candidateGenerator.destroy()
+        predictor.destroy()
         super.destroy()
     }
 
