@@ -10,6 +10,7 @@ import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.prediction.Predictor
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.toList
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.timerTask

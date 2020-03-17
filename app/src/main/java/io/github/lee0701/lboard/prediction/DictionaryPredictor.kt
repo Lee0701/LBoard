@@ -5,6 +5,8 @@ import io.github.lee0701.lboard.dictionary.EditableDictionary
 import io.github.lee0701.lboard.dictionary.WritableDictionary
 import io.github.lee0701.lboard.inputmethod.KeyInputHistory
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<Int>>): Predictor<KeyInputHistory<Any>> {
@@ -17,10 +19,10 @@ class DictionaryPredictor(val dictionary: Dictionary, val layout: Map<Int, List<
         if(dictionary is WritableDictionary) dictionary.write()
     }
 
-    override fun predict(history: List<KeyInputHistory<Any>>, length: Int): Iterable<Candidate> = sequence {
+    override fun predict(history: List<KeyInputHistory<Any>>, length: Int): Flow<Candidate> = flow {
         dictionary.searchSequencePrefix(history.map { it.keyCode }, layout, length)
-                .forEach { yield(SingleCandidate(it.text, it.text, it.pos, it.frequency)) }
-    }.asIterable()
+                .forEach { emit(SingleCandidate(it.text, it.text, it.pos, it.frequency)) }
+    }
 
     override fun learn(candidate: Candidate) {
         if(dictionary is EditableDictionary) {

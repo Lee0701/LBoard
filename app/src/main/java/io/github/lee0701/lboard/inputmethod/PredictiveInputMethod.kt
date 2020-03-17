@@ -9,6 +9,8 @@ import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.prediction.Predictor
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.timerTask
@@ -104,23 +106,25 @@ class PredictiveInputMethod(
             }
         }
 
-        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size)
-                .toList()
-                .let {
-                    var candidates = listOf<Candidate>()
-                    if(it.isEmpty() && states.size > 2) for(i in 1 .. 5) {
-                        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size + i).toList()
-                        if(candidates.size >= 3) break
-                    } else return@let it
-                    candidates
-                }
-                .sortedByDescending { it.frequency }
-                .map {
-                    val withMissing = addMissing(states, it.text)
-                    val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
-                    SingleCandidate(text, it.text, it.pos, it.frequency)
-                } + SingleCandidate(lastState.composing, lastState.composing, -1, 0.1f)
-        candidateIndex = -1
+        runBlocking {
+            candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size)
+                    .toList()
+                    .let {
+                        var candidates = listOf<Candidate>()
+                        if(it.isEmpty() && states.size > 2) for(i in 1 .. 5) {
+                            candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size + i).toList()
+                            if(candidates.size >= 3) break
+                        } else return@let it
+                        candidates
+                    }
+                    .sortedByDescending { it.frequency }
+                    .map {
+                        val withMissing = addMissing(states, it.text)
+                        val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
+                        SingleCandidate(text, it.text, it.pos, it.frequency)
+                    } + SingleCandidate(lastState.composing, lastState.composing, -1, 0.1f)
+            candidateIndex = -1
+        }
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
 

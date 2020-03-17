@@ -7,6 +7,10 @@ import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.inputmethod.KeyInputHistory
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import java.text.Normalizer
 import kotlin.math.sqrt
@@ -26,11 +30,12 @@ class AmbiguousHangulPredictor(
         if(dictionary is WritableDictionary) dictionary.write()
     }
 
-    override fun predict(source: List<KeyInputHistory<Any>>, length: Int): Iterable<Candidate> {
+    override fun predict(source: List<KeyInputHistory<Any>>, length: Int): Flow<Candidate> = flow {
         val converted = source.map { layout[it.keyCode]?.let { item -> if(it.shift) item.second else item.first } ?: listOf() }
 
-        val syllables = getSyllables(converted)
-        val words = getWords(syllables)
+        val syllables = getSyllables(converted).toList()
+
+        val words = getWords(syllables).toList()
 
         val candidates = words
                 .mapIndexed { i, list ->
@@ -41,12 +46,10 @@ class AmbiguousHangulPredictor(
                 .map { list -> list.sortedByDescending { it.first.frequency }.distinctBy { it.first.text } }
                 .map { list -> list.let { it.take(sqrt(it.size.toDouble()).toInt() * 4) } }
 
-        val result = getCandidateCombinations(candidates)
-
-        return result
+        getCandidateCombinations(candidates).collect { emit(it) }
     }
 
-    private fun getSyllables(converted: List<List<Int>>): List<List<Pair<String, Int>>> {
+    private fun getSyllables(converted: List<List<Int>>): Flow<List<Pair<String, Int>>> = flow {
         fun getSyllablesRecursive(current: HangulComposer.State, start: Int, index: Int = start): List<Pair<String, Int>> {
             if(index >= converted.size || index-start+1 > 6) return listOf()
             val list = converted[index]
@@ -55,20 +58,20 @@ class AmbiguousHangulPredictor(
             return list.map { hangulComposer.display(it) to index-start+1 } +
                     list.flatMap { getSyllablesRecursive(it, start, index + 1) }
         }
-        return converted.mapIndexed { i, _ -> getSyllablesRecursive(HangulComposer.State(), i) }
+        converted.forEachIndexed { i, _ -> emit(getSyllablesRecursive(HangulComposer.State(), i)) }
     }
 
-    private fun getWords(syllables: List<List<Pair<String, Int>>>): List<List<Pair<Dictionary.Word, Int>>> {
+    private fun getWords(syllables: List<List<Pair<String, Int>>>): Flow<List<Pair<Dictionary.Word, Int>>> = flow {
         val filtered = syllables.map { list -> list.filter { s -> s.second >= 2 } }
         fun getWordsRecursive(current: Pair<String, Int>, start: Int, index: Int = start): List<Pair<Dictionary.Word, Int>> {
             if(index >= filtered.size) return listOf()
             return filtered[index].flatMap { s -> dictionary.search(Normalizer.normalize(current.first + s.first, Normalizer.Form.NFD)).map { it to current.second + s.second } } +
                     filtered[index].flatMap { s -> getWordsRecursive(current.first + s.first to current.second + s.second, start, index + s.second) }
         }
-        return filtered.mapIndexed { i, _ -> getWordsRecursive("" to 0, i) }
+        filtered.forEachIndexed { i, _ -> emit(getWordsRecursive("" to 0, i)) }
     }
 
-    private fun getCandidateCombinations(candidates: List<List<Pair<SingleCandidate, Int>>>): List<Candidate> {
+    private fun getCandidateCombinations(candidates: List<List<Pair<SingleCandidate, Int>>>): Flow<Candidate> = flow {
         fun getCombinationsRecursive(current: Pair<Candidate, Int>?, start: Int, index: Int = start): List<Candidate> {
             if(index >= candidates.size) return listOf()
             val list = candidates[index].map { candidate -> when(current?.first) {
@@ -79,7 +82,7 @@ class AmbiguousHangulPredictor(
             return list.filter { it.second == candidates.size }.map { it.first } +
                     list.flatMap { getCombinationsRecursive(it, start, start + it.second) }
         }
-        return candidates.mapIndexed { i, _ -> getCombinationsRecursive(null, i) }.flatten()
+        candidates.forEachIndexed { i, _ -> getCombinationsRecursive(null, i).forEach { emit(it) } }
     }
 
     override fun learn(candidate: Candidate) {
