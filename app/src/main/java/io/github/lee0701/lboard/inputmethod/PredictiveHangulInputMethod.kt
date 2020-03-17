@@ -9,6 +9,7 @@ import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.prediction.Predictor
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.timerTask
@@ -22,6 +23,8 @@ class PredictiveHangulInputMethod(
 
     val states: MutableList<KeyInputHistory<String>> = mutableListOf()
     val lastState: KeyInputHistory<String> get() = if(states.isEmpty()) KeyInputHistory(0, composing = "") else states.last()
+
+    var convertJob: Job? = null
 
     var candidates: List<Candidate> = listOf()
     var candidateIndex: Int = -1
@@ -53,6 +56,7 @@ class PredictiveHangulInputMethod(
                 }
             }
             KeyEvent.KEYCODE_SPACE -> {
+                runBlocking { convertJob?.join() }
                 if(candidates.isNotEmpty() && candidateIndex < 0) {
                     states.clear()
                     candidateIndex = 0
@@ -104,18 +108,25 @@ class PredictiveHangulInputMethod(
             }
         }
 
-        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size)
-                .toList()
-                .sortedByDescending { it.score }
-        candidateIndex = -1
+        convertJob?.cancel()
+        convertJob = GlobalScope.launch {
+            candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size)
+                    .toList()
+                    .sortedByDescending { it.score }
+            candidateIndex = -1
 
-        EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
+            EventBus.getDefault().post(CandidateUpdateEvent(info, candidates))
 
-        val composing =
-                if(candidates.isEmpty()) lastState.composing
-                else currentCandidate.text
-        EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                ComposingText(newComposingText = composing)))
+            val composing =
+                    if(candidates.isEmpty()) lastState.composing
+                    else currentCandidate.text
+
+            launch(Dispatchers.Main) {
+                EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                        ComposingText(newComposingText = composing)))
+            }
+        }
+
         return true
     }
 

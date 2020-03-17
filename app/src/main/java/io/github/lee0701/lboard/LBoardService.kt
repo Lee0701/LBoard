@@ -27,7 +27,6 @@ import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.inputmethod.*
 import io.github.lee0701.lboard.inputmethod.ambiguous.HangulSyllableFrequencyScorer
-import io.github.lee0701.lboard.prediction.KoreanDictionaryPredictor
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
 import io.github.lee0701.lboard.layouts.alphabet.MobileAlphabet
 import io.github.lee0701.lboard.layouts.hangul.*

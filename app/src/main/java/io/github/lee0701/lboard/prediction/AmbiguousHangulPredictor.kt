@@ -1,6 +1,7 @@
 package io.github.lee0701.lboard.prediction
 
 import io.github.lee0701.lboard.dictionary.Dictionary
+import io.github.lee0701.lboard.dictionary.EditableDictionary
 import io.github.lee0701.lboard.dictionary.WritableDictionary
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.inputmethod.KeyInputHistory
@@ -82,11 +83,39 @@ class AmbiguousHangulPredictor(
     }
 
     override fun learn(candidate: Candidate) {
-        TODO("Not yet implemented")
+        if(candidate.text.none { it in '가' .. '힣' }) return
+        if(dictionary is EditableDictionary) {
+            if(candidate is CompoundCandidate) {
+                candidate.candidates.forEach {
+                    if(it.text.length <= 1) return@forEach
+                    val text = Normalizer.normalize(it.text, Normalizer.Form.NFD)
+                    val existing = dictionary.search(text).maxBy { it.frequency }
+                    if(existing == null || existing.frequency < it.frequency) {
+                        dictionary.insert(Dictionary.Word(text, it.frequency, it.pos))
+                    }
+                }
+            }
+            if(candidate.text.length <= 1) return
+            val text = Normalizer.normalize(candidate.text, Normalizer.Form.NFD)
+            val existing = dictionary.search(text).maxBy { it.frequency }
+            if(existing == null || existing.frequency < candidate.frequency) {
+                dictionary.insert(Dictionary.Word(text, candidate.frequency, candidate.pos))
+            }
+        }
     }
 
     override fun delete(candidate: Candidate) {
-        TODO("Not yet implemented")
+        if(dictionary is EditableDictionary) {
+            if(candidate is CompoundCandidate) {
+                candidate.candidates.forEach {
+                    val text = Normalizer.normalize(it.text, Normalizer.Form.NFD)
+                    val existing = dictionary.search(text)
+                    existing.forEach { dictionary.remove(it) }
+                }
+            }
+            val existing = dictionary.search(Normalizer.normalize(candidate.text, Normalizer.Form.NFD))
+            existing.forEach { dictionary.remove(it) }
+        }
     }
 
 }
