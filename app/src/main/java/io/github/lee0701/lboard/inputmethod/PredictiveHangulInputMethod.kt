@@ -106,7 +106,7 @@ class PredictiveHangulInputMethod(
 
         candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size)
                 .toList()
-                .sortedByDescending { it.frequency }
+                .sortedByDescending { it.score }
         candidateIndex = -1
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
