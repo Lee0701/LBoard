@@ -15,7 +15,7 @@ class PredefinedMethodListPreference(context: Context, attrs: AttributeSet): Lis
 
     init {
         setOnPreferenceChangeListener { _, newValue ->
-            val softKeyboardListPreference = findPreferenceInHierarchy(softLayoutKey) as SoftKeyboardListPreference
+            val softKeyboardListPreference = findPreferenceInHierarchy(softLayoutKey) as? SoftKeyboardListPreference ?: return@setOnPreferenceChangeListener false
             val editor = pref.edit()
             val modeName = pref.getString("common_soft_mode", null) ?: "mobile"
             val mode = LBoardService.getMode(modeName)

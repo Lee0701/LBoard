@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.lee0701.lboard.R
 import kotlinx.android.synthetic.main.activity_settings.*
@@ -113,8 +114,8 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
         override fun onCreatePreferences(p0: Bundle?, p1: String?) {
             addPreferencesFromResource(R.xml.lboard_pref_about)
             preferenceManager
-                    .findPreference("about_copyright_info_license_url")
-                    .setOnPreferenceClickListener {
+                    .findPreference<Preference>("about_copyright_info_license_url")
+                    ?.setOnPreferenceClickListener {
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse("http://www.apache.org/licenses/LICENSE-2.0")
                         startActivity(intent)
