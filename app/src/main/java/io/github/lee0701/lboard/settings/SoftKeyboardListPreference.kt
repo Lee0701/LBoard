@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceManager
 import io.github.lee0701.lboard.LBoardService
+import io.github.lee0701.lboard.inputmethod.predefined.PredefinedMethod
 
 class SoftKeyboardListPreference(context: Context, attrs: AttributeSet): ListPreference(context, attrs) {
 
@@ -16,7 +17,7 @@ class SoftKeyboardListPreference(context: Context, attrs: AttributeSet): ListPre
     }
 
     fun reloadEntries(predefinedMethodName: String, modeName: String) {
-        val predefinedMethod = LBoardService.PREDEFINED_METHODS[predefinedMethodName]
+        val predefinedMethod = PredefinedMethod.PREDEFINED_METHODS[predefinedMethodName]
         val mode = LBoardService.getMode(modeName)
         predefinedMethod?.let { method ->
             val softLayouts = method.softLayouts.filter { mode.contains(it) }

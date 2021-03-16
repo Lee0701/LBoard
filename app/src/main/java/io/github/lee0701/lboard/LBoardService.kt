@@ -28,9 +28,9 @@ import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
 import io.github.lee0701.lboard.inputmethod.*
 import io.github.lee0701.lboard.inputmethod.ambiguous.HangulSyllableFrequencyScorer
 import io.github.lee0701.lboard.inputmethod.ambiguous.KoreanDictionaryCandidateGenerator
-import io.github.lee0701.lboard.inputmethod.ambiguous.KoreanDictionaryScorer
+import io.github.lee0701.lboard.inputmethod.predefined.PredefinedMethod
+import io.github.lee0701.lboard.inputmethod.predefined.PredefinedMethod.Companion.PREDEFINED_METHODS
 import io.github.lee0701.lboard.layouts.alphabet.Alphabet
-import io.github.lee0701.lboard.layouts.alphabet.MobileAlphabet
 import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
@@ -119,7 +119,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val hardLayout = layer10SymbolsHardLayout + moreKeysLayout + predefinedMethod.hardLayout
 
             val methodEn = when(predefinedMethod.methodType) {
-                PredefinedMethodType.PREDICTIVE -> {
+                PredefinedMethod.Type.PREDICTIVE -> {
                     val userDictFile = File(filesDir, "userdict.en.txt")
                     val dictionary = CompoundDictionary(listOf(
                             FlatTrieDictionary(assets.open("dict/en/dict.bin").readBytes()),
@@ -174,16 +174,16 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val converter =
                     when(predefinedMethod.methodType) {
-                        PredefinedMethodType.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, true)
-                        PredefinedMethodType.DUBEOL_SINGLE_VOWEL -> SingleVowelDubeolHangulComposer(combinationTable, virtualJamoTable, true)
-                        PredefinedMethodType.DUBEOL_AMBIGUOUS -> DubeolHangulComposer(combinationTable, virtualJamoTable, false)
-                        PredefinedMethodType.SEBEOL_AMBIGUOUS -> SebeolHangulComposer(combinationTable, virtualJamoTable, false)
+                        PredefinedMethod.Type.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, true)
+                        PredefinedMethod.Type.DUBEOL_SINGLE_VOWEL -> SingleVowelDubeolHangulComposer(combinationTable, virtualJamoTable, true)
+                        PredefinedMethod.Type.DUBEOL_AMBIGUOUS -> DubeolHangulComposer(combinationTable, virtualJamoTable, false)
+                        PredefinedMethod.Type.SEBEOL_AMBIGUOUS -> SebeolHangulComposer(combinationTable, virtualJamoTable, false)
                         else -> SebeolHangulComposer(combinationTable, virtualJamoTable, true)
                     }
 
             val methodKo = when(predefinedMethod.methodType) {
-                PredefinedMethodType.DUBEOL_AMBIGUOUS,
-                PredefinedMethodType.SEBEOL_AMBIGUOUS -> {
+                PredefinedMethod.Type.DUBEOL_AMBIGUOUS,
+                PredefinedMethod.Type.SEBEOL_AMBIGUOUS -> {
                     val userDictFile = File(filesDir, "userdict.ko.txt")
                     val dictionary = CompoundDictionary(listOf(
                             FlatTrieDictionary(assets.open("dict/ko/dict.bin").readBytes()),
@@ -240,7 +240,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             val converter =
                     when(predefinedMethod.methodType) {
-                        PredefinedMethodType.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, true)
+                        PredefinedMethod.Type.DUBEOL -> DubeolHangulComposer(combinationTable, virtualJamoTable, true)
                         else -> SebeolHangulComposer(combinationTable, virtualJamoTable, true)
                     }
 
@@ -643,20 +643,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         candidateViewManager = null
     }
 
-    enum class PredefinedMethodType() {
-        NONE, PREDICTIVE,
-        DUBEOL, DUBEOL_SINGLE_VOWEL, SEBEOL,
-        DUBEOL_AMBIGUOUS, SEBEOL_AMBIGUOUS
-    }
-
-    data class PredefinedMethod(
-            val softLayouts: List<Layout>,
-            val hardLayout: CommonKeyboardLayout,
-            val methodType: PredefinedMethodType = PredefinedMethodType.NONE,
-            val combinationTable: CombinationTable = CombinationTable(mapOf()),
-            val virtualJamoTable: VirtualJamoTable = VirtualJamoTable(mapOf())
-    )
-
     enum class Orientation {
         PORTRAIT, LANDSCAPE
     }
@@ -755,29 +741,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
         val SOFT_LAYOUT_MINI_8COLS = listOf(
                 MiniSoftLayout.LAYOUT_MINI_8COLS_GOOGLE
-        )
-
-        val PREDEFINED_METHODS = mapOf<String, PredefinedMethod>(
-                "alphabet-qwerty" to PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, Alphabet.LAYOUT_QWERTY),
-                "alphabet-dvorak" to PredefinedMethod(SOFT_LAYOUT_DVORAK, Alphabet.LAYOUT_DVORAK),
-                "alphabet-colemak" to PredefinedMethod(SOFT_LAYOUT_COLEMAK, Alphabet.LAYOUT_COLEMAK),
-                "alphabet-7cols-wert" to PredefinedMethod(SOFT_LAYOUT_MINI_7COLS, Alphabet.LAYOUT_7COLS_WERT),
-                "alphabet-12key-a" to PredefinedMethod(SOFT_LAYOUT_12KEY, MobileAlphabet.LAYOUT_TWELVE_ALPHABET_A, PredefinedMethodType.PREDICTIVE),
-                "alphabet-15key-qwerty-compact" to PredefinedMethod(SOFT_LAYOUT_15KEY, MobileAlphabet.LAYOUT_FIFTEEN_QWERTY_COMPACT, PredefinedMethodType.PREDICTIVE),
-                "alphabet-15key-dvorak-compact" to PredefinedMethod(SOFT_LAYOUT_15KEY, MobileAlphabet.LAYOUT_FIFTEEN_DVORAK_COMPACT, PredefinedMethodType.PREDICTIVE),
-
-                "dubeol-standard" to PredefinedMethod(SOFT_LAYOUT_UNIVERSAL, DubeolHangul.LAYOUT_DUBEOL_STANDARD, PredefinedMethodType.DUBEOL, DubeolHangul.COMBINATION_DUBEOL_STANDARD),
-                "sebeol-390" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_GONG, SebeolHangul.LAYOUT_SEBEOL_390, PredefinedMethodType.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),
-                "sebeol-391" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_GONG, SebeolHangul.LAYOUT_SEBEOL_391, PredefinedMethodType.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_390),
-                "sebeol-391-strict" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_GONG, SebeolHangul.LAYOUT_SEBEOL_391_STRICT, PredefinedMethodType.SEBEOL, SebeolHangul.COMBINATION_SEBEOL_391_STRICT),
-                "sebeol-shin-original" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_SHIN, ShinSebeolHangul.LAYOUT_SHIN_ORIGINAL, PredefinedMethodType.SEBEOL, ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL),
-                "sebeol-shin-edit" to PredefinedMethod(SOFT_LAYOUT_SEBEOL_SHIN, ShinSebeolHangul.LAYOUT_SHIN_EDIT, PredefinedMethodType.SEBEOL, ShinSebeolHangul.COMBINATION_SHIN_ORIGINAL),
-                "sebeol-mini-shin" to PredefinedMethod(SOFT_LAYOUT_MINI_7COLS, ShinSebeolHangul.LAYOUT_MINI_SHIN_EXPERIMENTAL, PredefinedMethodType.SEBEOL, ShinSebeolHangul.COMBINATION_MINI_SHIN_EXPERIMENTAL),
-                "dubeol-google" to PredefinedMethod(SOFT_LAYOUT_MINI_8COLS, DubeolHangul.LAYOUT_DUBEOL_GOOGLE, PredefinedMethodType.DUBEOL_SINGLE_VOWEL, DubeolHangul.COMBINATION_DUBEOL_GOOGLE),
-                "dubeol-cheonjiin" to PredefinedMethod(SOFT_LAYOUT_12KEY, MobileDubeolHangul.LAYOUT_CHEONJIIN, PredefinedMethodType.DUBEOL, MobileDubeolHangul.COMBINATION_CHEONJIIN),
-                "dubeol-naratgeul" to PredefinedMethod(SOFT_LAYOUT_12KEY, MobileDubeolHangul.LAYOUT_NARATGEUL, PredefinedMethodType.DUBEOL, MobileDubeolHangul.COMBINATION_NARATGEUL),
-                "dubeol-fifteen-compact" to PredefinedMethod(SOFT_LAYOUT_15KEY, MobileDubeolHangul.LAYOUT_FIFTEEN_DUBEOL, PredefinedMethodType.DUBEOL_AMBIGUOUS, DubeolHangul.COMBINATION_DUBEOL_STANDARD),
-                "sebeol-fifteen-compact" to PredefinedMethod(SOFT_LAYOUT_15KEY, MobileSebeolHangul.LAYOUT_FIFTEEN_SEBEOL, PredefinedMethodType.SEBEOL_AMBIGUOUS, SebeolHangul.COMBINATION_SEBEOL_390)
         )
 
         fun getMode(modeName: String): List<Layout> {

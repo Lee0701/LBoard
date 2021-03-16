@@ -7,6 +7,7 @@ import androidx.preference.ListPreference
 import androidx.preference.PreferenceManager
 import io.github.lee0701.lboard.LBoardService
 import io.github.lee0701.lboard.R
+import io.github.lee0701.lboard.inputmethod.predefined.PredefinedMethod
 
 class PredefinedMethodListPreference(context: Context, attrs: AttributeSet): ListPreference(context, attrs) {
 
@@ -19,7 +20,7 @@ class PredefinedMethodListPreference(context: Context, attrs: AttributeSet): Lis
             val editor = pref.edit()
             val modeName = pref.getString("common_soft_mode", null) ?: "mobile"
             val mode = LBoardService.getMode(modeName)
-            LBoardService.PREDEFINED_METHODS[newValue]?.let {
+            PredefinedMethod.PREDEFINED_METHODS[newValue]?.let {
                 val softLayouts = it.softLayouts.filter { mode.contains(it) }
                 if(softLayouts.isEmpty()) {
                     AlertDialog.Builder(context)
