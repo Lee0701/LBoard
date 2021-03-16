@@ -1,7 +1,5 @@
 package io.github.lee0701.lboard.dictionary
 
-import kotlinx.coroutines.yield
-
 open class TrieDictionary: Dictionary {
 
     var root = Node()

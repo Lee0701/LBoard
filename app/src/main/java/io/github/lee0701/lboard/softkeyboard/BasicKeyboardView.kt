@@ -11,8 +11,8 @@ import kotlin.math.abs
 class BasicKeyboardView(
         context: Context,
         val layout: Layout,
-        val theme: KeyboardTheme,
-        val onKeyListener: OnKeyListener,
+        private val theme: KeyboardTheme,
+        private val onKeyListener: OnKeyListener,
         var keyboardWidth: Int,
         var keyboardHeight: Int,
         private val showLabels: Boolean,
