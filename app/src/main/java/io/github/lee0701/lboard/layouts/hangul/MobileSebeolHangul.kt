@@ -1,11 +1,12 @@
 package io.github.lee0701.lboard.layouts.hangul
 
 import io.github.lee0701.lboard.hardkeyboard.CommonKeyboardLayout
+import io.github.lee0701.lboard.layouts.symbols.MoreKeys
 
 object MobileSebeolHangul {
 
     // Unfinished.
-    val LAYOUT_FIFTEEN_SEBEOL = CommonKeyboardLayout(CommonKeyboardLayout.LayoutLayer(mapOf(
+    val LAYOUT_FIFTEEN_SEBEOL = MoreKeys.MOREKEYS_FIFTEEN_NUMBERS + CommonKeyboardLayout(CommonKeyboardLayout.LayoutLayer(mapOf(
             0x2001 to CommonKeyboardLayout.LayoutItem("ᄅᆺ".map { it.toInt() }),
             0x2002 to CommonKeyboardLayout.LayoutItem("ᄃᆯ".map { it.toInt() }),
             0x2003 to CommonKeyboardLayout.LayoutItem("몁".map { it.toInt() }),
