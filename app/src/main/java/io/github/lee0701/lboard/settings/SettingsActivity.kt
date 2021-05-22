@@ -9,14 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.lee0701.lboard.R
-import kotlinx.android.synthetic.main.activity_settings.*
+import io.github.lee0701.lboard.databinding.ActivitySettingsBinding
 
 class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
+
+    private lateinit var binding: ActivitySettingsBinding
 
     val fragments = listOf<Fragment>(
             ActivationFragment(),
@@ -28,9 +29,10 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setTitle(R.string.settings_name)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -42,20 +44,20 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
         navigationList.adapter = adapter
         navigationList.onItemClickListener = this
 
-        settings.openDrawer(GravityCompat.START)
+        binding.settings.openDrawer(GravityCompat.START)
     }
 
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
         when(position) {
             in 0 until fragments.size -> loadFragment(fragments[position])
         }
-        settings.closeDrawer(GravityCompat.START)
+        binding.settings.closeDrawer(GravityCompat.START)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             android.R.id.home -> {
-                settings.openDrawer(GravityCompat.START)
+                binding.settings.openDrawer(GravityCompat.START)
             }
             else -> return super.onOptionsItemSelected(item)
         }
@@ -66,7 +68,7 @@ class SettingsActivity: AppCompatActivity(), AdapterView.OnItemClickListener {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.content, fragment)
                 .commit()
-        collapsing_toolbar.title = resources.getString(fragment.title)
+        binding.collapsingToolbar.title = resources.getString(fragment.title)
     }
 
     abstract class Fragment: PreferenceFragmentCompat() {
