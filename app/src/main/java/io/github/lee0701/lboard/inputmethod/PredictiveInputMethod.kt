@@ -9,7 +9,6 @@ import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.prediction.Predictor
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
-import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.timerTask
@@ -22,7 +21,7 @@ class PredictiveInputMethod(
 ): CommonInputMethod() {
 
     val states: MutableList<KeyInputHistory<String>> = mutableListOf()
-    val lastState: KeyInputHistory<String> get() = if(states.isEmpty()) KeyInputHistory(0, composing = "") else states.last()
+    val lastState: KeyInputHistory<String> get() = states.lastOrNull() ?: KeyInputHistory(0, composing = "")
 
     var candidates: List<Candidate> = listOf()
     var candidateIndex: Int = -1

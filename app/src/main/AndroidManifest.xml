@@ -15,7 +15,7 @@
             android:label="@string/service_name"
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:id="@+id/lboard"
-            android:exported="false">
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
@@ -27,7 +27,7 @@
             android:name=".settings.SettingsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
-            android:exported="false">
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

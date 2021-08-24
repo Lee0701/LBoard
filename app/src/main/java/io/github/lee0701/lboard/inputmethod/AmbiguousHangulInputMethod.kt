@@ -12,6 +12,7 @@ import io.github.lee0701.lboard.inputmethod.ambiguous.CandidateGenerator
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.CompoundCandidate
+import io.github.lee0701.lboard.prediction.NextWordPredictor
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import kotlinx.coroutines.*
@@ -27,9 +28,11 @@ class AmbiguousHangulInputMethod(
         override val hardKeyboard: HardKeyboard,
         val hangulConverter: HangulComposer,
         val conversionScorer: Scorer,
-        val candidateGenerator: CandidateGenerator
+        val candidateGenerator: CandidateGenerator,
+        val nextWordPredictor: NextWordPredictor,
 ): CommonInputMethod() {
 
+    val words: MutableList<NextWordPredictor.Word> = mutableListOf()
     val states: MutableList<KeyInputHistory<HangulComposer.State>> = mutableListOf()
     var convertTask: Job? = null
 
@@ -208,12 +211,16 @@ class AmbiguousHangulInputMethod(
 
     private fun learnCurrentCandidateAndReset() {
         if(candidateIndex >= 0 && candidates.isNotEmpty()) {
-            learn(candidates[candidateIndex])
+            val candidate = candidates[candidateIndex]
+            words += candidate.nextWordPredictorWords
+            if(candidate.endingSpace) nextWordPredictor.getWord(" ")?.let { words += it }
+            learn(candidate)
             reset()
         }
     }
 
     override fun reset() {
+        words.clear()
         states.clear()
         super.reset()
         resetCandidates()

@@ -9,4 +9,5 @@ data class CompoundCandidate(
     override val originalText: String get() = text
     override val frequency: Float get() = candidates.map { it.frequency }.average().toFloat()
     override val score: Float get() = frequency / candidates.size
+    override val nextWordPredictorWords: List<NextWordPredictor.Word> = candidates.map { it.nextWordPredictorWords }.flatten()
 }

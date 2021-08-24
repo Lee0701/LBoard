@@ -35,6 +35,7 @@ import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.prediction.DictionaryPredictor
+import io.github.lee0701.lboard.prediction.EmptyNextWordPredictor
 import io.github.lee0701.lboard.prediction.TFLiteNextWordPredictor
 import io.github.lee0701.lboard.settings.SettingsActivity
 import io.github.lee0701.lboard.softkeyboard.*
@@ -191,13 +192,16 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                             FlatTrieDictionary(assets.open("dict/ko/dict.bin").readBytes()),
                             WeightedDictionary(WritableTrieDictionary(userDictFile), 1.3f)
                     ))
+                    val nextWordPredictor = TFLiteNextWordPredictor(this, "dict/ko/wordlist.txt")
                     AmbiguousHangulInputMethod(
                             InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false, predictive = true),
                             BasicSoftKeyboard(softLayout.clone(), theme),
                             CommonHardKeyboard(hardLayout),
                             converter,
                             HangulSyllableFrequencyScorer(),
-                            KoreanDictionaryCandidateGenerator(dictionary))
+                            KoreanDictionaryCandidateGenerator(dictionary, nextWordPredictor),
+                            nextWordPredictor,
+                    )
                 }
                 else -> HangulInputMethod(
                         InputMethodInfo(language = "ko", device = InputMethodInfo.Device.VIRTUAL, type = InputMethodInfo.Type.MAIN, direct = false),
@@ -449,7 +453,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val repeat = event.keyEvent.actions.count { it.type == LBoardKeyEvent.ActionType.REPEAT }
             val imeAction = currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
             if(keyCode == KeyEvent.KEYCODE_ENTER && currentInputConnection?.getTextBeforeCursor(1, 0) == " ")
-                currentInputConnection?.deleteSurroundingText(1, 0)
+                deleteSurroundingText(1, 0)
             if(keyCode == KeyEvent.KEYCODE_ENTER && listOf(EditorInfo.IME_ACTION_SEARCH, EditorInfo.IME_ACTION_GO).contains(imeAction))
                 sendDefaultEditorAction(true)
             else currentInputConnection?.sendKeyEvent(KeyEvent(time, time, action, keyCode, repeat, metaState))
@@ -457,7 +461,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             event.composingText?.newComposingText?.let { currentInputConnection?.setComposingText(it, event.composingText.newCursorPosition) }
             event.composingText?.textToCommit?.let {
                 val space = listOf(0x2c, 0x2e, 0x3f, 0x21).contains(it.firstOrNull()?.toInt() ?: 0) && currentInputConnection?.getTextBeforeCursor(1, 0) == " "
-                if(space) currentInputConnection?.deleteSurroundingText(1, 0)
+                if(space) deleteSurroundingText(1, 0)
                 currentInputConnection?.commitText(it, event.composingText.newCursorPosition)
                 if(space) currentInputConnection?.commitText(" ", 1)
             }
@@ -614,6 +618,12 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         val intent = Intent(this, SettingsActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    private fun deleteSurroundingText(beforeLength: Int, afterLength: Int) {
+        val text = currentInputConnection?.getTextBeforeCursor(beforeLength, 0)?.toString() ?: return
+        val result = currentInputConnection?.deleteSurroundingText(beforeLength, afterLength) ?: false
+        if(result) EventBus.getDefault().post(TextDeleteEvent(text))
     }
 
     private fun appendInputHistory(keyCode: Int, action: LBoardKeyEvent.Action): List<LBoardKeyEvent.Action> {

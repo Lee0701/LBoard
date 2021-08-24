@@ -7,4 +7,5 @@ abstract class Candidate {
     abstract val frequency: Float
     abstract val score: Float
     abstract val endingSpace: Boolean
+    abstract val nextWordPredictorWords: List<NextWordPredictor.Word>
 }
