@@ -18,8 +18,6 @@ class BasicMoreKeyPopup(context: Context, private val showXOffset: Int, private 
                         val list: List<Pair<Int, String>>, val theme: KeyboardTheme
 ): KeyboardPopup(context, key) {
 
-    private val displayMetrics = DisplayMetrics()
-
     private val background = ContextCompat.getDrawable(context, theme.previewBackground)!!
     private val keys = list.map { Key(it.first, it.second) }
     private val layout = createKeyboardLayout(keys)
@@ -33,8 +31,10 @@ class BasicMoreKeyPopup(context: Context, private val showXOffset: Int, private 
     var resultKeyCode: Int? = null
 
     override fun show(parent: View) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) context.display?.getMetrics(displayMetrics)
-        else (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
+        val windowManager = context.getSystemService(Service.WINDOW_SERVICE) as WindowManager
+        val widthPixels =
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) windowManager.currentWindowMetrics.bounds.width()
+                else DisplayMetrics().apply { windowManager.defaultDisplay.getMetrics(this) }.widthPixels
 
         popupWindow.setBackgroundDrawable(background)
         popupWindow.width = keyboardView.keyboardWidth
@@ -44,7 +44,7 @@ class BasicMoreKeyPopup(context: Context, private val showXOffset: Int, private 
         popupWindow.isTouchable = true
 
         offsetX = key.x - popupWindow.width/2
-        if(layout.width % 2 == 0 && key.x < displayMetrics.widthPixels/2) offsetX += key.width
+        if(layout.width % 2 == 0 && key.x < widthPixels/2) offsetX += key.width
         if(layout.width % 2 == 1) offsetX += key.width/2
         while(offsetX < 0) offsetX += key.width
         while(offsetX + popupWindow.width > parent.width) offsetX -= key.width
