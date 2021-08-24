@@ -104,7 +104,8 @@ class PredictiveInputMethod(
             }
         }
 
-        candidates = predictor.predict(states.filterIsInstance<KeyInputHistory<Any>>(), states.size)
+        val states = states.filterIsInstance<KeyInputHistory<Any>>()
+        candidates = predictor.predict(states, states.size)
                 .toList()
                 .let { list ->
                     var candidates = listOf<Candidate>()
@@ -118,8 +119,8 @@ class PredictiveInputMethod(
                 .map {
                     val withMissing = addMissing(states, it.text)
                     val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
-                    SingleCandidate(text, it.text, it.pos, it.frequency)
-                } + SingleCandidate(lastState.composing, lastState.composing, -1, 0.1f)
+                    SingleCandidate(text, it.text, it.pos, states.size, it.frequency)
+                } + SingleCandidate(lastState.composing, lastState.composing, states.size, -1, 0.1f)
         candidateIndex = -1
 
         EventBus.getDefault().post(CandidateUpdateEvent(this.info, candidates))
@@ -156,13 +157,13 @@ class PredictiveInputMethod(
         return word.sumBy { c -> if(layout.none { it.value.contains(c.toInt()) }) 1 else 0 }
     }
 
-    private fun addMissing(states: List<KeyInputHistory<String>>, word: String): List<KeyInputHistory<String>> {
+    private fun addMissing(states: List<KeyInputHistory<Any>>, word: String): List<KeyInputHistory<Any>> {
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout.mapValues { it.value.normal + it.value.shift }
-        val result = mutableListOf<KeyInputHistory<String>>()
+        val result = mutableListOf<KeyInputHistory<Any>>()
         var j = 0
         word.forEachIndexed { i, c ->
             if(i >= states.size || layout.none { it.value.contains(c.toInt()) })
-                result += KeyInputHistory(0, composing = (result.lastOrNull()?.composing ?: "") + c)
+                result += KeyInputHistory<Any>(0, composing = (result.lastOrNull()?.composing.toString() ?: "") + c)
             else
                 result += states[j++]
         }

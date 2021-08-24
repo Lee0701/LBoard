@@ -33,7 +33,6 @@ abstract class HangulComposer(
     }
 
     data class State(val cho: Int? = null, val jung: Int? = null, val jong: Int? = null, val other: String = "") {
-
         val status: Int get() =
             if(jong != null && jong < 0x01000000) 3
             else if(jung != null && jung < 0x01000000) 2
@@ -62,6 +61,7 @@ abstract class HangulComposer(
         fun isCho(char: Int) = (char and 0xffffff).let { it in 0x1100 .. 0x115f || it in 0xa960 .. 0xa97c }
         fun isJung(char: Int) = (char and 0xffffff).let { it in 0x1160 .. 0x11a7 || it in 0xd7b0 .. 0xd7c6 }
         fun isJong(char: Int) = (char and 0xffffff).let { it in 0x11a8 .. 0x11ff || it in 0xd7cb .. 0xd7fb }
+        fun isSyllable(char: Int) = (char and 0xffffff) in 0xac00 .. 0xd7a3
 
         const val COMPAT_CHO = "ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ"
         const val COMPAT_JUNG = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣㆇㆈㆉㆊㆋㆌㆍㆎ"

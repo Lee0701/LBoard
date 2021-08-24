@@ -3,17 +3,14 @@ package io.github.lee0701.lboard.prediction
 interface NextWordPredictor {
     fun getWord(text: String, pos: String? = null): Word?
     fun getWord(id: Int): Word?
-    fun predict(words: List<Word>): Set<Candidate>
+    fun getWords(text: String): Set<Word>
+    fun predict(words: List<Int>): Map<Int, Float>
 
     data class Word(
             val id: Int,
             val text: String,
             val pos: String,
-            val frequency: Int,
+            val frequency: Float,
     )
 
-    data class Candidate(
-            val word: Word,
-            val confidence: Float
-    )
 }

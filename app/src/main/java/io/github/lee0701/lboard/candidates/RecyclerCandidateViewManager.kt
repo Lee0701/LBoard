@@ -57,7 +57,7 @@ class RecyclerCandidateViewManager(val background: Int, val textColor: Int): Can
     fun onCandidateUpdate(event: CandidateUpdateEvent) {
         methodInfo = event.methodInfo
         val candidates = event.candidates
-                .let { if(it.size == 1) it + SingleCandidate("", "") else it }
+                .let { if(it.size == 1) it + SingleCandidate("", "", 0) else it }
                 .let { if(it.size >= 2) listOf(it[1], it[0]) + it.subList(2, it.size) else it }
         adapter.candidates = candidates
         adapter.notifyDataSetChanged()

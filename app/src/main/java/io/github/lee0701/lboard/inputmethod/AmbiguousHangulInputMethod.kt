@@ -2,24 +2,24 @@ package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
+import io.github.lee0701.lboard.dictionary.Dictionary
+import io.github.lee0701.lboard.dictionary.EditableDictionary
 
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.DubeolHangulComposer
 import io.github.lee0701.lboard.hangul.HangulComposer
 import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
-import io.github.lee0701.lboard.inputmethod.ambiguous.CandidateGenerator
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
-import io.github.lee0701.lboard.prediction.Candidate
-import io.github.lee0701.lboard.prediction.CompoundCandidate
-import io.github.lee0701.lboard.prediction.NextWordPredictor
-import io.github.lee0701.lboard.prediction.SingleCandidate
+import io.github.lee0701.lboard.prediction.*
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
-import kotlin.math.min
+import java.text.Normalizer
+import java.util.*
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 class AmbiguousHangulInputMethod(
@@ -28,11 +28,11 @@ class AmbiguousHangulInputMethod(
         override val hardKeyboard: HardKeyboard,
         val hangulConverter: HangulComposer,
         val conversionScorer: Scorer,
-        val candidateGenerator: CandidateGenerator,
+        val dictionary: Dictionary,
         val nextWordPredictor: NextWordPredictor,
 ): CommonInputMethod() {
 
-    val words: MutableList<NextWordPredictor.Word> = mutableListOf()
+    val words: MutableList<Int> = mutableListOf()
     val states: MutableList<KeyInputHistory<HangulComposer.State>> = mutableListOf()
     var convertTask: Job? = null
 
@@ -128,7 +128,7 @@ class AmbiguousHangulInputMethod(
         convertTask = GlobalScope.launch {
             candidates = convertAll().toList()
                     .sortedByDescending { it.score }
-                    .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
+//                    .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
             candidateIndex = -1
 
             EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
@@ -152,54 +152,92 @@ class AmbiguousHangulInputMethod(
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return listOf()
         val converted = states.map { layout[it.keyCode]?.let { item -> if(it.shift) item.shift else item.normal } ?: listOf() }
 
-        val syllables = converted.mapIndexed { i, _ ->
-            val result = mutableListOf<Pair<HangulComposer.State, Int>>()
-            var currents = listOf(HangulComposer.State() to 0)
-            converted.slice(i until min(i+6, converted.size)).forEach { list ->
-                currents = currents
-                        .flatMap { item -> list.map { c -> hangulConverter.compose(item.first, c) to item.second + 1} }
-                        // 음절이 넘어갔으면(other에 문자열이 있으면) 제외
-                        .filter { it.first.other.isEmpty() }
-                result += currents
+        val candidateCache = mutableMapOf<List<List<Int>>, Set<Candidate>>()
+        val nextWordCache = mutableMapOf<String, Map<Int, Float>>()
+        val queue = PriorityQueue<Candidate>(MAX_CANDIDATES, compareByDescending<Candidate> { it.strokeCount }.thenByDescending { it.frequency })
+        val candidates = mutableListOf<Candidate>()
+        queue.offer(EmptyCandidate)
+        while(true) {
+            val item = queue.poll() ?: break
+            if(item.strokeCount == converted.size) {
+                candidates += item
+                if(candidates.size >= MAX_CANDIDATES) break
+                continue
             }
-            result.map { hangulConverter.display(it.first) to it.second }
-                    .map { it.first[0] to (conversionScorer.calculateScore(it.first) to it.second) }
-                    .sortedByDescending { it.second.first }
+            if(item.strokeCount > converted.size) continue
+            val nextWords = nextWordCache.getOrPut(item.text) { nextWordPredictor.predict(item.nextWordPredictorWords) }
+            val maxConfidence = nextWords.values.maxOrNull() ?: 1f
+            for(i in 0 .. converted.size - item.strokeCount) {
+                val key = converted.drop(item.strokeCount).dropLast(i)
+                candidateCache.getOrPut(key) {
+                    composeAllPossibilities(key)
+                            .map { hangulConverter.display(it) }
+                            .sortedByDescending { conversionScorer.calculateScore(it) }
+                            .take(MAX_CONVERSIONS)
+                            .filter { text -> text.all { HangulComposer.isSyllable(it.code) } }
+                            .flatMap { text -> nextWordPredictor.getWords(text).map { nextWord ->
+                                val frequencyScore = 10f.pow(nextWord.frequency) / 10
+                                val confidenceScore = nextWords[nextWord.id]?.let { 10f.pow(it / maxConfidence) / 10 } ?: 0f
+                                val frequency = frequencyScore * confidenceScore
+                                SingleCandidate(text, text, key.size, -1, frequency, false, listOf(nextWord.id))
+                            } }
+                            .toSet()
+                }.map { CompoundCandidate.of(listOf(item) + it) }.filter { it.text != item.text }.forEach { queue.offer(it) }
+            }
         }
+        val rawCandidates = composeAllPossibilities(converted)
+                .map { hangulConverter.display(it) }
+                .sortedByDescending { conversionScorer.calculateScore(it) }
+                .take(MAX_CONVERSIONS)
+                .map { text -> SingleCandidate(text, text, converted.size, -1, 0f) }
+        return (candidates + rawCandidates)
+                .groupBy { it.text }
+                .map { it.value.maxOrNull() }.filterNotNull()
+                .sortedDescending()
+    }
 
-        val eojeols = mutableListOf("" to (0f to 0))
-        syllables
-                .map { list -> if(list.size <= 2) list else list.filter { it.first in '가' .. '힣'} }
-                .forEachIndexed { i, list ->
-                    val targets = eojeols.filter { it.second.second == i }
-                    eojeols -= targets
-                    eojeols += targets.flatMap { target ->
-                        list.map { target.first + it.first to (target.second.first + it.second.first to target.second.second + it.second.second) }
-                    }
-                }
-
-        val result = eojeols.map { it.first to it.second.first / it.first.length }
-                .sortedByDescending { conversionScorer.calculateScore(it.first) }
-                .filter { if(it.first.lastOrNull() in '가' .. '힣') it.first.all { c -> c in '가' .. '힣' } else true }
-                .let { if(it.size > 16) it.take(sqrt(it.size.toDouble()).toInt() * 4) else it }
-                .map {
-                    // 사전 검색 결과 조합 중 가장 좋은 후보로 선택
-                    candidateGenerator.generate(it.first).toList().let { candidates ->
-                        candidates
-                                .sortedByDescending { candidate -> candidate.frequency }
-                                .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
-                    }.firstOrNull() ?: SingleCandidate(it.first, it.first, -1, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' })
-                }
-
-        return result
+    private fun composeAllPossibilities(
+            keys: List<List<Int>>,
+            state: HangulComposer.State = HangulComposer.State(),
+            depth: Int = 0): List<HangulComposer.State> {
+        if(depth == keys.size) return listOf(state)
+        return keys[depth].flatMap { composeAllPossibilities(keys, hangulConverter.compose(state, it), depth + 1) }
     }
 
     private fun learn(candidate: Candidate) {
-        candidateGenerator.learn(candidate)
+        if(candidate.text.none { it in '가' .. '힣' }) return
+        if(dictionary is EditableDictionary) {
+            if(candidate is CompoundCandidate) {
+                candidate.candidates.forEach {
+                    if(it.text.length <= 1) return@forEach
+                    val text = Normalizer.normalize(it.text, Normalizer.Form.NFD)
+                    val existing = dictionary.search(text).maxByOrNull { it.frequency }
+                    if(existing == null || existing.frequency < it.frequency) {
+                        dictionary.insert(Dictionary.Word(text, it.frequency, it.pos))
+                    }
+                }
+            }
+            if(candidate.text.length <= 1) return
+            val text = Normalizer.normalize(candidate.text, Normalizer.Form.NFD)
+            val existing = dictionary.search(text).maxByOrNull { it.frequency }
+            if(existing == null || existing.frequency < candidate.frequency) {
+                dictionary.insert(Dictionary.Word(text, candidate.frequency, candidate.pos))
+            }
+        }
     }
 
     private fun delete(candidate: Candidate) {
-        candidateGenerator.delete(candidate)
+        if(dictionary is EditableDictionary) {
+            if(candidate is CompoundCandidate) {
+                candidate.candidates.forEach {
+                    val text = Normalizer.normalize(it.text, Normalizer.Form.NFD)
+                    val existing = dictionary.search(text)
+                    existing.forEach { dictionary.remove(it) }
+                }
+            }
+            val existing = dictionary.search(Normalizer.normalize(candidate.text, Normalizer.Form.NFD))
+            existing.forEach { dictionary.remove(it) }
+        }
     }
 
     private fun resetCandidates() {
@@ -213,7 +251,7 @@ class AmbiguousHangulInputMethod(
         if(candidateIndex >= 0 && candidates.isNotEmpty()) {
             val candidate = candidates[candidateIndex]
             words += candidate.nextWordPredictorWords
-            if(candidate.endingSpace) nextWordPredictor.getWord(" ")?.let { words += it }
+            if(candidate.endingSpace) nextWordPredictor.getWord(" ")?.let { words += it.id }
             learn(candidate)
             reset()
         }
@@ -226,16 +264,6 @@ class AmbiguousHangulInputMethod(
         resetCandidates()
     }
 
-    override fun init() {
-        candidateGenerator.init()
-        super.init()
-    }
-
-    override fun destroy() {
-        candidateGenerator.destroy()
-        super.destroy()
-    }
-
     override fun serialize(): JSONObject {
         return super.serialize().apply {
             put("hangul-converter", hangulConverter.serialize())
@@ -243,6 +271,8 @@ class AmbiguousHangulInputMethod(
     }
 
     companion object {
+        const val MAX_CONVERSIONS = 3
+        const val MAX_CANDIDATES = 10
 
         fun isHangul(c: Int): Boolean {
             return HangulComposer.isCho(c) || HangulComposer.isJung(c) || HangulComposer.isJong(c)
