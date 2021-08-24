@@ -105,14 +105,14 @@ class PredictiveInputMethod(
             }
         }
 
-        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size)
+        candidates = predictor.predict(states.filterIsInstance<KeyInputHistory<Any>>(), states.size)
                 .toList()
-                .let {
+                .let { list ->
                     var candidates = listOf<Candidate>()
-                    if(it.isEmpty() && states.size > 2) for(i in 1 .. 5) {
-                        candidates = predictor.predict(states.map { it as KeyInputHistory<Any> }, states.size + i).toList()
+                    if(list.isEmpty() && states.size > 2) for(i in 1 .. 5) {
+                        candidates = predictor.predict(states.filterIsInstance<KeyInputHistory<Any>>(), states.size + i).toList()
                         if(candidates.size >= 3) break
-                    } else return@let it
+                    } else return@let list
                     candidates
                 }
                 .sortedByDescending { it.frequency }

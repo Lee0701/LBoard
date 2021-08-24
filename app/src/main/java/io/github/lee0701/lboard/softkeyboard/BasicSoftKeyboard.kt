@@ -87,7 +87,8 @@ class BasicSoftKeyboard(
     private var oneHandedMargin: Int = 0
 
     override fun initView(context: Context): View? {
-        (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) context.display?.getMetrics(displayMetrics)
+        else (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
 
         if(vibrate) vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if(sound) soundPool = when {

@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
@@ -32,7 +33,8 @@ class BasicMoreKeyPopup(context: Context, private val showXOffset: Int, private 
     var resultKeyCode: Int? = null
 
     override fun show(parent: View) {
-        (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) context.display?.getMetrics(displayMetrics)
+        else (context.getSystemService(Service.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
 
         popupWindow.setBackgroundDrawable(background)
         popupWindow.width = keyboardView.keyboardWidth

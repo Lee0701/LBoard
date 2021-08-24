@@ -60,7 +60,7 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
                 candidate.candidates.forEach {
                     if(it.text.length <= 1) return@forEach
                     val text = Normalizer.normalize(it.text, Normalizer.Form.NFD)
-                    val existing = dictionary.search(text).maxBy { it.frequency }
+                    val existing = dictionary.search(text).maxByOrNull { it.frequency }
                     if(existing == null || existing.frequency < it.frequency) {
                         dictionary.insert(Dictionary.Word(text, it.frequency, it.pos))
                     }
@@ -68,7 +68,7 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
             }
             if(candidate.text.length <= 1) return
             val text = Normalizer.normalize(candidate.text, Normalizer.Form.NFD)
-            val existing = dictionary.search(text).maxBy { it.frequency }
+            val existing = dictionary.search(text).maxByOrNull { it.frequency }
             if(existing == null || existing.frequency < candidate.frequency) {
                 dictionary.insert(Dictionary.Word(text, candidate.frequency, candidate.pos))
             }

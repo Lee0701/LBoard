@@ -276,7 +276,7 @@ abstract class CommonInputMethod: InputMethod {
 
     protected fun getDefaultChar(keyCode: Int, shift: Boolean, alt: Boolean): Int {
         val metaState = (if(shift) KeyEvent.META_SHIFT_ON else 0) or (if(alt) KeyEvent.META_ALT_ON else 0)
-        return KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD)
+        return KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
                 .get(keyCode, metaState)
     }
 
