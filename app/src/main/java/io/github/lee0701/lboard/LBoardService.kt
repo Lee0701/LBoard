@@ -35,6 +35,7 @@ import io.github.lee0701.lboard.layouts.hangul.*
 import io.github.lee0701.lboard.layouts.soft.*
 import io.github.lee0701.lboard.layouts.symbols.Symbols
 import io.github.lee0701.lboard.prediction.DictionaryPredictor
+import io.github.lee0701.lboard.prediction.TFLiteNextWordPredictor
 import io.github.lee0701.lboard.settings.SettingsActivity
 import io.github.lee0701.lboard.softkeyboard.*
 import io.github.lee0701.lboard.softkeyboard.EmptySoftKeyboard
@@ -43,6 +44,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
+import kotlin.math.log2
 
 class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceChangeListener {
 

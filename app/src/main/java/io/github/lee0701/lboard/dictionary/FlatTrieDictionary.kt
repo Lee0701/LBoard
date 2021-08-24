@@ -3,7 +3,7 @@ package io.github.lee0701.lboard.dictionary
 import java.nio.ByteBuffer
 
 open class FlatTrieDictionary(): Dictionary {
-    var buffer = ByteBuffer.wrap(byteArrayOf(0, 0, 0, 0, 0, 0))
+    var buffer: ByteBuffer = ByteBuffer.wrap(byteArrayOf(0, 0, 0, 0, 0, 0))
     var root: Int = 0
 
     constructor(data: ByteArray): this() {
