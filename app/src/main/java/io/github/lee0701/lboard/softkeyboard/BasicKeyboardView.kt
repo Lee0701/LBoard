@@ -144,7 +144,7 @@ class BasicKeyboardView(
     private fun onDrawKeyForeground(canvas: Canvas, key: Key) {
         val theme = theme.keyTheme[key.keyCode] ?: theme.keyTheme[null] ?: return
 
-        if (theme.foreground != null) with(ContextCompat.getDrawable(context, theme.foreground)!!) {
+        if(theme.foreground != null) with(ContextCompat.getDrawable(context, theme.foreground)!!) {
                 val x = key.x + (key.width - intrinsicWidth)/2
                 val y = key.y + (key.height - intrinsicHeight)/2
                 setBounds(x, y, x + intrinsicWidth, y + intrinsicHeight)
