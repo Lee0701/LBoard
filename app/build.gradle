@@ -8,8 +8,8 @@ android {
         applicationId "io.github.lee0701.lboard"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 3
-        versionName "0.0.3-alpha.1"
+        versionCode 4
+        versionName "0.0.4-alpha.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     compileOptions {
