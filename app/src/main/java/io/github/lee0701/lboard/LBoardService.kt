@@ -301,11 +301,6 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         super.onFinishInputView(finishingInput)
     }
 
-    override fun onViewClicked(focusChanged: Boolean) {
-        super.onViewClicked(focusChanged)
-        EventBus.getDefault().post(InputStartEvent())
-    }
-
     override fun onStartInput(attribute: EditorInfo, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
 
@@ -435,7 +430,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
             val shift = event.keyEvent.shiftPressed
             val alt = event.keyEvent.altPressed
             val metaState = if(shift) KeyEvent.META_SHIFT_ON else 0 or if(alt) KeyEvent.META_ALT_ON else 0
-            val char = KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD).get(keyCode, metaState)
+            val char = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD).get(keyCode, metaState)
             if(char > 0) currentInputConnection?.commitText(char.toChar().toString(), 1)
         }
         if(event.sendRawInput) {
