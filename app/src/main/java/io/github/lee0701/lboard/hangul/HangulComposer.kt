@@ -22,7 +22,7 @@ abstract class HangulComposer(
         val jung = state.jung?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
         val jong = state.jong?.let { (virtualJamoTable.virtualJamos[it] ?: it).toChar() }
         return state.other + when {
-            cho != null && jung != null && cho.toInt() in 0x1100 .. 0x1112 && jung.toInt() in 0x1161 .. 0x1175 && (jong == null || jong.toInt() in 0x11a8 .. 0x11c2) ->
+            cho != null && jung != null && cho.code in 0x1100..0x1112 && jung.code in 0x1161..0x1175 && (jong == null || jong.code in 0x11a8..0x11c2) ->
                 Normalizer.normalize(cho.toString() + jung + (jong ?: ""), Normalizer.Form.NFC)
             cho != null && jung == null && jong == null -> if(CONVERT_CHO.contains(cho)) COMPAT_CHO[CONVERT_CHO.indexOf(cho)].toString() else cho.toString()
             cho == null && jung != null && jong == null -> if(STD_JUNG.contains(jung)) COMPAT_JUNG[STD_JUNG.indexOf(jung)].toString() else jung.toString()

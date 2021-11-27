@@ -118,7 +118,7 @@ class PredictiveInputMethod(
                 .sortedByDescending { it.frequency }
                 .map {
                     val withMissing = addMissing(states, it.text)
-                    val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.toUpperCase() else c }.joinToString("")
+                    val text = it.text.mapIndexed { i, c -> if(withMissing[i].shift) c.uppercaseChar() else c }.joinToString("")
                     SingleCandidate(text, it.text, it.pos, it.frequency)
                 } + SingleCandidate(lastState.composing, lastState.composing, -1, 0.1f)
         candidateIndex = -1
@@ -154,7 +154,7 @@ class PredictiveInputMethod(
 
     private fun countMissing(word: String): Int {
         val layout = (hardKeyboard as CommonHardKeyboard).layout[0]!!.layout.mapValues { it.value.normal + it.value.shift }
-        return word.sumBy { c -> if(layout.none { it.value.contains(c.toInt()) }) 1 else 0 }
+        return word.sumBy { c -> if(layout.none { it.value.contains(c.code) }) 1 else 0 }
     }
 
     private fun addMissing(states: List<KeyInputHistory<String>>, word: String): List<KeyInputHistory<String>> {
@@ -162,7 +162,7 @@ class PredictiveInputMethod(
         val result = mutableListOf<KeyInputHistory<String>>()
         var j = 0
         word.forEachIndexed { i, c ->
-            if(i >= states.size || layout.none { it.value.contains(c.toInt()) })
+            if(i >= states.size || layout.none { it.value.contains(c.code) })
                 result += KeyInputHistory(0, composing = (result.lastOrNull()?.composing ?: "") + c)
             else
                 result += states[j++]

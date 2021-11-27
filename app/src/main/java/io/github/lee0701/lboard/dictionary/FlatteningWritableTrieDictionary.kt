@@ -41,7 +41,7 @@ class FlatteningWritableTrieDictionary(
             dos.writeByte(node.children.size)
             address += 1
             node.children.forEach { entry ->
-                dos.writeShort(entry.key.toInt())
+                dos.writeShort(entry.key.code)
                 dos.writeInt(addressMap[entry.value] ?: 0)
                 address += 6
             }

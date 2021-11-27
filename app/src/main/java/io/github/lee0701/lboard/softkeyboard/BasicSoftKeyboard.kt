@@ -172,9 +172,9 @@ class BasicSoftKeyboard(
     private fun convertToCompatible(label: String): String {
         return label.map { c ->
             if(c == ' ') c
-            else if(HangulComposer.isCho(c.toInt())) HangulComposer.COMPAT_CHO[HangulComposer.CONVERT_CHO.indexOf(c)]
-            else if(HangulComposer.isJung(c.toInt())) HangulComposer.COMPAT_JUNG[HangulComposer.STD_JUNG.indexOf(c)]
-            else if(HangulComposer.isJong(c.toInt())) HangulComposer.COMPAT_CHO[HangulComposer.CONVERT_JONG.indexOf(c)]
+            else if(HangulComposer.isCho(c.code)) HangulComposer.COMPAT_CHO[HangulComposer.CONVERT_CHO.indexOf(c)]
+            else if(HangulComposer.isJung(c.code)) HangulComposer.COMPAT_JUNG[HangulComposer.STD_JUNG.indexOf(c)]
+            else if(HangulComposer.isJong(c.code)) HangulComposer.COMPAT_CHO[HangulComposer.CONVERT_JONG.indexOf(c)]
             else c
         }.joinToString("")
     }

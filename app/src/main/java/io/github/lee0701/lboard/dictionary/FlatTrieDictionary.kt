@@ -40,7 +40,7 @@ open class FlatTrieDictionary(): Dictionary {
                 p += 2
                 val address = buffer.getInt(p)
                 p += 4
-                if(key.toChar() == c) {
+                if(key.toInt().toChar() == c) {
                     p = address
                     return@forEach
                 }
@@ -65,9 +65,9 @@ open class FlatTrieDictionary(): Dictionary {
         val keyCode = seq[index]
         val chars = layout[keyCode] ?: listOf()
         val children = listChildren(address)
-        children.filter { chars.contains(it.first.toInt()) || layout.values.none { list -> list.contains(it.first.toInt()) } }
+        children.filter { chars.contains(it.first.code) || layout.values.none { list -> list.contains(it.first.code) } }
                 .forEach { searchSequenceRecursive(seq, layout, length, it.second, current + it.first,
-                        if(layout.values.none { list -> list.contains(it.first.toInt()) }) index else index + 1).forEach { yield(it) } }
+                        if(layout.values.none { list -> list.contains(it.first.code) }) index else index + 1).forEach { yield(it) } }
     }
 
     private fun listWords(address: Int, word: String): Sequence<Dictionary.Word> = sequence {
@@ -94,7 +94,7 @@ open class FlatTrieDictionary(): Dictionary {
             p += 2
             val childAddress = buffer.getInt(p)
             p += 4
-            yield(key.toChar() to childAddress)
+            yield(key.toInt().toChar() to childAddress)
         }
     }
 

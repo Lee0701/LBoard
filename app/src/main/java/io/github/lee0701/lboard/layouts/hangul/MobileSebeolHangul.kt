@@ -7,20 +7,20 @@ object MobileSebeolHangul {
 
     // Unfinished.
     val LAYOUT_FIFTEEN_SEBEOL = MoreKeys.MOREKEYS_FIFTEEN_NUMBERS + CommonKeyboardLayout(CommonKeyboardLayout.LayoutLayer(mapOf(
-            0x2001 to CommonKeyboardLayout.LayoutItem("ᄅᆺ".map { it.toInt() }),
-            0x2002 to CommonKeyboardLayout.LayoutItem("ᄃᆯ".map { it.toInt() }),
-            0x2003 to CommonKeyboardLayout.LayoutItem("몁".map { it.toInt() }),
-            0x2004 to CommonKeyboardLayout.LayoutItem("채".map { it.toInt() }),
-            0x2005 to CommonKeyboardLayout.LayoutItem("퍼".map { it.toInt() }),
-            0x2006 to CommonKeyboardLayout.LayoutItem("ᄂᆼ".map { it.toInt() }),
-            0x2007 to CommonKeyboardLayout.LayoutItem("ᄋᆫ".map { it.toInt() }),
-            0x2008 to CommonKeyboardLayout.LayoutItem("기".map { it.toInt() }),
-            0x2009 to CommonKeyboardLayout.LayoutItem("자".map { it.toInt() }),
-            0x200a to CommonKeyboardLayout.LayoutItem("브".map { it.toInt() }),
-            0x200b to CommonKeyboardLayout.LayoutItem("ᄉᆷ".map { it.toInt() }),
-            0x200c to CommonKeyboardLayout.LayoutItem("헥".map { it.toInt() }),
-            0x200d to CommonKeyboardLayout.LayoutItem("토".map { it.toInt() }),
-            0x200e to CommonKeyboardLayout.LayoutItem("쿠".map { it.toInt() })
+            0x2001 to CommonKeyboardLayout.LayoutItem("ᄅᆺ".map { it.code }),
+            0x2002 to CommonKeyboardLayout.LayoutItem("ᄃᆯ".map { it.code }),
+            0x2003 to CommonKeyboardLayout.LayoutItem("몁".map { it.code }),
+            0x2004 to CommonKeyboardLayout.LayoutItem("채".map { it.code }),
+            0x2005 to CommonKeyboardLayout.LayoutItem("퍼".map { it.code }),
+            0x2006 to CommonKeyboardLayout.LayoutItem("ᄂᆼ".map { it.code }),
+            0x2007 to CommonKeyboardLayout.LayoutItem("ᄋᆫ".map { it.code }),
+            0x2008 to CommonKeyboardLayout.LayoutItem("기".map { it.code }),
+            0x2009 to CommonKeyboardLayout.LayoutItem("자".map { it.code }),
+            0x200a to CommonKeyboardLayout.LayoutItem("브".map { it.code }),
+            0x200b to CommonKeyboardLayout.LayoutItem("ᄉᆷ".map { it.code }),
+            0x200c to CommonKeyboardLayout.LayoutItem("헥".map { it.code }),
+            0x200d to CommonKeyboardLayout.LayoutItem("토".map { it.code }),
+            0x200e to CommonKeyboardLayout.LayoutItem("쿠".map { it.code })
     ), labels = mapOf(
             /*
             0x2001 to ("ㅂㅛ" to "ㅃ"),

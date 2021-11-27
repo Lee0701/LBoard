@@ -49,9 +49,9 @@ open class TrieDictionary: Dictionary {
         val keyCode = seq[index]
         val chars = layout[keyCode] ?: listOf()
         val children = node.children
-        children.filterKeys { chars.contains(it.toInt()) || layout.values.none { list -> list.contains(it.toInt()) } }
+        children.filterKeys { chars.contains(it.code) || layout.values.none { list -> list.contains(it.code) } }
                 .forEach { searchSequenceRecursive(seq, layout, length, it.value, current + it.key,
-                        if(layout.values.none { list -> list.contains(it.key.toInt()) }) index else index + 1).forEach { yield(it) } }
+                        if(layout.values.none { list -> list.contains(it.key.code) }) index else index + 1).forEach { yield(it) } }
     }
 
     data class Node(

@@ -454,7 +454,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
         } else {
             event.composingText?.newComposingText?.let { currentInputConnection?.setComposingText(it, event.composingText.newCursorPosition) }
             event.composingText?.textToCommit?.let {
-                val space = listOf(0x2c, 0x2e, 0x3f, 0x21).contains(it.firstOrNull()?.toInt() ?: 0) && currentInputConnection?.getTextBeforeCursor(1, 0) == " "
+                val space = listOf(0x2c, 0x2e, 0x3f, 0x21).contains(it.firstOrNull()?.code ?: 0) && currentInputConnection?.getTextBeforeCursor(1, 0) == " "
                 if(space) currentInputConnection?.deleteSurroundingText(1, 0)
                 currentInputConnection?.commitText(it, event.composingText.newCursorPosition)
                 if(space) currentInputConnection?.commitText(" ", 1)
@@ -499,6 +499,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
                         return
                     }
                 }
+                else -> {}
             }
 
             if(event.actions.last().type == LBoardKeyEvent.ActionType.LONG_PRESS) {
