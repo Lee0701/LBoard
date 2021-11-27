@@ -11,19 +11,19 @@ open class FlatTrieDictionary(): Dictionary {
         root = buffer.getInt(data.size - 4)
     }
 
-    override fun search(text: String): Iterable<Dictionary.Word> {
-        return listWords(searchAddress(text) ?: return listOf(), text)
+    override fun search(text: String): Sequence<Dictionary.Word> {
+        return listWords(searchAddress(text) ?: return sequenceOf(), text)
     }
 
-    override fun searchPrefix(prefix: String, length: Int): Iterable<Dictionary.Word> {
-        return searchRecursive(searchAddress(prefix) ?: return listOf(), prefix, length)
+    override fun searchPrefix(prefix: String, length: Int): Sequence<Dictionary.Word> {
+        return searchRecursive(searchAddress(prefix) ?: return sequenceOf(), prefix, length)
     }
 
-    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): Iterable<Dictionary.Word> {
+    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): Sequence<Dictionary.Word> {
         return searchSequenceRecursive(seq, layout, seq.size, root, "", 0)
     }
 
-    override fun searchSequencePrefix(seqPrefix: List<Int>, layout: Map<Int, List<Int>>, length: Int): Iterable<Dictionary.Word> {
+    override fun searchSequencePrefix(seqPrefix: List<Int>, layout: Map<Int, List<Int>>, length: Int): Sequence<Dictionary.Word> {
         return searchSequenceRecursive(seqPrefix, layout, length, root, "", 0)
     }
 
@@ -50,14 +50,14 @@ open class FlatTrieDictionary(): Dictionary {
         return p
     }
 
-    private fun searchRecursive(address: Int, current: String, length: Int): Iterable<Dictionary.Word> = sequence {
+    private fun searchRecursive(address: Int, current: String, length: Int): Sequence<Dictionary.Word> = sequence {
         val result = listWords(address, current)
         result.forEach { yield(it) }
         if(current.length >= length) return@sequence
         listChildren(address).forEach { searchRecursive(it.second, current + it.first, length).forEach { yield(it) } }
-    }.asIterable()
+    }
 
-    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, length: Int, address: Int, current: String, index: Int): Iterable<Dictionary.Word> = sequence {
+    private fun searchSequenceRecursive(seq: List<Int>, layout: Map<Int, List<Int>>, length: Int, address: Int, current: String, index: Int): Sequence<Dictionary.Word> = sequence {
         if(index >= seq.size) {
             searchRecursive(address, current, length).forEach { yield(it) }
             return@sequence
@@ -68,9 +68,9 @@ open class FlatTrieDictionary(): Dictionary {
         children.filter { chars.contains(it.first.toInt()) || layout.values.none { list -> list.contains(it.first.toInt()) } }
                 .forEach { searchSequenceRecursive(seq, layout, length, it.second, current + it.first,
                         if(layout.values.none { list -> list.contains(it.first.toInt()) }) index else index + 1).forEach { yield(it) } }
-    }.asIterable()
+    }
 
-    private fun listWords(address: Int, word: String): Iterable<Dictionary.Word> = sequence {
+    private fun listWords(address: Int, word: String): Sequence<Dictionary.Word> = sequence {
         var p = address
         val wordSize = buffer.get(p)
         p += 1
@@ -81,9 +81,9 @@ open class FlatTrieDictionary(): Dictionary {
             p += 4
             yield(Dictionary.Word(word, frequency, pos.toInt()))
         }
-    }.asIterable()
+    }
 
-    private fun listChildren(address: Int): Iterable<Pair<Char, Int>> = sequence {
+    private fun listChildren(address: Int): Sequence<Pair<Char, Int>> = sequence {
         var p = address
         val wordSize = buffer.get(p)
         p += 1 + wordSize * (1 + 4)
@@ -96,6 +96,6 @@ open class FlatTrieDictionary(): Dictionary {
             p += 4
             yield(key.toChar() to childAddress)
         }
-    }.asIterable()
+    }
 
 }

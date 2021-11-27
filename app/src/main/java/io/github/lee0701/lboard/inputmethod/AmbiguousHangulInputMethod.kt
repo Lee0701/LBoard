@@ -15,6 +15,7 @@ import io.github.lee0701.lboard.prediction.CompoundCandidate
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import io.github.lee0701.lboard.softkeyboard.SoftKeyboard
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
@@ -123,30 +124,35 @@ class AmbiguousHangulInputMethod(
 
         convertTask?.cancel()
         convertTask = GlobalScope.launch {
-            candidates = convertAll().toList()
-                    .sortedByDescending { it.score }
-                    .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
-            candidateIndex = -1
+            val candidates = mutableListOf<Candidate>()
+            convertAll().collect {
+                candidates += it
 
-            EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, candidates))
-            if(candidates.isNotEmpty()) {
-                launch(Dispatchers.Main) {
-                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                            ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex].text)))
-                }
-            } else {
-                launch(Dispatchers.Main) {
-                    EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
-                            ComposingText(newComposingText = "")))
+                this@AmbiguousHangulInputMethod.candidates = candidates.sortedByDescending { it.score }.distinctBy { it.text }
+                        .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
+                candidateIndex = -1
+
+                EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, this@AmbiguousHangulInputMethod.candidates))
+                if(candidates.isNotEmpty()) {
+                    launch(Dispatchers.Main) {
+                        EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                                ComposingText(newComposingText = candidates[if(candidateIndex < 0) 0 else candidateIndex].text)))
+                    }
+                } else {
+                    launch(Dispatchers.Main) {
+                        EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
+                                ComposingText(newComposingText = "")))
+                    }
                 }
             }
+
         }
 
         return true
     }
 
-    private fun convertAll(): Iterable<Candidate> {
-        val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return listOf()
+    private fun convertAll(): Flow<Candidate> = flow {
+        val layout = (hardKeyboard as CommonHardKeyboard).layout[0] ?: return@flow
         val converted = states.map { layout[it.keyCode]?.let { item -> if(it.shift) item.shift else item.normal } ?: listOf() }
 
         val syllables = converted.mapIndexed { i, _ ->
@@ -175,20 +181,22 @@ class AmbiguousHangulInputMethod(
                     }
                 }
 
-        val result = eojeols.map { it.first to it.second.first / it.first.length }
+        eojeols.map { it.first to it.second.first / it.first.length }
                 .sortedByDescending { conversionScorer.calculateScore(it.first) }
                 .filter { if(it.first.lastOrNull() in '가' .. '힣') it.first.all { c -> c in '가' .. '힣' } else true }
                 .let { if(it.size > 16) it.take(sqrt(it.size.toDouble()).toInt() * 4) else it }
-                .map {
+                .forEach {
                     // 사전 검색 결과 조합 중 가장 좋은 후보로 선택
-                    candidateGenerator.generate(it.first).toList().let { candidates ->
-                        candidates
-                                .sortedByDescending { candidate -> candidate.frequency }
-                                .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
-                    }.firstOrNull() ?: SingleCandidate(it.first, it.first, -1, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' })
+                    candidateGenerator.generate(it.first).collect { candidate ->
+                        emit(candidate)
+                    }
+//                    .let { candidates ->
+//                        candidates
+//                                .sortedByDescending { candidate -> candidate.frequency }
+//                                .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
+//                    }.firstOrNull() ?: SingleCandidate(it.first, it.first, -1, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' })
                 }
 
-        return result
     }
 
     private fun learn(candidate: Candidate) {

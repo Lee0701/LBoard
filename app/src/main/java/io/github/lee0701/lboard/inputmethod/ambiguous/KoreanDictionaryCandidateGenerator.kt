@@ -7,6 +7,9 @@ import io.github.lee0701.lboard.prediction.Candidate
 import io.github.lee0701.lboard.prediction.CompoundCandidate
 import io.github.lee0701.lboard.prediction.SingleCandidate
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.text.Normalizer
 
@@ -20,12 +23,12 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
         if(dictionary is WritableDictionary) dictionary.write()
     }
 
-    override fun generate(string: String): Iterable<Candidate> = sequence {
+    override fun generate(string: String): Flow<Candidate> = flow {
         getWordCombinationRecursive(getWords(string).toList(), 0)
-                .forEach { yield(it) }
-    }.asIterable()
+                .collect { emit(it) }
+    }
 
-    private fun getWords(string: String): Iterable<List<Dictionary.Word>> = sequence {
+    private fun getWords(string: String): Sequence<List<Dictionary.Word>> = sequence {
         string.forEachIndexed { i, _ ->
             val result = mutableListOf<Dictionary.Word>()
             for(j in i .. string.length) {
@@ -38,20 +41,20 @@ class KoreanDictionaryCandidateGenerator(val dictionary: Dictionary): CandidateG
             }
             yield(result)
         }
-    }.asIterable()
+    }
 
     private fun getWordCombinationRecursive(words: List<List<Dictionary.Word>>, index: Int)
-            : Iterable<CompoundCandidate> = sequence {
+            : Flow<CompoundCandidate> = flow {
         if(index >= words.size) {
-            yield(CompoundCandidate(listOf<SingleCandidate>()))
-            return@sequence
+            emit(CompoundCandidate(listOf<SingleCandidate>()))
+            return@flow
         }
         words[index].forEach { word ->
-            getWordCombinationRecursive(words, index + word.text.length).forEach { candidate ->
-                yield(candidate.copy(candidates = listOf(SingleCandidate(word.text, word.text, word.pos, word.frequency, false)) + candidate.candidates))
+            getWordCombinationRecursive(words, index + word.text.length).collect { candidate ->
+                emit(candidate.copy(candidates = listOf(SingleCandidate(word.text, word.text, word.pos, word.frequency, false)) + candidate.candidates))
             }
         }
-    }.asIterable()
+    }
 
     override fun learn(candidate: Candidate) {
         if(candidate.text.none { it in '가' .. '힣' }) return

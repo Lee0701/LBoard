@@ -16,21 +16,21 @@ class CompoundDictionary(val dictionaries: List<Dictionary>): EditableDictionary
         }
     }
 
-    override fun search(text: String): Iterable<Dictionary.Word> = sequence {
+    override fun search(text: String): Sequence<Dictionary.Word> = sequence {
         dictionaries.forEach { it.search(text).forEach { yield(it) } }
-    }.asIterable()
+    }
 
-    override fun searchPrefix(prefix: String, length: Int): Iterable<Dictionary.Word> = sequence {
+    override fun searchPrefix(prefix: String, length: Int): Sequence<Dictionary.Word> = sequence {
         dictionaries.forEach { it.searchPrefix(prefix, length).forEach { yield(it) } }
-    }.asIterable()
+    }
 
-    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): Iterable<Dictionary.Word> = sequence {
+    override fun searchSequence(seq: List<Int>, layout: Map<Int, List<Int>>): Sequence<Dictionary.Word> = sequence {
         dictionaries.forEach { it.searchSequence(seq, layout).forEach { yield(it) } }
-    }.asIterable()
+    }
 
-    override fun searchSequencePrefix(seqPrefix: List<Int>, layout: Map<Int, List<Int>>, length: Int): Iterable<Dictionary.Word> = sequence {
+    override fun searchSequencePrefix(seqPrefix: List<Int>, layout: Map<Int, List<Int>>, length: Int): Sequence<Dictionary.Word> = sequence {
         dictionaries.forEach { it.searchSequencePrefix(seqPrefix, layout, length).forEach { yield(it) } }
-    }.asIterable()
+    }
 
     override fun read() {
         dictionaries.forEach {
