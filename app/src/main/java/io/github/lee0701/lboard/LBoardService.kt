@@ -521,7 +521,7 @@ class LBoardService: InputMethodService(), SharedPreferences.OnSharedPreferenceC
 
             if(event.actions.last().type == LBoardKeyEvent.ActionType.RELEASE) {
                 if(event.originalKeyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH) {
-                    switchInputMethod(true)
+                    switchInputMethod(switchBetweenApps)
                     EventBus.getDefault().cancelEventDelivery(event)
                     return
                 }
