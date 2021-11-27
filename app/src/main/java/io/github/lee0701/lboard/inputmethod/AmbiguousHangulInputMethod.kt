@@ -2,12 +2,11 @@ package io.github.lee0701.lboard.inputmethod
 
 import android.view.KeyEvent
 import io.github.lee0701.lboard.ComposingText
-
 import io.github.lee0701.lboard.event.*
 import io.github.lee0701.lboard.hangul.DubeolHangulComposer
 import io.github.lee0701.lboard.hangul.HangulComposer
-import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.hardkeyboard.CommonHardKeyboard
+import io.github.lee0701.lboard.hardkeyboard.HardKeyboard
 import io.github.lee0701.lboard.inputmethod.ambiguous.CandidateGenerator
 import io.github.lee0701.lboard.inputmethod.ambiguous.Scorer
 import io.github.lee0701.lboard.prediction.Candidate
@@ -124,15 +123,17 @@ class AmbiguousHangulInputMethod(
 
         convertTask?.cancel()
         convertTask = GlobalScope.launch {
-            val candidates = mutableListOf<Candidate>()
-            convertAll().collect {
-                candidates += it
+            val newCandidates = mutableListOf<Candidate>()
+            convertAll().collect { candidate ->
+                newCandidates += candidate
 
-                this@AmbiguousHangulInputMethod.candidates = candidates.sortedByDescending { it.score }.distinctBy { it.text }
-                        .sortedBy { candidate -> if(candidate is CompoundCandidate) candidate.candidates.size else Int.MAX_VALUE }
+                candidates = newCandidates.sortedByDescending { it.score }.distinctBy { it.text }
+                        .sortedBy { cand -> if(cand is CompoundCandidate) cand.candidates.size else Int.MAX_VALUE }
                 candidateIndex = -1
 
-                EventBus.getDefault().post(CandidateUpdateEvent(this@AmbiguousHangulInputMethod.info, this@AmbiguousHangulInputMethod.candidates))
+                val candidates = candidates
+
+                EventBus.getDefault().post(CandidateUpdateEvent(info, candidates))
                 if(candidates.isNotEmpty()) {
                     launch(Dispatchers.Main) {
                         EventBus.getDefault().post(InputProcessCompleteEvent(info, event,
@@ -186,6 +187,7 @@ class AmbiguousHangulInputMethod(
                 .filter { if(it.first.lastOrNull() in '가' .. '힣') it.first.all { c -> c in '가' .. '힣' } else true }
                 .let { if(it.size > 16) it.take(sqrt(it.size.toDouble()).toInt() * 4) else it }
                 .forEach {
+                    emit(SingleCandidate(it.first, it.first, -1, it.second, endingSpace = it.first.any { c -> c in '가' .. '힣' }))
                     // 사전 검색 결과 조합 중 가장 좋은 후보로 선택
                     candidateGenerator.generate(it.first).collect { candidate ->
                         emit(candidate)
